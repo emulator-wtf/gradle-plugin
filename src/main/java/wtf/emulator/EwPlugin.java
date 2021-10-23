@@ -2,6 +2,7 @@ package wtf.emulator;
 
 import com.android.build.VariantOutput;
 import com.android.build.gradle.AppExtension;
+import com.android.build.gradle.BaseExtension;
 import com.android.build.gradle.LibraryExtension;
 import com.android.build.gradle.api.ApkVariant;
 import com.android.build.gradle.api.ApkVariantOutput;
@@ -19,7 +20,9 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -44,16 +47,17 @@ public class EwPlugin implements Plugin<Project> {
     target.getDependencies().add(TOOL_CONFIGURATION, ext.getVersion().map(version ->
         "wtf.emulator:ew-cli:" + version));
 
-    target.getPluginManager().withPlugin("com.android.application", (plugin) ->
-      target.getExtensions().getByType(AppExtension.class)
-          .getApplicationVariants().all(variant -> configureVariant(target, ext, toolConfig, variant))
-    );
-    target.getPluginManager().withPlugin("com.android.library", (plugin) ->
-      target.getExtensions().getByType(LibraryExtension.class)
-          .getLibraryVariants().all(variant -> configureVariant(target, ext, toolConfig, variant)));
+    target.getPluginManager().withPlugin("com.android.application", (plugin) -> {
+      AppExtension android = target.getExtensions().getByType(AppExtension.class);
+      android.getApplicationVariants().all(variant -> configureVariant(target, android, ext, toolConfig, variant));
+    });
+    target.getPluginManager().withPlugin("com.android.library", (plugin) -> {
+      LibraryExtension android = target.getExtensions().getByType(LibraryExtension.class);
+      android.getLibraryVariants().all(variant -> configureVariant(target, android, ext, toolConfig, variant));
+    });
   }
 
-  public <T extends TestedVariant & BaseVariant> void configureVariant(Project target, EwExtension ext, Configuration toolConfig, T variant) {
+  public <T extends TestedVariant & BaseVariant> void configureVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, T variant) {
     String taskName = "test" + capitalize(variant.getName()) + "WithEmulatorWtf";
 
     TestVariant testVariant = variant.getTestVariant();
@@ -110,7 +114,11 @@ public class EwPlugin implements Plugin<Project> {
           );
         }
 
-        if (Boolean.TRUE.equals(ext.getUseOrchestrator().getOrNull())) {
+        if (ext.getUseOrchestrator().isPresent()) {
+          if (ext.getUseOrchestrator().get()) {
+            task.args("--use-orchestrator");
+          }
+        } else if (android.getTestOptions().getExecution().equalsIgnoreCase("ANDROIDX_TEST_ORCHESTRATOR")) {
           task.args("--use-orchestrator");
         }
 
@@ -120,6 +128,8 @@ public class EwPlugin implements Plugin<Project> {
 
         if (Boolean.TRUE.equals(ext.getWithCoverage().getOrNull())) {
           task.args("--with-coverage");
+        } else if (variant.getBuildType().isTestCoverageEnabled()) {
+          task.args("--with-coverage");
         }
 
         if (ext.getAdditionalApks().isPresent() && !ext.getAdditionalApks().get().isEmpty()) {
@@ -128,8 +138,18 @@ public class EwPlugin implements Plugin<Project> {
               .collect(Collectors.joining(",")));
         }
 
-        if (ext.getEnvironmentVariables().isPresent() && !ext.getEnvironmentVariables().get().isEmpty()) {
-          String envLine = ext.getEnvironmentVariables().get().entrySet().stream()
+        Map<String, Object> runnerArgs = new LinkedHashMap<>(
+            variant.getMergedFlavor().getTestInstrumentationRunnerArguments()
+        );
+
+        if (ext.getEnvironmentVariables().isPresent()) {
+          ext.getEnvironmentVariables().get().entrySet().forEach(entry ->
+              runnerArgs.put(entry.getKey(), entry.getValue() == null ? null : entry.getValue()));
+        }
+
+        if (!runnerArgs.isEmpty()) {
+          String envLine = runnerArgs.entrySet().stream()
+              .filter(entry -> entry.getValue() != null)
               .map(entry -> entry.getKey() + "=" + entry.getValue())
               .collect(Collectors.joining(","));
           task.args("--environment-variables", envLine);
