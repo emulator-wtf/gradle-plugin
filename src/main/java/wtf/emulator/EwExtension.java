@@ -23,7 +23,7 @@ public abstract class EwExtension {
   public abstract Property<FileCollection> getAdditionalApks();
   public abstract MapProperty<String, String> getEnvironmentVariables();
 
-  public abstract Property<Integer> getUniformShards();
+  public abstract Property<Integer> getNumUniformShards();
   public abstract Property<Integer> getNumShards();
 
   public abstract ListProperty<String> getDirectoriesToPull();
