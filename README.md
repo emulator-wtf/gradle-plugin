@@ -112,22 +112,30 @@ emulatorwtf {
     [model: 'Pixel2', version: 23]
   ]
 
-  // whether to enable Android orchestrator
+  // whether to enable Android orchestrator, if your app has orchestrator
+  // configured this will get picked up automatically, however you can
+  // force-change the value here if you want to
   useOrchestrator = true
   
   // whether to clear package data before running each test (orchestrator only)
+  // if your app has this configured via testInstrumentationRunnerArguments then
+  // it will get picked up automatically
   clearPackageData = true
   
   // if true, the Gradle plugin will fetch coverage data and store under
-  // `baseOutputDir/${variant}`
+  // `baseOutputDir/${variant}`, if your app has coverage enabled this will be
+  // enabled automatically
   withCoverage = true
 
   // additional APKs to install, you can pass in `project.files(...)` or a 
   // Gradle configuration here
   additionalApks = configurations.additionalTestApks
   
-  // additional arguments to AndroidJUnitRunner, for instance to run medium
-  // tests:
+  // additional arguments to AndroidJUnitRunner, by default emulator.wtf Gradle
+  // plugin will pick these up from testInstrumentationRunnerArguments, however
+  // you can override (or unset with null) these values here
+  // 
+  // for instance to only run medium tests:
   environmentVariables = [size: 'medium']
 
   // Set to a number larger than 1 to randomly split your tests into multiple
@@ -158,32 +166,6 @@ emulatorwtf {
     [model: "NexusLowRes", version: 23],
     [model: "Pixel2", version: 27]
   ]
-}
-```
-
-### Run tests with orchestrator while clearing package data
-
-You can use Android Test Orchestrator to run the tests - this will create a new
-app VM from scratch for each test. Slower to run, but will ensure no static
-state leakage between tests. Add the optional `clearPackageData` flag to clear
-app persisted state between each run. Read more about orchestrator
-[here](https://developer.android.com/training/testing/junit-runner#using-android-test-orchestrator).
-
-```groovy
-emulatorwtf {
-  useOrchestrator = true
-  clearPackageData = true
-}
-```
-
-### Grab coverage data
-
-Use the `withCoverage` flag to capture test run coverage data and store the
-results (one or more `.exec` or `.ec` files):
-
-```groovy
-emulatorwtf {
-  withCoverage = true
 }
 ```
 
