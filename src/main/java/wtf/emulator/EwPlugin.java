@@ -135,8 +135,8 @@ public class EwPlugin implements Plugin<Project> {
           task.args("--environment-variables", envLine);
         }
 
-        if (ext.getUniformShards().isPresent()) {
-          task.args("--num-uniform-shards", String.valueOf(ext.getUniformShards().get()));
+        if (ext.getNumUniformShards().isPresent()) {
+          task.args("--num-uniform-shards", String.valueOf(ext.getNumUniformShards().get()));
         } else if (ext.getNumShards().isPresent()) {
           task.args("--num-shards", String.valueOf(ext.getNumShards().get()));
         }
