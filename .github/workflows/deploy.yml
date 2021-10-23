@@ -41,7 +41,7 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         PLUGIN_TAG: ${{ github.ref }}
-      run: ./gradlew publishToS3Repository
+      run: ./gradlew publishAllPublicationsToS3Repository
     # CLEANUP
     - name: Cleanup Gradle Cache
       # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
