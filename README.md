@@ -40,7 +40,7 @@ app project (usually under `app/build.gradle`):
 
 ```groovy
 plugins {
-  id "wtf.emulator.gradle" version "0.0.3"
+  id "wtf.emulator.gradle" version "0.0.6"
 }
 ```
 
