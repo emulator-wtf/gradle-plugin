@@ -27,8 +27,10 @@ dependencies {
 }
 
 val tag = System.getenv()["PLUGIN_TAG"]
-if (!tag.isNullOrBlank()) {
-  version = tag.removePrefix("v")
+val pluginVersion = tag?.split('/')?.last()?.removePrefix("v")
+
+if (!pluginVersion.isNullOrBlank()) {
+  version = pluginVersion
 }
 
 // if aws creds & git tag is set, setup publishing
