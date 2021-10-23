@@ -1,7 +1,7 @@
 package wtf.emulator;
 
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
@@ -12,7 +12,7 @@ public abstract class EwExtension {
   public abstract Property<String> getVersion();
   public abstract Property<String> getToken();
 
-  public abstract RegularFileProperty getOutputsDir();
+  public abstract DirectoryProperty getBaseOutputDir();
 
   public abstract ListProperty<Map<String, Object>> getDevices();
 

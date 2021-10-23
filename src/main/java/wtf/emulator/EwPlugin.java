@@ -29,6 +29,7 @@ public class EwPlugin implements Plugin<Project> {
   @Override
   public void apply(Project target) {
     EwExtension ext = target.getExtensions().create("emulatorwtf", EwExtension.class);
+    ext.getBaseOutputDir().convention(target.getLayout().getBuildDirectory().dir("test-results"));
 
     target.getRepositories().maven(repo -> {
       try {
@@ -96,8 +97,9 @@ public class EwPlugin implements Plugin<Project> {
 
         task.args("--test", testOutput.getOutputFile().getAbsolutePath());
 
-        if (ext.getOutputsDir().isPresent()) {
-          task.args("--outputs-dir", ext.getOutputsDir().getAsFile().get().getAbsolutePath());
+        if (ext.getBaseOutputDir().isPresent()) {
+          File outputsDir = ext.getBaseOutputDir().map(dir -> dir.dir(variant.getName())).get().getAsFile();
+          task.args("--outputs-dir", outputsDir.getAbsolutePath());
         }
 
         if (ext.getDevices().isPresent() && !ext.getDevices().get().isEmpty()) {
