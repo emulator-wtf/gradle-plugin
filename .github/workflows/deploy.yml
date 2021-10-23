@@ -1,4 +1,4 @@
-name: Build artifacts
+name: Deploy to public maven repository
 on:
   push:
     tags:
