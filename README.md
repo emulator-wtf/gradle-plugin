@@ -23,14 +23,13 @@ listed under the _Verification_ section.
 
 ### Using plugins DSL (`plugins {}`)
 
-Add emulator.wtf maven repository to your `settings.gradle` file:
+Make sure `mavenCentral()` repository is in your `settings.gradle` file:
 
 ```groovy
 pluginManagement {
   repositories {
     mavenCentral()
     maven { url "https://plugins.gradle.org/m2/" }
-    maven { url "https://maven.emulator.wtf/releases/" }
   }
 }
 ```
@@ -40,7 +39,7 @@ app project (usually under `app/build.gradle`):
 
 ```groovy
 plugins {
-  id "wtf.emulator.gradle" version "0.0.7"
+  id "wtf.emulator.gradle" version "0.0.8"
 }
 ```
 
@@ -54,12 +53,11 @@ buildscript {
   repositories {
     google()
     mavenCentral()
-    maven { url "https://maven.emulator.wtf/releases/" }
   }
   
   dependencies {
     // ... other deps here, like com.android.tools.build:gradle
-    classpath "wtf.emulator:gradle-plugin:0.0.7"
+    classpath "wtf.emulator:gradle-plugin:0.0.8"
   }
 }
 ```
