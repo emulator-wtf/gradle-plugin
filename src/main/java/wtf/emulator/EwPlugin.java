@@ -73,6 +73,7 @@ public class EwPlugin implements Plugin<Project> {
         // TODO(madis) we could do better than main here, technically we do know the list of
         //             devices we're going to run against..
         BaseVariantOutput appOutput = getMainOutput(testVariant.getTestedVariant());
+        BaseVariantOutput testOutput = getMainOutput(testVariant);
 
         if (appOutput instanceof ApkVariantOutput) {
           task.dependsOn(((ApkVariant) variant).getPackageApplicationProvider());
@@ -82,9 +83,12 @@ public class EwPlugin implements Plugin<Project> {
           if (underTest.endsWith(".apk")) {
             task.args("--app", underTest);
           }
+
+          task.args("--test", testOutput.getOutputFile().getAbsolutePath());
+        } else {
+          task.args("--library-test", testOutput.getOutputFile().getAbsolutePath());
         }
 
-        BaseVariantOutput testOutput = getMainOutput(testVariant);
 
         String token = ext.getToken().getOrNull();
         if (token == null) {
@@ -98,8 +102,6 @@ public class EwPlugin implements Plugin<Project> {
 
         // use env var for token so it doesn't get logged out with --info
         task.environment("EW_API_TOKEN", token);
-
-        task.args("--test", testOutput.getOutputFile().getAbsolutePath());
 
         if (ext.getBaseOutputDir().isPresent()) {
           File outputsDir = ext.getBaseOutputDir().map(dir -> dir.dir(variant.getName())).get().getAsFile();

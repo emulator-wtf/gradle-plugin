@@ -39,7 +39,7 @@ app project (usually under `app/build.gradle`):
 
 ```groovy
 plugins {
-  id "wtf.emulator.gradle" version "0.0.8"
+  id "wtf.emulator.gradle" version "0.0.9"
 }
 ```
 
@@ -57,7 +57,7 @@ buildscript {
   
   dependencies {
     // ... other deps here, like com.android.tools.build:gradle
-    classpath "wtf.emulator:gradle-plugin:0.0.8"
+    classpath "wtf.emulator:gradle-plugin:0.0.9"
   }
 }
 ```
@@ -92,8 +92,8 @@ The `emulatorwtf` plugin DSL supports the following configuration options:
 
 ```groovy
 emulatorwtf {
-  // CLI version to use, defaults to 0.0.25
-  version = '0.0.25'
+  // CLI version to use, defaults to 0.0.45
+  version = '0.0.45'
 
   // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
   // instead of this or passing this value in via a project property
