@@ -9,6 +9,7 @@ import org.gradle.api.provider.Property;
 import java.util.Map;
 
 public abstract class EwExtension {
+  public abstract Property<Boolean> getRepositoryCheckEnabled();
   public abstract Property<String> getVersion();
   public abstract Property<String> getToken();
 

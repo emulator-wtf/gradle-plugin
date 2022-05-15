@@ -27,6 +27,7 @@ java {
 
 dependencies {
   compileOnly("com.android.tools.build:gradle:4.0.0")
+  implementation("com.vdurmont:semver4j:3.1.0")
 }
 
 mavenPublish {
@@ -49,6 +50,7 @@ if (listOf(awsKey, awsSecret, awsBucket).none { it.isNullOrBlank() }) {
           secretKey = awsSecret
         }
       }
+      mavenLocal()
     }
   }
 }
