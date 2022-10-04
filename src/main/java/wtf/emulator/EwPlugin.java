@@ -4,10 +4,11 @@ import com.android.build.VariantOutput;
 import com.android.build.gradle.AppExtension;
 import com.android.build.gradle.BaseExtension;
 import com.android.build.gradle.LibraryExtension;
-import com.android.build.gradle.api.ApkVariant;
-import com.android.build.gradle.api.ApkVariantOutput;
+import com.android.build.gradle.TestExtension;
+import com.android.build.gradle.api.ApplicationVariant;
 import com.android.build.gradle.api.BaseVariant;
 import com.android.build.gradle.api.BaseVariantOutput;
+import com.android.build.gradle.api.LibraryVariant;
 import com.android.build.gradle.api.TestVariant;
 import com.android.build.gradle.internal.api.TestedVariant;
 import com.vdurmont.semver4j.Semver;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -53,16 +55,22 @@ public class EwPlugin implements Plugin<Project> {
     // configure application builds
     target.getPluginManager().withPlugin("com.android.application", (plugin) -> {
       AppExtension android = target.getExtensions().getByType(AppExtension.class);
-      android.getApplicationVariants().all(variant -> configureVariant(target, android, ext, toolConfig, variant));
+      android.getApplicationVariants().all(variant -> configureAppVariant(target, android, ext, toolConfig, variant));
     });
 
     // configure library builds
     target.getPluginManager().withPlugin("com.android.library", (plugin) -> {
       LibraryExtension android = target.getExtensions().getByType(LibraryExtension.class);
-      android.getLibraryVariants().all(variant -> configureVariant(target, android, ext, toolConfig, variant));
+      android.getLibraryVariants().all(variant -> configureLibraryVariant(target, android, ext, toolConfig, variant));
     });
 
-    //TODO(madis) configure feature builds & separate test project builds
+    // configure test project builds
+    target.getPluginManager().withPlugin("com.android.test", (plugin) -> {
+      TestExtension android = target.getExtensions().getByType(TestExtension.class);
+      android.getApplicationVariants().all(variant -> configureTestVariant(target, android, ext, toolConfig, variant));
+    });
+
+    //TODO(madis) configure feature builds
   }
 
   private static void configureRepository(Project target, EwExtension ext) {
@@ -121,69 +129,114 @@ public class EwPlugin implements Plugin<Project> {
     });
   }
 
-  public <T extends TestedVariant & BaseVariant> void configureVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, T variant) {
-    String taskName = "test" + capitalize(variant.getName()) + "WithEmulatorWtf";
-
+  public static void configureAppVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, ApplicationVariant variant) {
     TestVariant testVariant = variant.getTestVariant();
-
     if (testVariant != null) {
-      target.getTasks().register(taskName, EwExecTask.class, task -> {
-        task.setDescription("Run " + variant.getName() + " instrumentation tests with emulator.wtf");
-        task.setGroup("Verification");
-
-        task.getClasspath().set(toolConfig);
-
-        task.getToken().set(ext.getToken().orElse(target.provider(() ->
-            System.getenv("EW_API_TOKEN"))));
-
-        task.dependsOn(testVariant.getPackageApplicationProvider());
-
+      configureEwTask(target, android, ext, toolConfig, variant, task -> {
         // TODO(madis) we could do better than main here, technically we do know the list of
         //             devices we're going to run against..
         BaseVariantOutput appOutput = getMainOutput(testVariant.getTestedVariant());
         BaseVariantOutput testOutput = getMainOutput(testVariant);
 
-        if (appOutput instanceof ApkVariantOutput) {
-          task.dependsOn(((ApkVariant) variant).getPackageApplicationProvider());
+        task.dependsOn(testVariant.getPackageApplicationProvider());
+        task.dependsOn(variant.getPackageApplicationProvider());
 
-          task.getAppApk().set(appOutput.getOutputFile());
-          task.getTestApk().set(testOutput.getOutputFile());
-        } else {
-          task.getLibraryTestApk().set(testOutput.getOutputFile());
-        }
-
-        task.getOutputsDir().set(ext.getBaseOutputDir().map(dir -> dir.dir(variant.getName())));
-
-        task.getDevices().set(ext.getDevices().map(devices -> devices.stream().map((config) -> {
-          final Map<String, String> out = new HashMap<>();
-          config.forEach((key, value) -> out.put(key, Objects.toString(value)));
-          return out;
-        }).collect(Collectors.toList())));
-
-        task.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(target.provider(() ->
-            android.getTestOptions().getExecution().equalsIgnoreCase("ANDROIDX_TEST_ORCHESTRATOR"))));
-
-        task.getClearPackageData().set(ext.getClearPackageData());
-
-        task.getWithCoverage().set(ext.getWithCoverage().orElse(target.provider(() ->
-            variant.getBuildType().isTestCoverageEnabled())));
-
-        task.getAdditionalApks().set(ext.getAdditionalApks());
-
-        task.getEnvironmentVariables().set(ext.getEnvironmentVariables()
-            .map((entries) -> {
-              // pick defaults from test instrumentation runner args, then fill with overrides
-              final Map<String, String> out = new HashMap<>(
-                  variant.getMergedFlavor().getTestInstrumentationRunnerArguments());
-              entries.forEach((key, value) -> out.put(key, Objects.toString(value)));
-              return out;
-            }));
-
-        task.getNumUniformShards().set(ext.getNumUniformShards());
-        task.getNumShards().set(ext.getNumShards());
-        task.getDirectoriesToPull().set(ext.getDirectoriesToPull());
+        task.getAppApk().set(appOutput.getOutputFile());
+        task.getTestApk().set(testOutput.getOutputFile());
       });
     }
+  }
+
+  public static void configureLibraryVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, LibraryVariant variant) {
+    TestVariant testVariant = variant.getTestVariant();
+    if (testVariant != null) {
+      configureEwTask(target, android, ext, toolConfig, variant, task -> {
+        // library projects only have the test apk
+        BaseVariantOutput testOutput = getMainOutput(testVariant);
+        task.dependsOn(testVariant.getPackageApplicationProvider());
+        task.getLibraryTestApk().set(testOutput.getOutputFile());
+      });
+    }
+  }
+
+  public static void configureTestVariant(Project project, TestExtension android, EwExtension ext, Configuration toolConfig, ApplicationVariant variant) {
+    configureEwTask(project, android, ext, toolConfig, variant, task -> {
+      // test projects have the test apk as a main output
+      BaseVariantOutput testOutput = getMainOutput(variant);
+      task.dependsOn(variant.getPackageApplicationProvider());
+      task.getTestApk().set(testOutput.getOutputFile());
+
+      // look up the referenced target variant
+      String targetProjectPath = android.getTargetProjectPath();
+      Project target = project.getRootProject().findProject(targetProjectPath);
+      if (target == null) {
+        throw new IllegalArgumentException("No target project '" + targetProjectPath + "'");
+      }
+      target.getPluginManager().withPlugin("com.android.application", (plugin) -> {
+        AppExtension targetAndroid = target.getExtensions().getByType(AppExtension.class);
+        targetAndroid.getApplicationVariants().all(targetVariant -> {
+          // direct variant <-> variant matching between the two
+          if (variant.getName().equals(targetVariant.getName())) {
+            BaseVariantOutput appOutput = getMainOutput(targetVariant);
+            task.dependsOn(targetVariant.getPackageApplicationProvider());
+            task.getAppApk().set(appOutput.getOutputFile());
+          }
+        });
+      });
+    });
+  }
+
+  private static <T extends TestedVariant & BaseVariant> void configureEwTask(
+      Project target,
+      BaseExtension android,
+      EwExtension ext,
+      Configuration toolConfig,
+      T variant,
+      Consumer<EwExecTask> additionalConfigure
+  ) {
+    String taskName = "test" + capitalize(variant.getName()) + "WithEmulatorWtf";
+    target.getTasks().register(taskName, EwExecTask.class, task -> {
+      task.setDescription("Run " + variant.getName() + " instrumentation tests with emulator.wtf");
+      task.setGroup("Verification");
+
+      task.getClasspath().set(toolConfig);
+
+      task.getToken().set(ext.getToken().orElse(target.provider(() ->
+          System.getenv("EW_API_TOKEN"))));
+
+      task.getOutputsDir().set(ext.getBaseOutputDir().map(dir -> dir.dir(variant.getName())));
+
+      task.getDevices().set(ext.getDevices().map(devices -> devices.stream().map((config) -> {
+        final Map<String, String> out = new HashMap<>();
+        config.forEach((key, value) -> out.put(key, Objects.toString(value)));
+        return out;
+      }).collect(Collectors.toList())));
+
+      task.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(target.provider(() ->
+          android.getTestOptions().getExecution().equalsIgnoreCase("ANDROIDX_TEST_ORCHESTRATOR"))));
+
+      task.getClearPackageData().set(ext.getClearPackageData());
+
+      task.getWithCoverage().set(ext.getWithCoverage().orElse(target.provider(() ->
+          variant.getBuildType().isTestCoverageEnabled())));
+
+      task.getAdditionalApks().set(ext.getAdditionalApks());
+
+      task.getEnvironmentVariables().set(ext.getEnvironmentVariables()
+          .map((entries) -> {
+            // pick defaults from test instrumentation runner args, then fill with overrides
+            final Map<String, String> out = new HashMap<>(
+                variant.getMergedFlavor().getTestInstrumentationRunnerArguments());
+            entries.forEach((key, value) -> out.put(key, Objects.toString(value)));
+            return out;
+          }));
+
+      task.getNumUniformShards().set(ext.getNumUniformShards());
+      task.getNumShards().set(ext.getNumShards());
+      task.getDirectoriesToPull().set(ext.getDirectoriesToPull());
+
+      additionalConfigure.accept(task);
+    });
   }
 
   private static BaseVariantOutput getMainOutput(BaseVariant variant) {

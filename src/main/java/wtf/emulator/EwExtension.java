@@ -30,6 +30,6 @@ public abstract class EwExtension {
   public abstract ListProperty<String> getDirectoriesToPull();
 
   public EwExtension() {
-    getVersion().convention("0.0.46");
+    getVersion().convention("0.0.48");
   }
 }
