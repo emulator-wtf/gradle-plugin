@@ -83,6 +83,10 @@ public abstract class EwExecTask extends DefaultTask {
   @Input
   public abstract ListProperty<String> getDirectoriesToPull();
 
+  @Optional
+  @Input
+  public abstract Property<Boolean> getSideEffects();
+
   @OutputFiles
   public FileCollection getOutputFiles() {
     if (getOutputsDir().isPresent()) {
@@ -170,6 +174,10 @@ public abstract class EwExecTask extends DefaultTask {
         if (!dirsToPull.isEmpty()) {
           spec.args("--directories-to-pull", String.join(",", dirsToPull));
         }
+      }
+
+      if (getSideEffects().isPresent() && getSideEffects().get()) {
+        spec.args("--side-effects");
       }
     });
 

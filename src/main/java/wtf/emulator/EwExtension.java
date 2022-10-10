@@ -29,7 +29,10 @@ public abstract class EwExtension {
 
   public abstract ListProperty<String> getDirectoriesToPull();
 
+  public abstract Property<Boolean> getSideEffects();
+
   public EwExtension() {
     getVersion().convention("0.0.48");
+    getSideEffects().convention(false);
   }
 }

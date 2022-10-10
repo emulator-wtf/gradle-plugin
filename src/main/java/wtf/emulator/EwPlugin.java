@@ -199,6 +199,11 @@ public class EwPlugin implements Plugin<Project> {
       task.setDescription("Run " + variant.getName() + " instrumentation tests with emulator.wtf");
       task.setGroup("Verification");
 
+      if (ext.getSideEffects().isPresent() && ext.getSideEffects().get()) {
+        task.getOutputs().upToDateWhen((t) -> false);
+        task.getSideEffects().set(true);
+      }
+
       task.getClasspath().set(toolConfig);
 
       task.getToken().set(ext.getToken().orElse(target.provider(() ->
