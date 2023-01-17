@@ -7,6 +7,7 @@ import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
@@ -14,6 +15,8 @@ import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.OutputFiles;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecResult;
 
@@ -23,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@CacheableTask
 public abstract class EwExecTask extends DefaultTask {
   @Classpath
   @InputFiles
@@ -33,14 +37,17 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @InputFile
+  @PathSensitive(PathSensitivity.NONE)
   public abstract RegularFileProperty getAppApk();
 
   @Optional
   @InputFile
+  @PathSensitive(PathSensitivity.NONE)
   public abstract RegularFileProperty getTestApk();
 
   @Optional
   @InputFile
+  @PathSensitive(PathSensitivity.NONE)
   public abstract RegularFileProperty getLibraryTestApk();
 
   @Optional
@@ -65,6 +72,7 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @InputFiles
+  @PathSensitive(PathSensitivity.NONE)
   public abstract Property<FileCollection> getAdditionalApks();
 
   @Optional
@@ -86,14 +94,6 @@ public abstract class EwExecTask extends DefaultTask {
   @Optional
   @Input
   public abstract Property<Boolean> getSideEffects();
-
-  @OutputFiles
-  public FileCollection getOutputFiles() {
-    if (getOutputsDir().isPresent()) {
-      return getOutputsDir().getAsFileTree();
-    }
-    return getProject().files();
-  }
 
   @TaskAction
   public void runTests() {
