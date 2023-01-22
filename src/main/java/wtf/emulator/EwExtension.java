@@ -32,7 +32,7 @@ public abstract class EwExtension {
   public abstract Property<Boolean> getSideEffects();
 
   public EwExtension() {
-    getVersion().convention("0.0.48");
+    getVersion().convention("0.0.49");
     getSideEffects().convention(false);
   }
 }
