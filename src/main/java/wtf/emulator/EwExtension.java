@@ -6,7 +6,10 @@ import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 
+import java.time.Duration;
+import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public abstract class EwExtension {
   public abstract Property<Boolean> getRepositoryCheckEnabled();
@@ -14,6 +17,7 @@ public abstract class EwExtension {
   public abstract Property<String> getToken();
 
   public abstract DirectoryProperty getBaseOutputDir();
+  public abstract ListProperty<OutputType> getOutputs();
 
   public abstract ListProperty<Map<String, Object>> getDevices();
 
@@ -31,8 +35,19 @@ public abstract class EwExtension {
 
   public abstract Property<Boolean> getSideEffects();
 
+  public abstract Property<Duration> getTimeout();
+
+  public abstract Property<Boolean> getFileCacheEnabled();
+
+  public abstract Property<Duration> getFileCacheTtl();
+
+  public abstract Property<Boolean> getTestCacheEnabled();
+
+  public abstract Property<Integer> getNumFlakyTestAttempts();
+
   public EwExtension() {
-    getVersion().convention("0.0.49");
+    getVersion().convention("0.9.0");
     getSideEffects().convention(false);
+    getOutputs().convention(Collections.emptyList());
   }
 }

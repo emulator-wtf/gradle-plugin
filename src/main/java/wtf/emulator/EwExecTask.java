@@ -21,9 +21,12 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecResult;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @CacheableTask
@@ -53,6 +56,10 @@ public abstract class EwExecTask extends DefaultTask {
   @Optional
   @OutputDirectory
   public abstract DirectoryProperty getOutputsDir();
+
+  @Optional
+  @Input
+  public abstract ListProperty<OutputType> getOutputTypes();
 
   @Optional
   @Input
@@ -95,6 +102,26 @@ public abstract class EwExecTask extends DefaultTask {
   @Input
   public abstract Property<Boolean> getSideEffects();
 
+  @Optional
+  @Input
+  public abstract Property<Duration> getTestTimeout();
+
+  @Optional
+  @Input
+  public abstract Property<Boolean> getFileCacheEnabled();
+
+  @Optional
+  @Input
+  public abstract Property<Duration> getFileCacheTtl();
+
+  @Optional
+  @Input
+  public abstract Property<Boolean> getTestCacheEnabled();
+
+  @Optional
+  @Input
+  public abstract Property<Integer> getNumFlakyTestAttempts();
+
   @TaskAction
   public void runTests() {
     // materialize token
@@ -119,6 +146,15 @@ public abstract class EwExecTask extends DefaultTask {
 
       if (getOutputsDir().isPresent()) {
         spec.args("--outputs-dir", getOutputsDir().get().getAsFile().getAbsolutePath());
+      }
+
+      if (getOutputTypes().isPresent() && !getOutputTypes().get().isEmpty()) {
+        String outputs = getOutputTypes().get().stream().map(OutputType::getTypeName).collect(Collectors.joining(","));
+        spec.args("--outputs", outputs);
+      }
+
+      if (getTestTimeout().isPresent()) {
+        spec.args("--timeout", toCliString(getTestTimeout().get()));
       }
 
       if (getDevices().isPresent()) {
@@ -179,8 +215,26 @@ public abstract class EwExecTask extends DefaultTask {
       if (getSideEffects().isPresent() && getSideEffects().get()) {
         spec.args("--side-effects");
       }
+
+      if (getFileCacheEnabled().isPresent() && !getFileCacheEnabled().get()) {
+        spec.args("--no-file-cache");
+      } else if (getFileCacheTtl().isPresent()) {
+        spec.args("--file-cache-ttl", toCliString(getFileCacheTtl().get()));
+      }
+
+      if (getTestCacheEnabled().isPresent() && !getTestCacheEnabled().get()) {
+        spec.args("--no-test-cache");
+      }
+
+      if (getNumFlakyTestAttempts().isPresent()) {
+        spec.args("--num-flaky-test-attempts", getNumFlakyTestAttempts().get().toString());
+      }
     });
 
     result.assertNormalExitValue();
+  }
+
+  private static String toCliString(Duration duration) {
+    return duration.getSeconds() + "s";
   }
 }

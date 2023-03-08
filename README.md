@@ -39,7 +39,7 @@ app project (usually under `app/build.gradle`):
 
 ```groovy
 plugins {
-  id "wtf.emulator.gradle" version "0.0.15"
+  id "wtf.emulator.gradle" version "0.9.0"
 }
 ```
 
@@ -57,7 +57,7 @@ buildscript {
   
   dependencies {
     // ... other deps here, like com.android.tools.build:gradle
-    classpath "wtf.emulator:gradle-plugin:0.0.15"
+    classpath "wtf.emulator:gradle-plugin:0.9.0"
   }
 }
 ```
@@ -92,8 +92,8 @@ The `emulatorwtf` plugin DSL supports the following configuration options:
 
 ```groovy
 emulatorwtf {
-  // CLI version to use, defaults to 0.0.49
-  version = '0.0.49'
+  // CLI version to use, defaults to 0.9.0
+  version = '0.9.0'
 
   // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
   // instead of this or passing this value in via a project property
@@ -104,11 +104,18 @@ emulatorwtf {
   // build/build-results/freeDebug
   baseOutputDir = layout.buildDirectory.dir("build-results")
 
+  // Specify what kind of outputs to store in the base output dir
+  // default: [OutputType.MERGED_RESULTS_XML, OutputType.COVERAGE, OutputType.PULLED_DIRS]
+  outputs = [OutputType.SUMMARY, OutputType.CAPTURED_VIDEO, OutputType.LOGCAT]
+
   // devices to test on, Defaults to [[model: 'Pixel2', version: 27]]
   devices = [
     [model: 'NexusLowRes', version: 30, atd: true],
     [model: 'Pixel2', version: 23]
   ]
+
+  // Set the test timeout, defaults to 15 minutes
+  timeout = Duration.ofHours(1)
 
   // whether to enable Android orchestrator, if your app has orchestrator
   // configured this will get picked up automatically, however you can
@@ -144,9 +151,24 @@ emulatorwtf {
   // based on test counts to be executed in parallel
   numShards = 3
 
+  // Set to a non-zero value to repeat device/shards that failed, the repeat
+  // attempts will be executed in parallel
+  numFlakyTestAttempts = 3
+
   // Directories to pull from device after test is over, will be stored in
   // baseOutputDir/${variant}:
   diretoriesToPull = ['/sdcard/screenshots']
+
+  // Enable-disable the test input file cache (APKs etc)
+  fileCacheEnabled = false
+
+  // Set the maximum time-to-live of items in the test input file cache
+  fileCacheTtl = Duration.ofHours(3)
+
+  // Disable caching test results in the backend
+  // NOTE! This will not disable caching at the Gradle task or Gradle build cache level,
+  // use sideEffects = true to disable all caching
+  testCacheEnabled = false
 }
 ```
 
@@ -154,7 +176,7 @@ emulatorwtf {
 
 ### Run tests with multiple device profiles
 
-By default emulator.wtf runs tests on a Pixel2-like emulator with API 27
+By default, emulator.wtf runs tests on a Pixel2-like emulator with API 27
 (Android 8.1). If you want to run on a different version or device profile you
 can specify devices like so:
 

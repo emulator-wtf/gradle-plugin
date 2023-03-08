@@ -210,6 +210,7 @@ public class EwPlugin implements Plugin<Project> {
           System.getenv("EW_API_TOKEN"))));
 
       task.getOutputsDir().set(ext.getBaseOutputDir().map(dir -> dir.dir(variant.getName())));
+      task.getOutputTypes().set(ext.getOutputs());
 
       task.getDevices().set(ext.getDevices().map(devices -> devices.stream().map((config) -> {
         final Map<String, String> out = new HashMap<>();
@@ -239,6 +240,15 @@ public class EwPlugin implements Plugin<Project> {
       task.getNumUniformShards().set(ext.getNumUniformShards());
       task.getNumShards().set(ext.getNumShards());
       task.getDirectoriesToPull().set(ext.getDirectoriesToPull());
+
+      task.getTestTimeout().set(ext.getTimeout());
+
+      task.getFileCacheEnabled().set(ext.getFileCacheEnabled());
+      task.getFileCacheTtl().set(ext.getFileCacheTtl());
+
+      task.getTestCacheEnabled().set(ext.getTestCacheEnabled());
+
+      task.getNumFlakyTestAttempts().set(ext.getNumFlakyTestAttempts());
 
       additionalConfigure.accept(task);
     });
