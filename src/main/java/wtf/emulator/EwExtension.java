@@ -30,6 +30,7 @@ public abstract class EwExtension {
 
   public abstract Property<Integer> getNumUniformShards();
   public abstract Property<Integer> getNumShards();
+  public abstract Property<Integer> getNumBalancedShards();
 
   public abstract ListProperty<String> getDirectoriesToPull();
 
@@ -46,7 +47,7 @@ public abstract class EwExtension {
   public abstract Property<Integer> getNumFlakyTestAttempts();
 
   public EwExtension() {
-    getVersion().convention("0.9.0");
+    getVersion().convention("0.9.1");
     getSideEffects().convention(false);
     getOutputs().convention(Collections.emptyList());
   }

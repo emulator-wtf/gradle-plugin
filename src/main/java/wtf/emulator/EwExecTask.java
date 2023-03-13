@@ -92,6 +92,10 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract Property<Integer> getNumBalancedShards();
+
+  @Optional
+  @Input
   public abstract Property<Integer> getNumShards();
 
   @Optional
@@ -199,7 +203,9 @@ public abstract class EwExecTask extends DefaultTask {
         }
       }
 
-      if (getNumUniformShards().isPresent()) {
+      if (getNumBalancedShards().isPresent()) {
+        spec.args("--num-balanced-shards", String.valueOf(getNumBalancedShards().get()));
+      } else if (getNumUniformShards().isPresent()) {
         spec.args("--num-uniform-shards", String.valueOf(getNumUniformShards().get()));
       } else if (getNumShards().isPresent()) {
         spec.args("--num-shards", String.valueOf(getNumShards().get()));
