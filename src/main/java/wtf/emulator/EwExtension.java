@@ -25,7 +25,7 @@ public abstract class EwExtension implements EwInvokeConfiguration {
   private Action<EwVariantFilter> filter = null;
 
   public EwExtension() {
-    getVersion().convention("0.9.1");
+    getVersion().convention("0.9.2");
     getSideEffects().convention(false);
     getOutputs().convention(Collections.emptyList());
   }
