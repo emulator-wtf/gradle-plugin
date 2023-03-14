@@ -16,6 +16,11 @@ name `test${variant.name.capitalize()}WithEmulatorWtf`. A few examples:
 - `testFreeDebugWithEmulatorWtf`, `testPaidDebugWithEmulatorWtf` - an app having
   a single flavor dimension with `free` and `paid`.
 
+In addition to the variant specific tasks there will be an anchor task named
+`testWithEmulatorWtf`, it'll depend on _all_ the variant-specific tasks. This allows
+you to run all tests for all subprojects with a single `./gradlew testWithEmulatorWtf`
+invoke. See the configuration section below on disabling the task for some variants.
+
 You can always run `./gradlew :app:tasks` to see the added tasks, they will be
 listed under the _Verification_ section.
 
@@ -169,6 +174,13 @@ emulatorwtf {
   // NOTE! This will not disable caching at the Gradle task or Gradle build cache level,
   // use sideEffects = true to disable all caching
   testCacheEnabled = false
+  
+  // Do not generate the test task for some specific variants
+  variantFilter {
+    if (variant.buildType.name == 'release') {
+      enabled = false
+    }
+  }
 }
 ```
 
