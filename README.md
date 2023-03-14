@@ -156,6 +156,10 @@ emulatorwtf {
   // based on test counts to be executed in parallel
   numShards = 3
 
+  // Set to a number larger than 1 to split your tests into multiple shards
+  // based on historic test time to be executed in parallel
+  numBalancedShards = 3
+
   // Set to a non-zero value to repeat device/shards that failed, the repeat
   // attempts will be executed in parallel
   numFlakyTestAttempts = 3
