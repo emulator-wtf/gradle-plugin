@@ -13,6 +13,7 @@ import com.android.build.gradle.api.TestVariant;
 import com.android.build.gradle.internal.api.TestedVariant;
 import com.vdurmont.semver4j.Semver;
 
+import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -22,6 +23,7 @@ import org.gradle.api.initialization.Settings;
 import org.gradle.api.initialization.resolve.DependencyResolutionManagement;
 import org.gradle.api.initialization.resolve.RepositoriesMode;
 import org.gradle.api.internal.GradleInternal;
+import org.gradle.api.tasks.TaskProvider;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -35,6 +37,8 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class EwPlugin implements Plugin<Project> {
+  private static final String ROOT_TASK_NAME = "testWithEmulatorWtf";
+
   private static final String TOOL_CONFIGURATION = "emulatorWtfCli";
 
   private static final String MAVEN_URL = "https://maven.emulator.wtf/releases/";
@@ -52,22 +56,27 @@ public class EwPlugin implements Plugin<Project> {
     target.getDependencies().add(TOOL_CONFIGURATION, ext.getVersion().map(version ->
         "wtf.emulator:ew-cli:" + version));
 
+    // create root anchor task
+    TaskProvider<DefaultTask> rootTask = target.getTasks().register(ROOT_TASK_NAME, DefaultTask.class, task -> {
+      task.setDescription("Run instrumentation tests of all variants with emulator.wtf");
+    });
+
     // configure application builds
-    target.getPluginManager().withPlugin("com.android.application", (plugin) -> {
+    target.getPluginManager().withPlugin("com.android.application", plugin -> {
       AppExtension android = target.getExtensions().getByType(AppExtension.class);
-      android.getApplicationVariants().all(variant -> configureAppVariant(target, android, ext, toolConfig, variant));
+      android.getApplicationVariants().all(variant -> configureAppVariant(target, android, ext, toolConfig, rootTask, variant));
     });
 
     // configure library builds
-    target.getPluginManager().withPlugin("com.android.library", (plugin) -> {
+    target.getPluginManager().withPlugin("com.android.library", plugin -> {
       LibraryExtension android = target.getExtensions().getByType(LibraryExtension.class);
-      android.getLibraryVariants().all(variant -> configureLibraryVariant(target, android, ext, toolConfig, variant));
+      android.getLibraryVariants().all(variant -> configureLibraryVariant(target, android, ext, toolConfig, rootTask, variant));
     });
 
     // configure test project builds
-    target.getPluginManager().withPlugin("com.android.test", (plugin) -> {
+    target.getPluginManager().withPlugin("com.android.test", plugin -> {
       TestExtension android = target.getExtensions().getByType(TestExtension.class);
-      android.getApplicationVariants().all(variant -> configureTestVariant(target, android, ext, toolConfig, variant));
+      android.getApplicationVariants().all(variant -> configureTestVariant(target, android, ext, toolConfig, rootTask, variant));
     });
 
     //TODO(madis) configure feature builds
@@ -129,10 +138,10 @@ public class EwPlugin implements Plugin<Project> {
     });
   }
 
-  public static void configureAppVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, ApplicationVariant variant) {
+  public static void configureAppVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<DefaultTask> rootTask, ApplicationVariant variant) {
     TestVariant testVariant = variant.getTestVariant();
     if (testVariant != null) {
-      configureEwTask(target, android, ext, toolConfig, variant, task -> {
+      configureEwTask(target, android, ext, toolConfig, rootTask, variant, task -> {
         // TODO(madis) we could do better than main here, technically we do know the list of
         //             devices we're going to run against..
         BaseVariantOutput appOutput = getMainOutput(testVariant.getTestedVariant());
@@ -147,10 +156,10 @@ public class EwPlugin implements Plugin<Project> {
     }
   }
 
-  public static void configureLibraryVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, LibraryVariant variant) {
+  public static void configureLibraryVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<DefaultTask> rootTask, LibraryVariant variant) {
     TestVariant testVariant = variant.getTestVariant();
     if (testVariant != null) {
-      configureEwTask(target, android, ext, toolConfig, variant, task -> {
+      configureEwTask(target, android, ext, toolConfig, rootTask, variant, task -> {
         // library projects only have the test apk
         BaseVariantOutput testOutput = getMainOutput(testVariant);
         task.dependsOn(testVariant.getPackageApplicationProvider());
@@ -159,8 +168,8 @@ public class EwPlugin implements Plugin<Project> {
     }
   }
 
-  public static void configureTestVariant(Project project, TestExtension android, EwExtension ext, Configuration toolConfig, ApplicationVariant variant) {
-    configureEwTask(project, android, ext, toolConfig, variant, task -> {
+  public static void configureTestVariant(Project project, TestExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<DefaultTask> rootTask, ApplicationVariant variant) {
+    configureEwTask(project, android, ext, toolConfig, rootTask, variant, task -> {
       // test projects have the test apk as a main output
       BaseVariantOutput testOutput = getMainOutput(variant);
       task.dependsOn(variant.getPackageApplicationProvider());
@@ -191,11 +200,12 @@ public class EwPlugin implements Plugin<Project> {
       BaseExtension android,
       EwExtension ext,
       Configuration toolConfig,
+      TaskProvider<DefaultTask> rootTask,
       T variant,
       Consumer<EwExecTask> additionalConfigure
   ) {
     String taskName = "test" + capitalize(variant.getName()) + "WithEmulatorWtf";
-    target.getTasks().register(taskName, EwExecTask.class, task -> {
+    TaskProvider<EwExecTask> execTask = target.getTasks().register(taskName, EwExecTask.class, task -> {
       task.setDescription("Run " + variant.getName() + " instrumentation tests with emulator.wtf");
       task.setGroup("Verification");
 
@@ -253,6 +263,8 @@ public class EwPlugin implements Plugin<Project> {
 
       additionalConfigure.accept(task);
     });
+
+    rootTask.configure(task -> task.dependsOn(execTask));
   }
 
   private static BaseVariantOutput getMainOutput(BaseVariant variant) {
