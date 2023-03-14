@@ -7,29 +7,29 @@ import org.gradle.api.provider.Property;
 import java.time.Duration;
 
 public interface EwInvokeConfiguration {
-  public abstract ListProperty<OutputType> getOutputs();
+  ListProperty<OutputType> getOutputs();
 
-  public abstract Property<Boolean> getUseOrchestrator();
-  public abstract Property<Boolean> getClearPackageData();
-  public abstract Property<Boolean> getWithCoverage();
+  Property<Boolean> getUseOrchestrator();
+  Property<Boolean> getClearPackageData();
+  Property<Boolean> getWithCoverage();
 
-  public abstract Property<FileCollection> getAdditionalApks();
+  Property<FileCollection> getAdditionalApks();
 
-  public abstract Property<Integer> getNumUniformShards();
-  public abstract Property<Integer> getNumShards();
-  public abstract Property<Integer> getNumBalancedShards();
+  Property<Integer> getNumUniformShards();
+  Property<Integer> getNumShards();
+  Property<Integer> getNumBalancedShards();
 
-  public abstract ListProperty<String> getDirectoriesToPull();
+  ListProperty<String> getDirectoriesToPull();
 
-  public abstract Property<Boolean> getSideEffects();
+  Property<Boolean> getSideEffects();
 
-  public abstract Property<Duration> getTimeout();
+  Property<Duration> getTimeout();
 
-  public abstract Property<Boolean> getFileCacheEnabled();
+  Property<Boolean> getFileCacheEnabled();
 
-  public abstract Property<Duration> getFileCacheTtl();
+  Property<Duration> getFileCacheTtl();
 
-  public abstract Property<Boolean> getTestCacheEnabled();
+  Property<Boolean> getTestCacheEnabled();
 
-  public abstract Property<Integer> getNumFlakyTestAttempts();
+  Property<Integer> getNumFlakyTestAttempts();
 }

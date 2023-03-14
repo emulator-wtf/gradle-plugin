@@ -1,5 +1,6 @@
 package wtf.emulator;
 
+import org.gradle.api.Action;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
@@ -21,9 +22,19 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
   public abstract MapProperty<String, Object> getEnvironmentVariables();
 
+  private Action<EwVariantFilter> filter = null;
+
   public EwExtension() {
     getVersion().convention("0.9.1");
     getSideEffects().convention(false);
     getOutputs().convention(Collections.emptyList());
+  }
+
+  public void variantFilter(Action<EwVariantFilter> filter) {
+    this.filter = filter;
+  }
+
+  protected Action<EwVariantFilter> getFilter() {
+    return this.filter;
   }
 }

@@ -13,6 +13,7 @@ import com.android.build.gradle.api.TestVariant;
 import com.android.build.gradle.internal.api.TestedVariant;
 import com.vdurmont.semver4j.Semver;
 
+import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
@@ -204,6 +205,16 @@ public class EwPlugin implements Plugin<Project> {
       T variant,
       Consumer<EwExecTask> additionalConfigure
   ) {
+
+    Action<EwVariantFilter> filter = ext.getFilter();
+    if (filter != null) {
+      EwVariantFilter filterSpec = new EwVariantFilter(variant);
+      filter.execute(filterSpec);
+      if (!filterSpec.isEnabled()) {
+        return;
+      }
+    }
+
     String taskName = "test" + capitalize(variant.getName()) + "WithEmulatorWtf";
     TaskProvider<EwExecTask> execTask = target.getTasks().register(taskName, EwExecTask.class, task -> {
       task.setDescription("Run " + variant.getName() + " instrumentation tests with emulator.wtf");

@@ -12,19 +12,19 @@ import java.io.File;
 import java.util.Map;
 
 public interface EwWorkParameters extends EwInvokeConfiguration, WorkParameters {
-  public abstract Property<String> getToken();
+  Property<String> getToken();
 
-  public abstract SetProperty<File> getClasspath();
+  SetProperty<File> getClasspath();
 
-  public abstract RegularFileProperty getAppApk();
+  RegularFileProperty getAppApk();
 
-  public abstract RegularFileProperty getTestApk();
+  RegularFileProperty getTestApk();
 
-  public abstract RegularFileProperty getLibraryTestApk();
+  RegularFileProperty getLibraryTestApk();
 
-  public abstract DirectoryProperty getOutputsDir();
+  DirectoryProperty getOutputsDir();
 
-  public abstract ListProperty<Map<String, String>> getDevices();
+  ListProperty<Map<String, String>> getDevices();
 
-  public abstract MapProperty<String, String> getEnvironmentVariables();
+  MapProperty<String, String> getEnvironmentVariables();
 }
