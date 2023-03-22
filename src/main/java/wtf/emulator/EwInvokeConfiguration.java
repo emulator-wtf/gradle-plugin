@@ -32,4 +32,12 @@ public interface EwInvokeConfiguration {
   Property<Boolean> getTestCacheEnabled();
 
   Property<Integer> getNumFlakyTestAttempts();
+
+  Property<String> getDisplayName();
+
+  Property<String> getScmUrl();
+
+  Property<String> getScmCommitHash();
+
+  Property<Boolean> getIgnoreFailures();
 }

@@ -13,8 +13,10 @@ import com.android.build.gradle.api.TestVariant;
 import com.android.build.gradle.internal.api.TestedVariant;
 import com.vdurmont.semver4j.Semver;
 
+import org.apache.commons.io.FileUtils;
+import org.gradle.BuildAdapter;
+import org.gradle.BuildResult;
 import org.gradle.api.Action;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -24,12 +26,20 @@ import org.gradle.api.initialization.Settings;
 import org.gradle.api.initialization.resolve.DependencyResolutionManagement;
 import org.gradle.api.initialization.resolve.RepositoriesMode;
 import org.gradle.api.internal.GradleInternal;
+import org.gradle.api.internal.StartParameterInternal;
+import org.gradle.api.provider.Provider;
+import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.TaskProvider;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -57,27 +67,51 @@ public class EwPlugin implements Plugin<Project> {
     target.getDependencies().add(TOOL_CONFIGURATION, ext.getVersion().map(version ->
         "wtf.emulator:ew-cli:" + version));
 
+    // yuck https://discuss.gradle.org/t/how-to-determine-if-configuration-cache-is-enabled/41383
+    Boolean configCache = ((StartParameterInternal) target.getGradle().getStartParameter()).getConfigurationCache().get();
+
+    SetProperty<String> failureCollector = target.getObjects().setProperty(String.class);
+
     // create root anchor task
-    TaskProvider<DefaultTask> rootTask = target.getTasks().register(ROOT_TASK_NAME, DefaultTask.class, task -> {
+    TaskProvider<EwExecSummaryTask> rootTask = target.getTasks().register(ROOT_TASK_NAME, EwExecSummaryTask.class, task -> {
       task.setDescription("Run instrumentation tests of all variants with emulator.wtf");
+      task.getPrintingEnabled().set(ext.getIgnoreFailures().map(ignoreFailures -> configCache && ignoreFailures));
+      // summary task is never up-to-date
+      task.getOutputs().upToDateWhen(it -> false);
     });
+
+    if (!configCache) {
+      target.getGradle().addBuildListener(new BuildAdapter() {
+        @Override
+        @SuppressWarnings("deprecation")
+        public void buildFinished(BuildResult result) {
+          if (ext.getIgnoreFailures().getOrElse(false)) {
+            List<String> failures = failureCollector.get().stream().filter(it -> it != null && !it.isEmpty()).collect(Collectors.toList());
+            if (!failures.isEmpty()) {
+              target.getLogger().error("");
+              failures.forEach(target.getLogger()::error);
+            }
+          }
+        }
+      });
+    }
 
     // configure application builds
     target.getPluginManager().withPlugin("com.android.application", plugin -> {
       AppExtension android = target.getExtensions().getByType(AppExtension.class);
-      android.getApplicationVariants().all(variant -> configureAppVariant(target, android, ext, toolConfig, rootTask, variant));
+      android.getApplicationVariants().all(variant -> configureAppVariant(target, android, ext, toolConfig, rootTask, failureCollector, variant));
     });
 
     // configure library builds
     target.getPluginManager().withPlugin("com.android.library", plugin -> {
       LibraryExtension android = target.getExtensions().getByType(LibraryExtension.class);
-      android.getLibraryVariants().all(variant -> configureLibraryVariant(target, android, ext, toolConfig, rootTask, variant));
+      android.getLibraryVariants().all(variant -> configureLibraryVariant(target, android, ext, toolConfig, rootTask, failureCollector, variant));
     });
 
     // configure test project builds
     target.getPluginManager().withPlugin("com.android.test", plugin -> {
       TestExtension android = target.getExtensions().getByType(TestExtension.class);
-      android.getApplicationVariants().all(variant -> configureTestVariant(target, android, ext, toolConfig, rootTask, variant));
+      android.getApplicationVariants().all(variant -> configureTestVariant(target, android, ext, toolConfig, rootTask, failureCollector, variant));
     });
 
     //TODO(madis) configure feature builds
@@ -139,10 +173,10 @@ public class EwPlugin implements Plugin<Project> {
     });
   }
 
-  public static void configureAppVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<DefaultTask> rootTask, ApplicationVariant variant) {
+  public static void configureAppVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, ApplicationVariant variant) {
     TestVariant testVariant = variant.getTestVariant();
     if (testVariant != null) {
-      configureEwTask(target, android, ext, toolConfig, rootTask, variant, task -> {
+      configureEwTask(target, android, ext, toolConfig, rootTask, failureCollector, variant, task -> {
         // TODO(madis) we could do better than main here, technically we do know the list of
         //             devices we're going to run against..
         BaseVariantOutput appOutput = getMainOutput(testVariant.getTestedVariant());
@@ -157,10 +191,10 @@ public class EwPlugin implements Plugin<Project> {
     }
   }
 
-  public static void configureLibraryVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<DefaultTask> rootTask, LibraryVariant variant) {
+  public static void configureLibraryVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, LibraryVariant variant) {
     TestVariant testVariant = variant.getTestVariant();
     if (testVariant != null) {
-      configureEwTask(target, android, ext, toolConfig, rootTask, variant, task -> {
+      configureEwTask(target, android, ext, toolConfig, rootTask, failureCollector, variant, task -> {
         // library projects only have the test apk
         BaseVariantOutput testOutput = getMainOutput(testVariant);
         task.dependsOn(testVariant.getPackageApplicationProvider());
@@ -169,8 +203,8 @@ public class EwPlugin implements Plugin<Project> {
     }
   }
 
-  public static void configureTestVariant(Project project, TestExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<DefaultTask> rootTask, ApplicationVariant variant) {
-    configureEwTask(project, android, ext, toolConfig, rootTask, variant, task -> {
+  public static void configureTestVariant(Project project, TestExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, ApplicationVariant variant) {
+    configureEwTask(project, android, ext, toolConfig, rootTask, failureCollector, variant, task -> {
       // test projects have the test apk as a main output
       BaseVariantOutput testOutput = getMainOutput(variant);
       task.dependsOn(variant.getPackageApplicationProvider());
@@ -201,7 +235,8 @@ public class EwPlugin implements Plugin<Project> {
       BaseExtension android,
       EwExtension ext,
       Configuration toolConfig,
-      TaskProvider<DefaultTask> rootTask,
+      TaskProvider<EwExecSummaryTask> rootTask,
+      SetProperty<String> failureCollector,
       T variant,
       Consumer<EwExecTask> additionalConfigure
   ) {
@@ -215,6 +250,26 @@ public class EwPlugin implements Plugin<Project> {
       }
     }
 
+    // bump the variant count
+    ext.getVariantCount().set(ext.getVariantCount().get() + 1);
+
+    // create failure property for each variant
+    Path intermediateFolder = target.getBuildDir().toPath().resolve("intermediates").resolve("emulatorwtf");
+    File outputFailureFile = intermediateFolder.resolve("failure_" + variant.getName() + ".txt").toFile();
+    Provider<String> outputFailure = target.provider(() -> {
+      try {
+        if (outputFailureFile.exists()) {
+          return FileUtils.readFileToString(outputFailureFile, StandardCharsets.UTF_8);
+        }
+      } catch (IOException ioe) {
+        /* ignore */
+      }
+      return "";
+    });
+    failureCollector.add(outputFailure);
+    rootTask.configure(task -> task.getFailureMessages().add(outputFailureFile));
+
+    // register the work task
     String taskName = "test" + capitalize(variant.getName()) + "WithEmulatorWtf";
     TaskProvider<EwExecTask> execTask = target.getTasks().register(taskName, EwExecTask.class, task -> {
       task.setDescription("Run " + variant.getName() + " instrumentation tests with emulator.wtf");
@@ -271,6 +326,23 @@ public class EwPlugin implements Plugin<Project> {
       task.getTestCacheEnabled().set(ext.getTestCacheEnabled());
 
       task.getNumFlakyTestAttempts().set(ext.getNumFlakyTestAttempts());
+
+      task.getScmUrl().set(ext.getScmUrl());
+      task.getScmCommitHash().set(ext.getScmCommitHash());
+
+      task.getDisplayName().set(ext.getVariantCount().map((count) -> {
+        if (count < 2) {
+          return task.getProject().getPath();
+        } else {
+          return task.getProject().getPath() + ":" + variant.getName();
+        }
+      }));
+
+      task.getWorkingDir().set(target.getRootProject().getRootDir());
+
+      task.getOutputFailureFile().set(outputFailureFile);
+
+      task.getIgnoreFailures().set(ext.getIgnoreFailures());
 
       additionalConfigure.accept(task);
     });

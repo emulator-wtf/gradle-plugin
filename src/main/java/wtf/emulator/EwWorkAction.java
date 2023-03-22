@@ -1,11 +1,21 @@
 package wtf.emulator;
 
+import org.apache.commons.io.FileUtils;
+import org.gradle.api.GradleException;
 import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecResult;
 import org.gradle.workers.WorkAction;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import wtf.emulator.ext.Slf4jInfoOutputStream;
+import wtf.emulator.gradle_plugin.BuildConfig;
 
 import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +25,8 @@ import java.util.stream.Collectors;
 public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
   @Inject
   public abstract ExecOperations getExecOperations();
+
+  private final Logger log = LoggerFactory.getLogger("emulator.wtf");
 
   @Override
   public void execute() {
@@ -28,11 +40,31 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
     try {
       final ExecOperations exec = getExecOperations();
 
+      ByteArrayOutputStream jsonOut = new ByteArrayOutputStream();
+
       ExecResult result = exec.javaexec(spec -> {
         // use env var for passing token so it doesn't get logged out with --info
         spec.environment("EW_API_TOKEN", token);
 
         spec.classpath(getParameters().getClasspath().get());
+
+        if (getParameters().getWorkingDir().isPresent()) {
+          spec.workingDir(getParameters().getWorkingDir().get());
+        }
+
+        spec.args("--ew-integration", "gradle-plugin " + BuildConfig.VERSION);
+
+        if (getParameters().getDisplayName().isPresent()) {
+          spec.args("--display-name", getParameters().getDisplayName().get());
+        }
+
+        if (getParameters().getScmUrl().isPresent()) {
+          spec.args("--scm-url", getParameters().getScmUrl().get());
+        }
+
+        if (getParameters().getScmCommitHash().isPresent()) {
+          spec.args("--scm-commit", getParameters().getScmCommitHash().get());
+        }
 
         if (getParameters().getLibraryTestApk().isPresent()) {
           spec.args("--library-test", getParameters().getLibraryTestApk().get().getAsFile().getAbsolutePath());
@@ -128,9 +160,46 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
         if (getParameters().getNumFlakyTestAttempts().isPresent()) {
           spec.args("--num-flaky-test-attempts", getParameters().getNumFlakyTestAttempts().get().toString());
         }
+
+        spec.args("--json");
+        spec.setErrorOutput(new Slf4jInfoOutputStream(log));
+        spec.setStandardOutput(jsonOut);
+
+        spec.setIgnoreExitValue(true);
       });
 
-      result.assertNormalExitValue();
+      if (result.getExitValue() != 0) {
+        // not relevant in our use-case
+        @SuppressWarnings("VulnerableCodeUsages") JSONObject json = new JSONObject(jsonOut.toString());
+        String resultsUrl = json.optString("resultsUrl");
+
+        final String message;
+        if (resultsUrl != null) {
+          message = "emulator.wtf test run failed. Details: " + resultsUrl;
+        } else {
+          message = "emulator.wtf test run failed";
+        }
+
+        if (getParameters().getIgnoreFailures().getOrElse(false)) {
+          log.warn(message);
+          // if output failure file was given, write message there
+          if (getParameters().getOutputFailureFile().isPresent()) {
+            File failureFile = getParameters().getOutputFailureFile().get().getAsFile();
+            try {
+              StringBuilder fileMessage = new StringBuilder();
+              if (getParameters().getDisplayName().isPresent()) {
+                fileMessage.append(getParameters().getDisplayName().get()).append(": ");
+                fileMessage.append(message);
+              }
+              FileUtils.write(failureFile, fileMessage.toString(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+              /* ignore */
+            }
+          }
+        } else {
+          throw new GradleException(message);
+        }
+      }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

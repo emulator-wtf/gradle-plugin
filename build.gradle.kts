@@ -4,6 +4,7 @@ plugins {
   `java-gradle-plugin`
   `maven-publish`
   id("com.vanniktech.maven.publish")
+  id("com.github.gmazzo.buildconfig") version "3.1.0"
 }
 
 repositories {
@@ -28,6 +29,10 @@ java {
 dependencies {
   compileOnly("com.android.tools.build:gradle:4.0.0")
   implementation("com.vdurmont:semver4j:3.1.0")
+}
+
+buildConfig {
+  buildConfigField("String", "VERSION", "\"${project.version}\"")
 }
 
 mavenPublish {

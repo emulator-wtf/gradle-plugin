@@ -14,6 +14,8 @@ import java.util.Map;
 public interface EwWorkParameters extends EwInvokeConfiguration, WorkParameters {
   Property<String> getToken();
 
+  RegularFileProperty getWorkingDir();
+
   SetProperty<File> getClasspath();
 
   RegularFileProperty getAppApk();
@@ -27,4 +29,6 @@ public interface EwWorkParameters extends EwInvokeConfiguration, WorkParameters 
   ListProperty<Map<String, String>> getDevices();
 
   MapProperty<String, String> getEnvironmentVariables();
+
+  RegularFileProperty getOutputFailureFile();
 }

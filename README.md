@@ -113,6 +113,12 @@ emulatorwtf {
   // default: [OutputType.MERGED_RESULTS_XML, OutputType.COVERAGE, OutputType.PULLED_DIRS]
   outputs = [OutputType.SUMMARY, OutputType.CAPTURED_VIDEO, OutputType.LOGCAT]
 
+  // ignore test failures and keep running the build
+  //
+  // NOTE: the build outcome _will_ be success at the end, use the JUnit XML files to
+  //       check for test failures
+  ignoreFailures = true
+
   // devices to test on, Defaults to [[model: 'Pixel2', version: 27]]
   devices = [
     [model: 'NexusLowRes', version: 30, atd: true],

@@ -12,6 +12,7 @@ import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
@@ -121,8 +122,30 @@ public abstract class EwExecTask extends DefaultTask {
   @Input
   public abstract Property<Integer> getNumFlakyTestAttempts();
 
+  @Optional
+  @Input
+  public abstract Property<String> getDisplayName();
+
+  @Optional
+  @Input
+  public abstract Property<String> getScmUrl();
+
+  @Optional
+  @Input
+  public abstract Property<String> getScmCommitHash();
+
+  @Optional
+  @Input
+  public abstract Property<Boolean> getIgnoreFailures();
+
+  @Internal
+  public abstract RegularFileProperty getWorkingDir();
+
   @Inject
   public abstract WorkerExecutor getWorkerExecutor();
+
+  @Internal
+  public abstract RegularFileProperty getOutputFailureFile();
 
   @TaskAction
   public void runTests() {
@@ -151,6 +174,12 @@ public abstract class EwExecTask extends DefaultTask {
       p.getFileCacheTtl().set(getFileCacheTtl());
       p.getTestCacheEnabled().set(getTestCacheEnabled());
       p.getNumFlakyTestAttempts().set(getNumFlakyTestAttempts());
+      p.getDisplayName().set(getDisplayName());
+      p.getScmUrl().set(getScmUrl());
+      p.getScmCommitHash().set(getScmCommitHash());
+      p.getWorkingDir().set(getWorkingDir());
+      p.getIgnoreFailures().set(getIgnoreFailures());
+      p.getOutputFailureFile().set(getOutputFailureFile());
     });
   }
 }
