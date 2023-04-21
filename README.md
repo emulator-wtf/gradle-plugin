@@ -113,6 +113,9 @@ emulatorwtf {
   // default: [OutputType.MERGED_RESULTS_XML, OutputType.COVERAGE, OutputType.PULLED_DIRS]
   outputs = [OutputType.SUMMARY, OutputType.CAPTURED_VIDEO, OutputType.LOGCAT]
 
+  // record a video of the test run
+  recordVideo = true
+
   // ignore test failures and keep running the build
   //
   // NOTE: the build outcome _will_ be success at the end, use the JUnit XML files to

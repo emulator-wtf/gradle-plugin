@@ -82,6 +82,10 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
           spec.args("--outputs", outputs);
         }
 
+        if (getParameters().getRecordVideo().isPresent() && getParameters().getRecordVideo().get()) {
+          spec.args("--record-video");
+        }
+
         if (getParameters().getTimeout().isPresent()) {
           spec.args("--timeout", toCliString(getParameters().getTimeout().get()));
         }

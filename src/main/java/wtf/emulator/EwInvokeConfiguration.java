@@ -8,6 +8,7 @@ import java.time.Duration;
 
 public interface EwInvokeConfiguration {
   ListProperty<OutputType> getOutputs();
+  Property<Boolean> getRecordVideo();
 
   Property<Boolean> getUseOrchestrator();
   Property<Boolean> getClearPackageData();

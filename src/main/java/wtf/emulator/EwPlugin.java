@@ -288,6 +288,8 @@ public class EwPlugin implements Plugin<Project> {
       task.getOutputsDir().set(ext.getBaseOutputDir().map(dir -> dir.dir(variant.getName())));
       task.getOutputTypes().set(ext.getOutputs());
 
+      task.getRecordVideo().set(ext.getRecordVideo());
+
       task.getDevices().set(ext.getDevices().map(devices -> devices.stream().map((config) -> {
         final Map<String, String> out = new HashMap<>();
         config.forEach((key, value) -> out.put(key, Objects.toString(value)));

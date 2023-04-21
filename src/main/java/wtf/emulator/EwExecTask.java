@@ -59,6 +59,10 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract Property<Boolean> getRecordVideo();
+
+  @Optional
+  @Input
   public abstract ListProperty<Map<String, String>> getDevices();
 
   @Optional
@@ -158,6 +162,7 @@ public abstract class EwExecTask extends DefaultTask {
       p.getLibraryTestApk().set(getLibraryTestApk());
       p.getOutputsDir().set(getOutputsDir());
       p.getOutputs().set(getOutputTypes());
+      p.getRecordVideo().set(getRecordVideo());
       p.getDevices().set(getDevices());
       p.getUseOrchestrator().set(getUseOrchestrator());
       p.getClearPackageData().set(getClearPackageData());
