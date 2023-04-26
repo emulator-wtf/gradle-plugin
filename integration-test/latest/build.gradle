@@ -1,0 +1,55 @@
+buildscript {
+  repositories {
+    google()
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:8.2.0-alpha01'
+  }
+}
+
+plugins {
+  id "wtf.emulator.gradle"
+}
+
+repositories {
+  google()
+  mavenCentral()
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'wtf.emulator.gradle'
+
+android {
+  compileSdk 33
+
+  defaultConfig {
+    applicationId 'wtf.emulator.sample'
+    minSdkVersion 23
+    targetSdkVersion 33
+    versionCode 1
+    versionName '1.0'
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  buildTypes {
+    debug {
+      testCoverageEnabled false
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility 1.8
+    targetCompatibility 1.8
+  }
+
+  namespace 'wtf.emulator.sample'
+}
+
+dependencies {
+  androidTestImplementation 'androidx.test:rules:1.5.0'
+  androidTestImplementation 'androidx.test:runner:1.5.2'
+  androidTestImplementation 'androidx.test:core:1.5.0'
+  androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
+  androidTestImplementation 'com.google.truth:truth:1.1.3'
+}
