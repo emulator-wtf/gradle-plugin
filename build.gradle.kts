@@ -4,11 +4,6 @@ plugins {
   id("com.github.gmazzo.buildconfig") version "4.0.2"
 }
 
-repositories {
-  mavenCentral()
-  google()
-}
-
 gradlePlugin {
   plugins {
     create("ewPlugin") {
@@ -21,7 +16,7 @@ gradlePlugin {
 dependencies {
   compileOnly("com.android.tools.build:gradle:4.0.0")
 
-  implementation(project(":gradle-compat"))
+  implementation(projects.gradleCompat)
   implementation("com.vdurmont:semver4j:3.1.0")
 }
 

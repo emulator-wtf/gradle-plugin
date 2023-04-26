@@ -13,9 +13,19 @@ pluginManagement {
   }
 }
 
+dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  repositories {
+    google()
+    mavenCentral()
+  }
+}
+
 plugins {
   id("org.gradle.toolchains.foojay-resolver-convention") version "0.4.0"
 }
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":gradle-compat-api")
 include(":gradle-compat")
