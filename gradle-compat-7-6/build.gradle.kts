@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  compileOnly("dev.gradleplugins:gradle-api:7.6")
+  compileOnly(libs.gradle.api.v76)
 
   api(projects.gradleCompatApi)
 }

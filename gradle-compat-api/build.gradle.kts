@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-  compileOnly("dev.gradleplugins:gradle-api:6.1.1")
+  compileOnly(libs.gradle.api.v61)
 }

@@ -1,7 +1,8 @@
 plugins {
   `java-gradle-plugin`
   id("wtf.emulator.java")
-  id("com.github.gmazzo.buildconfig") version "4.0.2"
+
+  alias(libs.plugins.buildconfig)
 }
 
 gradlePlugin {
@@ -17,7 +18,7 @@ dependencies {
   compileOnly("com.android.tools.build:gradle:4.0.0")
 
   implementation(projects.gradleCompat)
-  implementation("com.vdurmont:semver4j:3.1.0")
+  implementation(libs.semver4j)
 }
 
 buildConfig {

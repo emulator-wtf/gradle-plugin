@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  compileOnly("dev.gradleplugins:gradle-api:6.1.1")
+  compileOnly(libs.gradle.api.v61)
 
   api(projects.gradleCompatApi)
 
@@ -11,5 +11,5 @@ dependencies {
   implementation(projects.gradleCompat66)
   implementation(projects.gradleCompat76)
 
-  implementation("com.vdurmont:semver4j:3.1.0")
+  implementation(libs.semver4j)
 }
