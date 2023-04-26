@@ -42,13 +42,5 @@ gradlePlugin {
       id = "wtf.emulator.java"
       implementationClass = "JavaConvention"
     }
-//    register("binaryConvention") {
-//      id = "wtf.emulator.binary"
-//      implementationClass = "BinaryConvention"
-//    }
-//    register("kotlinJava11Convention") {
-//      id = "wtf.emulator.kotlin.java11"
-//      implementationClass = "KotlinJava11Convention"
-//    }
   }
 }

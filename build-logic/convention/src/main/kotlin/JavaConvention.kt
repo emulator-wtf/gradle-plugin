@@ -1,4 +1,3 @@
-import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -7,12 +6,13 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JvmVendorSpec
-import org.gradle.kotlin.dsl.getByType
 import java.net.URI
 
 class JavaConvention : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
+      target.version = target.findProperty("VERSION_NAME")?.toString() ?: target.version
+
       with(pluginManager) {
         apply("java-library")
         apply("maven-publish")
@@ -20,11 +20,11 @@ class JavaConvention : Plugin<Project> {
       }
 
       with(extensions.getByType(JavaPluginExtension::class.java)) {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
 
         toolchain {
-          languageVersion.set(JavaLanguageVersion.of(8))
+          languageVersion.set(JavaLanguageVersion.of(11))
           vendor.set(JvmVendorSpec.AZUL)
         }
       }
