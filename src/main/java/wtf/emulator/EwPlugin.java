@@ -26,7 +26,6 @@ import org.gradle.api.initialization.Settings;
 import org.gradle.api.initialization.resolve.DependencyResolutionManagement;
 import org.gradle.api.initialization.resolve.RepositoriesMode;
 import org.gradle.api.internal.GradleInternal;
-import org.gradle.api.internal.StartParameterInternal;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.TaskProvider;
@@ -57,6 +56,7 @@ public class EwPlugin implements Plugin<Project> {
   @Override
   public void apply(Project target) {
     EwExtension ext = target.getExtensions().create("emulatorwtf", EwExtension.class);
+    GradleCompat gradleCompat = GradleCompatFactory.get(target.getGradle());
 
     // setup defaults
     ext.getBaseOutputDir().convention(target.getLayout().getBuildDirectory().dir("test-results"));
@@ -67,8 +67,7 @@ public class EwPlugin implements Plugin<Project> {
     target.getDependencies().add(TOOL_CONFIGURATION, ext.getVersion().map(version ->
         "wtf.emulator:ew-cli:" + version));
 
-    // yuck https://discuss.gradle.org/t/how-to-determine-if-configuration-cache-is-enabled/41383
-    Boolean configCache = ((StartParameterInternal) target.getGradle().getStartParameter()).getConfigurationCache().get();
+    Boolean configCache = gradleCompat.isConfigurationCacheEnabled();
 
     SetProperty<String> failureCollector = target.getObjects().setProperty(String.class);
 

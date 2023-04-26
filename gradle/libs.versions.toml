@@ -1,0 +1,11 @@
+[versions]
+
+
+[plugins]
+
+[libraries]
+gradle-plugins-buildconfig = "com.github.gmazzo.buildconfig:plugin:4.0.2"
+gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.25.2"
+
+[bundles]
+

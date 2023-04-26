@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wtf.emulator.ext.Slf4jInfoOutputStream;
-import wtf.emulator.gradle_plugin.BuildConfig;
+import wtf.emulator.BuildConfig;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
