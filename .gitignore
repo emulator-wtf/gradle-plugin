@@ -7,3 +7,7 @@
 /build-logic/.gradle
 /build-logic/*/build
 /build-logic/build
+/integration-test/*/.gradle
+/integration-test/*/.idea
+/integration-test/*/build
+local.properties

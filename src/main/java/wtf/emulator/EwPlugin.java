@@ -64,8 +64,7 @@ public class EwPlugin implements Plugin<Project> {
 
     configureRepository(target, ext);
     final Configuration toolConfig = target.getConfigurations().maybeCreate(TOOL_CONFIGURATION);
-    target.getDependencies().add(TOOL_CONFIGURATION, ext.getVersion().map(version ->
-        "wtf.emulator:ew-cli:" + version));
+    gradleCompat.addProviderDependency(target, TOOL_CONFIGURATION, ext.getVersion().map(version -> "wtf.emulator:ew-cli:" + version));
 
     Boolean configCache = gradleCompat.isConfigurationCacheEnabled();
 

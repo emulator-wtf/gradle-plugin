@@ -1,7 +1,6 @@
 plugins {
   `java-gradle-plugin`
   id("wtf.emulator.java")
-
   alias(libs.plugins.buildconfig)
 }
 
