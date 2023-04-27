@@ -14,10 +14,11 @@ gradlePlugin {
 }
 
 dependencies {
-  compileOnly("com.android.tools.build:gradle:4.0.0")
+  compileOnly(libs.agp)
 
   implementation(projects.gradleCompat)
   implementation(libs.semver4j)
+  implementation(libs.json)
 }
 
 buildConfig {
