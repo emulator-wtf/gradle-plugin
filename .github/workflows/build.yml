@@ -46,8 +46,6 @@ jobs:
       - name: accept Android SDK licenses
         run: yes | cmdline-tools/latest/bin/sdkmanager --licenses 
         working-directory: /usr/local/lib/android/sdk
-      - name: print GH information
-        run: echo ref=$GITHUB_REF sha=$GITHUB_SHA head_ref=$GITHUB_HEAD_REF
       - name: Run latest tests
         env:
           EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
