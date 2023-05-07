@@ -142,6 +142,10 @@ public abstract class EwExecTask extends DefaultTask {
   @Input
   public abstract Property<Boolean> getIgnoreFailures();
 
+  @Optional
+  @Input
+  public abstract Property<Boolean> getAsync();
+
   @Internal
   public abstract RegularFileProperty getWorkingDir();
 
@@ -185,6 +189,7 @@ public abstract class EwExecTask extends DefaultTask {
       p.getWorkingDir().set(getWorkingDir());
       p.getIgnoreFailures().set(getIgnoreFailures());
       p.getOutputFailureFile().set(getOutputFailureFile());
+      p.getAsync().set(getAsync());
     });
   }
 }
