@@ -5,7 +5,12 @@ pluginManagement {
     }
   }
 
+  def props = new Properties()
+  new File(rootDir.parentFile.parentFile, "gradle.properties").withInputStream { input ->
+    props.load(input)
+  }
+
   plugins {
-    id "wtf.emulator.gradle" version "0.10.2-SNAPSHOT"
+    id "wtf.emulator.gradle" version props.getProperty("VERSION_NAME")
   }
 }
