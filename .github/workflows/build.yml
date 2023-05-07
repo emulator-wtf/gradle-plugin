@@ -45,7 +45,7 @@ jobs:
           path: build/maven-repo/
       - name: accept Android SDK licenses
         run: yes | cmdline-tools/latest/bin/sdkmanager --licenses 
-        working-directory: ${ANDROID_HOME}
+        working-directory: /usr/local/lib/android/sdk
       - name: Run latest tests
         env:
           EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
