@@ -9,20 +9,41 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # PREP
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Setup JDK
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-        cache: gradle
-    - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
-    # BUILD
-    - name: Build environment
-      run: |
-        echo "Building ref '${{ github.ref }}'"
-    - name: Build jars
-      run: ./gradlew assemble
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: gradle
+      - name: Build plugin
+        run: ./gradlew assemble publishAllPublicationsToIntreeRepository 
+      - name: Store maven repo as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: gradle-plugin-repo
+          path: build/maven-repo/
+
+  test-latest:
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '20'
+          cache: gradle
+      - name: Fetch maven repo
+        uses: actions/download-artifact@v3
+        with:
+          name: gradle-plugin-repo
+      - name: Run latest tests
+        env:
+          EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
+        working-directory: integration-test/latest
+        run: ./gradlew testWithEmulatorWtf 
