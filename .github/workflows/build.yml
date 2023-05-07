@@ -42,6 +42,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: gradle-plugin-repo
+          path: build/maven-repo/
       - name: Run latest tests
         env:
           EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
