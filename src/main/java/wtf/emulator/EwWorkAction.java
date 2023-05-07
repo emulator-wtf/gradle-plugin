@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wtf.emulator.ext.Slf4jInfoOutputStream;
-import wtf.emulator.BuildConfig;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
@@ -165,6 +164,10 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
           spec.args("--num-flaky-test-attempts", getParameters().getNumFlakyTestAttempts().get().toString());
         }
 
+        if (getParameters().getAsync().getOrElse(false)) {
+          spec.args("--async");
+        }
+
         spec.args("--json");
         spec.setErrorOutput(new Slf4jInfoOutputStream(log));
         spec.setStandardOutput(jsonOut);
@@ -174,7 +177,7 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
 
       if (result.getExitValue() != 0) {
         // not relevant in our use-case
-        @SuppressWarnings("VulnerableCodeUsages") JSONObject json = new JSONObject(jsonOut.toString());
+        JSONObject json = new JSONObject(jsonOut.toString());
         String resultsUrl = json.optString("resultsUrl");
 
         final String message;

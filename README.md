@@ -188,6 +188,9 @@ emulatorwtf {
   // use sideEffects = true to disable all caching
   testCacheEnabled = false
   
+  // Continue after triggering the tests. No outputs will be saved.
+  async = true
+  
   // Do not generate the test task for some specific variants
   variantFilter {
     if (variant.buildType.name == 'release') {

@@ -41,4 +41,6 @@ public interface EwInvokeConfiguration {
   Property<String> getScmCommitHash();
 
   Property<Boolean> getIgnoreFailures();
+
+  Property<Boolean> getAsync();
 }

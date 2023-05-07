@@ -283,8 +283,11 @@ public class EwPlugin implements Plugin<Project> {
       task.getToken().set(ext.getToken().orElse(target.provider(() ->
           System.getenv("EW_API_TOKEN"))));
 
-      task.getOutputsDir().set(ext.getBaseOutputDir().map(dir -> dir.dir(variant.getName())));
-      task.getOutputTypes().set(ext.getOutputs());
+      // don't configure outputs in async mode
+      if (!task.getAsync().getOrElse(false)) {
+        task.getOutputsDir().set(ext.getBaseOutputDir().map(dir -> dir.dir(variant.getName())));
+        task.getOutputTypes().set(ext.getOutputs());
+      }
 
       task.getRecordVideo().set(ext.getRecordVideo());
 
@@ -343,6 +346,8 @@ public class EwPlugin implements Plugin<Project> {
       task.getOutputFailureFile().set(outputFailureFile);
 
       task.getIgnoreFailures().set(ext.getIgnoreFailures());
+
+      task.getAsync().set(ext.getAsync());
 
       additionalConfigure.accept(task);
     });
