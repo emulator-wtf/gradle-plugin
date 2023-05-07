@@ -43,6 +43,9 @@ jobs:
         with:
           name: gradle-plugin-repo
           path: build/maven-repo/
+      - name: accept Android SDK licenses
+        run: yes | cmdline-tools/latest/bin/sdkmanager --licenses 
+        working-directory: ${ANDROID_HOME}
       - name: Run latest tests
         env:
           EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
