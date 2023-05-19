@@ -340,10 +340,15 @@ public class EwPlugin implements Plugin<Project> {
       task.getScmCommitHash().set(ext.getScmCommitHash());
 
       task.getDisplayName().set(ext.getVariantCount().map((count) -> {
+        String name = task.getProject().getPath();
+        if (name.equals(":")) {
+          // replace with rootProject name
+          name = task.getProject().getName();
+        }
         if (count < 2) {
-          return task.getProject().getPath();
+          return name;
         } else {
-          return task.getProject().getPath() + ":" + variant.getName();
+          return name + ":" + variant.getName();
         }
       }));
 
