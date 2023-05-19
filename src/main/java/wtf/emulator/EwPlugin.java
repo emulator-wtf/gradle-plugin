@@ -170,6 +170,7 @@ public class EwPlugin implements Plugin<Project> {
     target.getRepositories().maven(repo -> {
       try {
         repo.setUrl(new URI(MAVEN_URL).toURL());
+        repo.mavenContent((desc) -> desc.includeGroup("wtf.emulator"));
       } catch (MalformedURLException | URISyntaxException e) {
         throw new IllegalStateException(e);
       }
