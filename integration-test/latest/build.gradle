@@ -4,17 +4,12 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:8.2.0-alpha01'
+    classpath 'com.android.tools.build:gradle:8.2.0-alpha04'
   }
 }
 
 plugins {
   id "wtf.emulator.gradle"
-}
-
-repositories {
-  google()
-  mavenCentral()
 }
 
 apply plugin: 'com.android.application'
