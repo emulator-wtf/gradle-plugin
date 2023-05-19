@@ -116,6 +116,10 @@ public class EwPlugin implements Plugin<Project> {
   }
 
   private static void configureRepository(Project target, EwExtension ext) {
+    if (!EwProperties.ADD_REPOSITORY.getFlag(target, true)) {
+      return;
+    }
+
     Semver gradleVersion = new Semver(target.getGradle().getGradleVersion(), Semver.SemverType.LOOSE);
     if (gradleVersion.isGreaterThanOrEqualTo(new Semver("6.8", Semver.SemverType.LOOSE))) {
       // TODO(madis) yuck
@@ -133,7 +137,8 @@ public class EwPlugin implements Plugin<Project> {
       }
 
       RepositoriesMode mode = settings.getDependencyResolutionManagement().getRepositoriesMode().getOrNull();
-      if (mode == null || RepositoriesMode.PREFER_PROJECT.equals(mode)) {
+      int settingsRepoCount = settings.getDependencyResolutionManagement().getRepositories().size();
+      if ((mode == null || mode == RepositoriesMode.PREFER_PROJECT) && settingsRepoCount == 0) {
         registerMavenRepo(target);
       } else {
         // ping user after project evaluate to allow suppressing this check in dsl
@@ -165,6 +170,7 @@ public class EwPlugin implements Plugin<Project> {
     target.getRepositories().maven(repo -> {
       try {
         repo.setUrl(new URI(MAVEN_URL).toURL());
+        repo.mavenContent((desc) -> desc.includeGroup("wtf.emulator"));
       } catch (MalformedURLException | URISyntaxException e) {
         throw new IllegalStateException(e);
       }

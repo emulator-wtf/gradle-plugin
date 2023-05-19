@@ -9,3 +9,14 @@ pluginManagement {
     id "wtf.emulator.gradle" version "+"
   }
 }
+
+dependencyResolutionManagement {
+  repositories {
+    google()
+    mavenCentral()
+    maven {
+      url "https://maven.emulator.wtf/releases/"
+      content { includeGroup("wtf.emulator") }
+    }
+  }
+}
