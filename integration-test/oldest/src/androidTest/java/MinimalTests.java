@@ -7,4 +7,9 @@ public class MinimalTests {
   public void junitWorks() {
     assertTrue(true);
   }
+
+  @Test
+  public void exampleFail() {
+    assertTrue("failing for demo purposes", false);
+  }
 }
