@@ -339,7 +339,8 @@ public class EwPlugin implements Plugin<Project> {
       task.getScmUrl().set(ext.getScmUrl());
       task.getScmCommitHash().set(ext.getScmCommitHash());
 
-      task.getDisplayName().set(ext.getVariantCount().map((count) -> {
+
+      task.getDisplayName().set(ext.getDisplayName().orElse(ext.getVariantCount().map((count) -> {
         String name = task.getProject().getPath();
         if (name.equals(":")) {
           // replace with rootProject name
@@ -350,7 +351,7 @@ public class EwPlugin implements Plugin<Project> {
         } else {
           return name + ":" + variant.getName();
         }
-      }));
+      })));
 
       task.getWorkingDir().set(target.getRootProject().getRootDir());
 
