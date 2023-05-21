@@ -50,5 +50,5 @@ dependencies {
 }
 
 emulatorwtf {
-  setDisplayName("Integration test (bleeding edge)")
+  setDisplayName("Integration test (latest)")
 }

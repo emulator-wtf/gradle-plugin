@@ -53,5 +53,5 @@ dependencies {
 }
 
 emulatorwtf {
-  setDisplayName("Integration test (minimal supported versions)")
+  setDisplayName("Integration test (minimal)")
 }
