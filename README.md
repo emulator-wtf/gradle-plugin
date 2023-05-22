@@ -44,7 +44,7 @@ app project (usually under `app/build.gradle`):
 
 ```groovy
 plugins {
-  id "wtf.emulator.gradle" version "0.12.0"
+  id "wtf.emulator.gradle" version "0.12.1"
 }
 ```
 
@@ -62,7 +62,7 @@ buildscript {
   
   dependencies {
     // ... other deps here, like com.android.tools.build:gradle
-    classpath "wtf.emulator:gradle-plugin:0.12.0"
+    classpath "wtf.emulator:gradle-plugin:0.12.1"
   }
 }
 ```
