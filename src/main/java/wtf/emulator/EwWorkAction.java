@@ -175,16 +175,25 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
         spec.setIgnoreExitValue(true);
       });
 
+      if (getParameters().getPrintOutput().getOrElse(false) || result.getExitValue() != 0) {
+        System.out.println(jsonOut);
+      }
+
       if (result.getExitValue() != 0) {
         // not relevant in our use-case
         JSONObject json = new JSONObject(jsonOut.toString());
         String resultsUrl = json.optString("resultsUrl");
+        String error = json.optString("error");
 
         final String message;
-        if (resultsUrl != null) {
-          message = "emulator.wtf test run failed. Details: " + resultsUrl;
+        if (error != null && error.length() > 0) {
+          message = "emulator.wtf test run failed: " + error;
         } else {
-          message = "emulator.wtf test run failed";
+          if (resultsUrl != null && resultsUrl.length() > 0) {
+            message = "emulator.wtf test run failed. Details: " + resultsUrl;
+          } else {
+            message = "emulator.wtf test run failed";
+          }
         }
 
         if (getParameters().getIgnoreFailures().getOrElse(false)) {

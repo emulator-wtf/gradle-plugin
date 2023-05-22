@@ -155,6 +155,10 @@ public abstract class EwExecTask extends DefaultTask {
   @Internal
   public abstract RegularFileProperty getOutputFailureFile();
 
+  @Optional
+  @Input
+  public abstract Property<Boolean> getPrintOutput();
+
   @TaskAction
   public void runTests() {
     WorkQueue workQueue = getWorkerExecutor().noIsolation();
@@ -190,6 +194,7 @@ public abstract class EwExecTask extends DefaultTask {
       p.getIgnoreFailures().set(getIgnoreFailures());
       p.getOutputFailureFile().set(getOutputFailureFile());
       p.getAsync().set(getAsync());
+      p.getPrintOutput().set(getPrintOutput());
     });
   }
 }

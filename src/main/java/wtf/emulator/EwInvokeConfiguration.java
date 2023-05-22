@@ -43,4 +43,6 @@ public interface EwInvokeConfiguration {
   Property<Boolean> getIgnoreFailures();
 
   Property<Boolean> getAsync();
+
+  Property<Boolean> getPrintOutput();
 }

@@ -339,6 +339,7 @@ public class EwPlugin implements Plugin<Project> {
       task.getScmUrl().set(ext.getScmUrl());
       task.getScmCommitHash().set(ext.getScmCommitHash());
 
+      task.getPrintOutput().set(ext.getPrintOutput());
 
       task.getDisplayName().set(ext.getDisplayName().orElse(ext.getVariantCount().map((count) -> {
         String name = task.getProject().getPath();

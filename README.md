@@ -113,6 +113,9 @@ emulatorwtf {
   // default: [OutputType.MERGED_RESULTS_XML, OutputType.COVERAGE, OutputType.PULLED_DIRS]
   outputs = [OutputType.SUMMARY, OutputType.CAPTURED_VIDEO, OutputType.LOGCAT]
 
+  // Always print the ew-cli output the console when running. Useful for debugging.
+  printOutput = true
+
   // record a video of the test run
   recordVideo = true
 
@@ -191,6 +194,10 @@ emulatorwtf {
   // Continue after triggering the tests. No outputs will be saved.
   async = true
   
+  // Manually set the displayName of the tests. Defaults to the module path + variant name (if there
+  // are multiple testable variants)
+  displayName = "instrumentation tests"
+
   // Do not generate the test task for some specific variants
   variantFilter {
     if (variant.buildType.name == 'release') {
