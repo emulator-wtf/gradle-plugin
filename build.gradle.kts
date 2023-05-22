@@ -19,6 +19,7 @@ dependencies {
   implementation(projects.gradleCompat)
   implementation(libs.semver4j)
   implementation(libs.json)
+  implementation(libs.commons.io)
 }
 
 buildConfig {

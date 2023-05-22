@@ -1,6 +1,7 @@
 package wtf.emulator;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.TeeOutputStream;
 import org.gradle.api.GradleException;
 import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecResult;
@@ -40,6 +41,7 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
       final ExecOperations exec = getExecOperations();
 
       ByteArrayOutputStream jsonOut = new ByteArrayOutputStream();
+      ByteArrayOutputStream errorOut = new ByteArrayOutputStream();
 
       ExecResult result = exec.javaexec(spec -> {
         // use env var for passing token so it doesn't get logged out with --info
@@ -169,14 +171,20 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
         }
 
         spec.args("--json");
-        spec.setErrorOutput(new Slf4jInfoOutputStream(log));
+        if (getParameters().getPrintOutput().getOrElse(false)) {
+          // redirect forked proc stderr to stdout
+          spec.setErrorOutput(System.out);
+        } else {
+          spec.setErrorOutput(new TeeOutputStream(errorOut, new Slf4jInfoOutputStream(log)));
+        }
         spec.setStandardOutput(jsonOut);
 
         spec.setIgnoreExitValue(true);
       });
 
-      if (getParameters().getPrintOutput().getOrElse(false) || result.getExitValue() != 0) {
-        System.out.println(jsonOut);
+      if (!getParameters().getPrintOutput().getOrElse(false) && result.getExitValue() != 0) {
+        // always print output even if it wasn't request in case of an error
+        System.out.println(errorOut);
       }
 
       if (result.getExitValue() != 0) {
