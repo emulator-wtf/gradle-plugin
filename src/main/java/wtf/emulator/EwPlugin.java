@@ -362,6 +362,8 @@ public class EwPlugin implements Plugin<Project> {
 
       task.getAsync().set(ext.getAsync());
 
+      task.getTestTargets().set(ext.getTestTargets());
+
       additionalConfigure.accept(task);
     });
 

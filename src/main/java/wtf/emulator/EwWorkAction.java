@@ -170,7 +170,12 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
           spec.args("--async");
         }
 
+        if (getParameters().getTestTargets().isPresent()) {
+          spec.args("--test-targets", getParameters().getTestTargets().get());
+        }
+
         spec.args("--json");
+
         if (getParameters().getPrintOutput().getOrElse(false)) {
           // redirect forked proc stderr to stdout
           spec.setErrorOutput(System.out);

@@ -45,4 +45,6 @@ public interface EwInvokeConfiguration {
   Property<Boolean> getAsync();
 
   Property<Boolean> getPrintOutput();
+
+  Property<String> getTestTargets();
 }
