@@ -30,7 +30,7 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
   @Inject
   public EwExtension(ObjectFactory objectFactory) {
-    getVersion().convention("0.9.13");
+    getVersion().convention("0.9.14");
     getSideEffects().convention(false);
     getOutputs().convention(Collections.emptyList());
     this.variantCount = objectFactory.property(Integer.class).convention(0);
