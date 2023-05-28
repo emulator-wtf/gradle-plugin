@@ -364,6 +364,11 @@ public class EwPlugin implements Plugin<Project> {
 
       task.getTestTargets().set(ext.getTestTargets());
 
+      task.getProxyHost().set(ext.getProxyHost());
+      task.getProxyPort().set(ext.getProxyPort());
+      task.getProxyUser().set(ext.getProxyUser());
+      task.getProxyPassword().set(ext.getProxyPassword());
+
       additionalConfigure.accept(task);
     });
 

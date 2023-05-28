@@ -97,8 +97,8 @@ The `emulatorwtf` plugin DSL supports the following configuration options:
 
 ```groovy
 emulatorwtf {
-  // CLI version to use, defaults to 0.9.14
-  version = '0.9.14'
+  // CLI version to use, defaults to 0.9.15
+  version = '0.9.15'
 
   // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
   // instead of this or passing this value in via a project property
@@ -209,6 +209,16 @@ emulatorwtf {
       enabled = false
     }
   }
+
+  // Configure a HTTP proxy to use when making requests to emulator.wtf API
+  // these values default to standard JVM system properties `http.proxyHost`,
+  // `http.proxyPort`, `http.proxyUser` and `http.proxyPassword` - there's no need to specify
+  // them if your Gradle daemon has these props set.
+  // NOTE: this is for setting up the test, it has no effect on your tests in the emulator
+  proxyHost = "localhost"
+  proxyPort = 8080
+  proxyUser = "user"
+  proxyPassword = "hunter2"
 }
 ```
 
