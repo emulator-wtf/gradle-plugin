@@ -47,4 +47,12 @@ public interface EwInvokeConfiguration {
   Property<Boolean> getPrintOutput();
 
   Property<String> getTestTargets();
+
+  Property<String> getProxyHost();
+
+  Property<Integer> getProxyPort();
+
+  Property<String> getProxyUser();
+
+  Property<String> getProxyPassword();
 }

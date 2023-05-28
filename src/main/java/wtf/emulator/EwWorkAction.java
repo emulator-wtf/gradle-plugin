@@ -174,6 +174,19 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
           spec.args("--test-targets", getParameters().getTestTargets().get());
         }
 
+        if (getParameters().getProxyHost().isPresent()) {
+          spec.args("--proxy-host", getParameters().getProxyHost().get());
+        }
+        if (getParameters().getProxyPort().isPresent()) {
+          spec.args("--proxy-port", getParameters().getProxyPort().get().toString());
+        }
+        if (getParameters().getProxyUser().isPresent()) {
+          spec.args("--proxy-user", getParameters().getProxyUser().get());
+        }
+        if (getParameters().getProxyPassword().isPresent()) {
+          spec.args("--proxy-password", getParameters().getProxyPassword().get());
+        }
+
         spec.args("--json");
 
         if (getParameters().getPrintOutput().getOrElse(false)) {
