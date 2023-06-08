@@ -88,7 +88,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '20'
           cache: gradle
       - name: Fetch maven repo
         uses: actions/download-artifact@v3
