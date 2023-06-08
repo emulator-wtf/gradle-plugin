@@ -29,6 +29,8 @@ import org.gradle.api.internal.GradleInternal;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.TaskProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,8 +44,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import static com.android.build.VariantOutput.FilterType.ABI;
 
 @SuppressWarnings("unused")
 public class EwPlugin implements Plugin<Project> {
@@ -52,6 +57,8 @@ public class EwPlugin implements Plugin<Project> {
   private static final String TOOL_CONFIGURATION = "emulatorWtfCli";
 
   private static final String MAVEN_URL = "https://maven.emulator.wtf/releases/";
+
+  private static final Logger log = LoggerFactory.getLogger(EwPlugin.class);
 
   @Override
   public void apply(Project target) {
@@ -183,8 +190,8 @@ public class EwPlugin implements Plugin<Project> {
       configureEwTask(target, android, ext, toolConfig, rootTask, failureCollector, variant, task -> {
         // TODO(madis) we could do better than main here, technically we do know the list of
         //             devices we're going to run against..
-        BaseVariantOutput appOutput = getMainOutput(testVariant.getTestedVariant());
-        BaseVariantOutput testOutput = getMainOutput(testVariant);
+        BaseVariantOutput appOutput = getVariantOutput(testVariant.getTestedVariant());
+        BaseVariantOutput testOutput = getVariantOutput(testVariant);
 
         task.dependsOn(testVariant.getPackageApplicationProvider());
         task.dependsOn(variant.getPackageApplicationProvider());
@@ -200,7 +207,7 @@ public class EwPlugin implements Plugin<Project> {
     if (testVariant != null) {
       configureEwTask(target, android, ext, toolConfig, rootTask, failureCollector, variant, task -> {
         // library projects only have the test apk
-        BaseVariantOutput testOutput = getMainOutput(testVariant);
+        BaseVariantOutput testOutput = getVariantOutput(testVariant);
         task.dependsOn(testVariant.getPackageApplicationProvider());
         task.getLibraryTestApk().set(testOutput.getOutputFile());
       });
@@ -210,7 +217,7 @@ public class EwPlugin implements Plugin<Project> {
   public static void configureTestVariant(Project project, TestExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, ApplicationVariant variant) {
     configureEwTask(project, android, ext, toolConfig, rootTask, failureCollector, variant, task -> {
       // test projects have the test apk as a main output
-      BaseVariantOutput testOutput = getMainOutput(variant);
+      BaseVariantOutput testOutput = getVariantOutput(variant);
       task.dependsOn(variant.getPackageApplicationProvider());
       task.getTestApk().set(testOutput.getOutputFile());
 
@@ -225,7 +232,7 @@ public class EwPlugin implements Plugin<Project> {
         targetAndroid.getApplicationVariants().all(targetVariant -> {
           // direct variant <-> variant matching between the two
           if (variant.getName().equals(targetVariant.getName())) {
-            BaseVariantOutput appOutput = getMainOutput(targetVariant);
+            BaseVariantOutput appOutput = getVariantOutput(targetVariant);
             task.dependsOn(targetVariant.getPackageApplicationProvider());
             task.getAppApk().set(appOutput.getOutputFile());
           }
@@ -375,11 +382,27 @@ public class EwPlugin implements Plugin<Project> {
     rootTask.configure(task -> task.dependsOn(execTask));
   }
 
-  private static BaseVariantOutput getMainOutput(BaseVariant variant) {
-    return variant.getOutputs().stream().filter(it -> it.getOutputType().equals(VariantOutput.MAIN))
-        .findFirst().orElse(variant.getOutputs().stream().findFirst()
-            .orElseThrow(() -> new IllegalStateException("Test variant has no outputs!")
-          ));
+  private static BaseVariantOutput getVariantOutput(BaseVariant variant) {
+    // if there are splits, prefer x86 split as they're faster to upload
+    Optional<BaseVariantOutput> x86Output = variant.getOutputs().stream()
+        .filter(it -> it.getOutputType().equals(VariantOutput.FULL_SPLIT))
+        .filter(it -> it.getFilterTypes().size() == 1 && it.getFilterTypes().contains(ABI.name()))
+        .filter(it -> it.getFilters().stream().anyMatch(filter -> filter.getFilterType().equals(ABI.name()) && filter.getIdentifier().equals("x86")))
+        .findFirst();
+
+    Optional<BaseVariantOutput> universalSplit = variant.getOutputs().stream()
+        .filter(it -> it.getOutputType().equals(VariantOutput.FULL_SPLIT))
+        .filter(it -> it.getFilterTypes().isEmpty())
+        .findFirst();
+
+    Optional<BaseVariantOutput> mainOutput = variant.getOutputs().stream()
+        .filter(it -> it.getOutputType().equals(VariantOutput.MAIN))
+        .findFirst();
+
+    return x86Output
+        .or(() -> universalSplit)
+        .or(() -> mainOutput)
+        .orElseThrow(() -> new IllegalStateException("Variant " + variant.getName() + " has no x86 outputs!"));
   }
 
   private static String capitalize(String str) {

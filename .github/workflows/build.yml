@@ -71,8 +71,35 @@ jobs:
       - name: accept Android SDK licenses
         run: yes | cmdline-tools/latest/bin/sdkmanager --licenses
         working-directory: /usr/local/lib/android/sdk
-      - name: Run latest tests
+      - name: Run oldest tests
         env:
           EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
         working-directory: integration-test/oldest
+        run: ./gradlew testWithEmulatorWtf
+
+  test-abi-splits:
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+          cache: gradle
+      - name: Fetch maven repo
+        uses: actions/download-artifact@v3
+        with:
+          name: gradle-plugin-repo
+          path: build/maven-repo/
+      - name: accept Android SDK licenses
+        run: yes | cmdline-tools/latest/bin/sdkmanager --licenses
+        working-directory: /usr/local/lib/android/sdk
+      - name: Run abi splits tests
+        env:
+          EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
+        working-directory: integration-test/abi-splits
         run: ./gradlew testWithEmulatorWtf
