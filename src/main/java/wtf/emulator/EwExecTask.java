@@ -100,6 +100,10 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract Property<Integer> getShardTargetRuntime();
+
+  @Optional
+  @Input
   public abstract ListProperty<String> getDirectoriesToPull();
 
   @Optional
@@ -125,6 +129,10 @@ public abstract class EwExecTask extends DefaultTask {
   @Optional
   @Input
   public abstract Property<Integer> getNumFlakyTestAttempts();
+
+  @Optional
+  @Input
+  public abstract Property<String> getFlakyTestRepeatMode();
 
   @Optional
   @Input
@@ -200,6 +208,7 @@ public abstract class EwExecTask extends DefaultTask {
       p.getNumUniformShards().set(getNumUniformShards());
       p.getNumBalancedShards().set(getNumBalancedShards());
       p.getNumShards().set(getNumShards());
+      p.getShardTargetRuntime().set(getShardTargetRuntime());
       p.getDirectoriesToPull().set(getDirectoriesToPull());
       p.getSideEffects().set(getSideEffects());
       p.getTimeout().set(getTestTimeout());
@@ -207,6 +216,7 @@ public abstract class EwExecTask extends DefaultTask {
       p.getFileCacheTtl().set(getFileCacheTtl());
       p.getTestCacheEnabled().set(getTestCacheEnabled());
       p.getNumFlakyTestAttempts().set(getNumFlakyTestAttempts());
+      p.getFlakyTestRepeatMode().set(getFlakyTestRepeatMode());
       p.getDisplayName().set(getDisplayName());
       p.getScmUrl().set(getScmUrl());
       p.getScmCommitHash().set(getScmCommitHash());

@@ -332,6 +332,8 @@ public class EwPlugin implements Plugin<Project> {
       task.getNumUniformShards().set(ext.getNumUniformShards());
       task.getNumShards().set(ext.getNumShards());
       task.getNumBalancedShards().set(ext.getNumBalancedShards());
+      task.getShardTargetRuntime().set(ext.getShardTargetRuntime());
+
       task.getDirectoriesToPull().set(ext.getDirectoriesToPull());
 
       task.getTestTimeout().set(ext.getTimeout());
@@ -342,6 +344,7 @@ public class EwPlugin implements Plugin<Project> {
       task.getTestCacheEnabled().set(ext.getTestCacheEnabled());
 
       task.getNumFlakyTestAttempts().set(ext.getNumFlakyTestAttempts());
+      task.getFlakyTestRepeatMode().set(ext.getFlakyTestRepeatMode());
 
       task.getScmUrl().set(ext.getScmUrl());
       task.getScmCommitHash().set(ext.getScmCommitHash());
