@@ -97,8 +97,8 @@ The `emulatorwtf` plugin DSL supports the following configuration options:
 
 ```groovy
 emulatorwtf {
-  // CLI version to use, defaults to 0.9.16
-  version = '0.9.16'
+  // CLI version to use, defaults to 0.9.17
+  version = '0.9.17'
 
   // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
   // instead of this or passing this value in via a project property
@@ -119,11 +119,11 @@ emulatorwtf {
   // record a video of the test run
   recordVideo = true
 
-  // ignore test failures and keep running the build
+  // ignore test failures and keep running the build, defaults to false
   //
   // NOTE: the build outcome _will_ be success at the end, use the JUnit XML files to
   //       check for test failures
-  ignoreFailures = true
+  ignoreFailures = false
 
   // devices to test on, Defaults to [[model: 'Pixel2', version: 27]]
   devices = [
@@ -160,6 +160,13 @@ emulatorwtf {
   // for instance to only run medium tests:
   environmentVariables = [size: 'medium']
 
+  // Set to the a minutes value to split your tests into multiple shards
+  // dynamically, the number of shards will be figured out based on historical
+  // test times. This is a good way to ensure a consistent runtime as your
+  // testsuite grows or shrinks - we will adjust the number of shards as
+  // needed
+  shardTargetRuntime = 2
+
   // Set to a number larger than 1 to randomly split your tests into multiple
   // shards to be executed in parallel
   numUniformShards = 3
@@ -175,6 +182,10 @@ emulatorwtf {
   // Set to a non-zero value to repeat device/shards that failed, the repeat
   // attempts will be executed in parallel
   numFlakyTestAttempts = 3
+
+  // Whether to reattempt full shards (all) or only failed tests (failed_only)
+  // in case of test failures. Defaults to failed_only.
+  flakyTestRepeatMode = failed_only
 
   // Directories to pull from device after test is over, will be stored in
   // baseOutputDir/${variant}:

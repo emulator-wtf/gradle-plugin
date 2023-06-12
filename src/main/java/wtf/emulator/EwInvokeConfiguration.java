@@ -19,6 +19,7 @@ public interface EwInvokeConfiguration {
   Property<Integer> getNumUniformShards();
   Property<Integer> getNumShards();
   Property<Integer> getNumBalancedShards();
+  Property<Integer> getShardTargetRuntime();
 
   ListProperty<String> getDirectoriesToPull();
 
@@ -33,6 +34,8 @@ public interface EwInvokeConfiguration {
   Property<Boolean> getTestCacheEnabled();
 
   Property<Integer> getNumFlakyTestAttempts();
+
+  Property<String> getFlakyTestRepeatMode();
 
   Property<String> getDisplayName();
 

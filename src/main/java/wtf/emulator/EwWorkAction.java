@@ -133,7 +133,9 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
           }
         }
 
-        if (getParameters().getNumBalancedShards().isPresent()) {
+        if (getParameters().getShardTargetRuntime().isPresent()) {
+          spec.args("--shard-target-runtime", getParameters().getShardTargetRuntime().get() + "m");
+        } else if (getParameters().getNumBalancedShards().isPresent()) {
           spec.args("--num-balanced-shards", String.valueOf(getParameters().getNumBalancedShards().get()));
         } else if (getParameters().getNumUniformShards().isPresent()) {
           spec.args("--num-uniform-shards", String.valueOf(getParameters().getNumUniformShards().get()));
@@ -164,6 +166,10 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
 
         if (getParameters().getNumFlakyTestAttempts().isPresent()) {
           spec.args("--num-flaky-test-attempts", getParameters().getNumFlakyTestAttempts().get().toString());
+        }
+
+        if (getParameters().getFlakyTestRepeatMode().isPresent()) {
+          spec.args("--flaky-test-repeat-mode", getParameters().getFlakyTestRepeatMode().get());
         }
 
         if (getParameters().getAsync().getOrElse(false)) {
