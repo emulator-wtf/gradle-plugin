@@ -19,6 +19,8 @@ import static java.util.function.Function.identity;
 public abstract class EwExtension implements EwInvokeConfiguration {
   private final Property<Integer> variantCount;
 
+  public abstract Property<Boolean> getCollectResultsTaskEnabled();
+
   public abstract Property<Boolean> getRepositoryCheckEnabled();
 
   public abstract Property<String> getVersion();
@@ -35,7 +37,7 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
   @Inject
   public EwExtension(ObjectFactory objectFactory) {
-    getVersion().convention("0.9.17");
+    getVersion().convention("0.9.19");
     getSideEffects().convention(false);
     getOutputs().convention(Collections.emptyList());
 

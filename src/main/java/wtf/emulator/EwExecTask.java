@@ -20,6 +20,8 @@ import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
+import wtf.emulator.exec.EwWorkAction;
+import wtf.emulator.exec.EwWorkParameters;
 
 import javax.inject.Inject;
 import java.time.Duration;
@@ -190,46 +192,48 @@ public abstract class EwExecTask extends DefaultTask {
   @TaskAction
   public void runTests() {
     WorkQueue workQueue = getWorkerExecutor().noIsolation();
-    workQueue.submit(EwWorkAction.class, p -> {
-      p.getClasspath().set(getClasspath().get().getFiles());
-      p.getToken().set(getToken());
-      p.getAppApk().set(getAppApk());
-      p.getTestApk().set(getTestApk());
-      p.getLibraryTestApk().set(getLibraryTestApk());
-      p.getOutputsDir().set(getOutputsDir());
-      p.getOutputs().set(getOutputTypes());
-      p.getRecordVideo().set(getRecordVideo());
-      p.getDevices().set(getDevices());
-      p.getUseOrchestrator().set(getUseOrchestrator());
-      p.getClearPackageData().set(getClearPackageData());
-      p.getWithCoverage().set(getWithCoverage());
-      p.getAdditionalApks().set(getAdditionalApks());
-      p.getEnvironmentVariables().set(getEnvironmentVariables());
-      p.getNumUniformShards().set(getNumUniformShards());
-      p.getNumBalancedShards().set(getNumBalancedShards());
-      p.getNumShards().set(getNumShards());
-      p.getShardTargetRuntime().set(getShardTargetRuntime());
-      p.getDirectoriesToPull().set(getDirectoriesToPull());
-      p.getSideEffects().set(getSideEffects());
-      p.getTimeout().set(getTestTimeout());
-      p.getFileCacheEnabled().set(getFileCacheEnabled());
-      p.getFileCacheTtl().set(getFileCacheTtl());
-      p.getTestCacheEnabled().set(getTestCacheEnabled());
-      p.getNumFlakyTestAttempts().set(getNumFlakyTestAttempts());
-      p.getFlakyTestRepeatMode().set(getFlakyTestRepeatMode());
-      p.getDisplayName().set(getDisplayName());
-      p.getScmUrl().set(getScmUrl());
-      p.getScmCommitHash().set(getScmCommitHash());
-      p.getWorkingDir().set(getWorkingDir());
-      p.getIgnoreFailures().set(getIgnoreFailures());
-      p.getOutputFailureFile().set(getOutputFailureFile());
-      p.getAsync().set(getAsync());
-      p.getPrintOutput().set(getPrintOutput());
-      p.getTestTargets().set(getTestTargets());
-      p.getProxyHost().set(getProxyHost());
-      p.getProxyPort().set(getProxyPort());
-      p.getProxyUser().set(getProxyUser());
-      p.getProxyPassword().set(getProxyPassword());
-    });
+    workQueue.submit(EwWorkAction.class, this::fillWorkParameters);
+  }
+
+  protected void fillWorkParameters(EwWorkParameters p) {
+    p.getClasspath().set(getClasspath().get().getFiles());
+    p.getToken().set(getToken());
+    p.getAppApk().set(getAppApk());
+    p.getTestApk().set(getTestApk());
+    p.getLibraryTestApk().set(getLibraryTestApk());
+    p.getOutputsDir().set(getOutputsDir());
+    p.getOutputs().set(getOutputTypes());
+    p.getRecordVideo().set(getRecordVideo());
+    p.getDevices().set(getDevices());
+    p.getUseOrchestrator().set(getUseOrchestrator());
+    p.getClearPackageData().set(getClearPackageData());
+    p.getWithCoverage().set(getWithCoverage());
+    p.getAdditionalApks().set(getAdditionalApks());
+    p.getEnvironmentVariables().set(getEnvironmentVariables());
+    p.getNumUniformShards().set(getNumUniformShards());
+    p.getNumBalancedShards().set(getNumBalancedShards());
+    p.getNumShards().set(getNumShards());
+    p.getShardTargetRuntime().set(getShardTargetRuntime());
+    p.getDirectoriesToPull().set(getDirectoriesToPull());
+    p.getSideEffects().set(getSideEffects());
+    p.getTimeout().set(getTestTimeout());
+    p.getFileCacheEnabled().set(getFileCacheEnabled());
+    p.getFileCacheTtl().set(getFileCacheTtl());
+    p.getTestCacheEnabled().set(getTestCacheEnabled());
+    p.getNumFlakyTestAttempts().set(getNumFlakyTestAttempts());
+    p.getFlakyTestRepeatMode().set(getFlakyTestRepeatMode());
+    p.getDisplayName().set(getDisplayName());
+    p.getScmUrl().set(getScmUrl());
+    p.getScmCommitHash().set(getScmCommitHash());
+    p.getWorkingDir().set(getWorkingDir());
+    p.getIgnoreFailures().set(getIgnoreFailures());
+    p.getOutputFailureFile().set(getOutputFailureFile());
+    p.getAsync().set(getAsync());
+    p.getPrintOutput().set(getPrintOutput());
+    p.getTestTargets().set(getTestTargets());
+    p.getProxyHost().set(getProxyHost());
+    p.getProxyPort().set(getProxyPort());
+    p.getProxyUser().set(getProxyUser());
+    p.getProxyPassword().set(getProxyPassword());
   }
 }

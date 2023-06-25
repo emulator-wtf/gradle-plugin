@@ -31,6 +31,9 @@ import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.TaskProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wtf.emulator.async.CollectResultsTask;
+import wtf.emulator.async.EwAsyncExecService;
+import wtf.emulator.async.EwAsyncExecTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,9 +57,13 @@ import static com.android.build.VariantOutput.FilterType.ABI;
 public class EwPlugin implements Plugin<Project> {
   private static final String ROOT_TASK_NAME = "testWithEmulatorWtf";
 
+  private static final String COLLECT_TASK_NAME = "collectEmulatorWtfResults";
+
   private static final String TOOL_CONFIGURATION = "emulatorWtfCli";
 
   private static final String MAVEN_URL = "https://maven.emulator.wtf/releases/";
+
+  private static final String BUILD_SERVICE_NAME = "";
 
   private static final Logger log = LoggerFactory.getLogger(EwPlugin.class);
 
@@ -64,6 +71,9 @@ public class EwPlugin implements Plugin<Project> {
   public void apply(Project target) {
     EwExtension ext = target.getExtensions().create("emulatorwtf", EwExtension.class);
     GradleCompat gradleCompat = GradleCompatFactory.get(target.getGradle());
+
+    // register async service
+    Provider<EwAsyncExecService> service = target.getGradle().getSharedServices().registerIfAbsent(EwAsyncExecService.NAME, EwAsyncExecService.class, spec -> {});
 
     // setup defaults
     ext.getBaseOutputDir().convention(target.getLayout().getBuildDirectory().dir("test-results"));
@@ -76,6 +86,27 @@ public class EwPlugin implements Plugin<Project> {
     Boolean configCache = gradleCompat.isConfigurationCacheEnabled();
 
     SetProperty<String> failureCollector = target.getObjects().setProperty(String.class);
+
+    // if asked, create collect results task
+    target.afterEvaluate(_proj -> {
+      if (ext.getCollectResultsTaskEnabled().getOrElse(false)) {
+        TaskProvider<CollectResultsTask> collectTask = target.getTasks().register(COLLECT_TASK_NAME, CollectResultsTask.class, task -> {
+          target.getRootProject().subprojects(sub -> sub.getTasks().matching(t -> EwExecTask.class.isAssignableFrom(t.getClass())).forEach(task::mustRunAfter));
+
+          task.setDescription("Collect emulator.wtf test results from all modules (async only)");
+
+          task.getClasspath().set(toolConfig);
+          task.getExecService().set(service);
+
+          task.getOutputsDir().set(ext.getBaseOutputDir());
+          task.getOutputTypes().set(ext.getOutputs());
+          task.getPrintOutput().set(ext.getPrintOutput());
+
+          // collect results task is never up-to-date
+          task.getOutputs().upToDateWhen(it -> false);
+        });
+      }
+    });
 
     // create root anchor task
     TaskProvider<EwExecSummaryTask> rootTask = target.getTasks().register(ROOT_TASK_NAME, EwExecSummaryTask.class, task -> {
@@ -104,19 +135,19 @@ public class EwPlugin implements Plugin<Project> {
     // configure application builds
     target.getPluginManager().withPlugin("com.android.application", plugin -> {
       AppExtension android = target.getExtensions().getByType(AppExtension.class);
-      android.getApplicationVariants().all(variant -> configureAppVariant(target, android, ext, toolConfig, rootTask, failureCollector, variant));
+      android.getApplicationVariants().all(variant -> configureAppVariant(target, android, ext, toolConfig, rootTask, failureCollector, service, variant));
     });
 
     // configure library builds
     target.getPluginManager().withPlugin("com.android.library", plugin -> {
       LibraryExtension android = target.getExtensions().getByType(LibraryExtension.class);
-      android.getLibraryVariants().all(variant -> configureLibraryVariant(target, android, ext, toolConfig, rootTask, failureCollector, variant));
+      android.getLibraryVariants().all(variant -> configureLibraryVariant(target, android, ext, toolConfig, rootTask, failureCollector, service, variant));
     });
 
     // configure test project builds
     target.getPluginManager().withPlugin("com.android.test", plugin -> {
       TestExtension android = target.getExtensions().getByType(TestExtension.class);
-      android.getApplicationVariants().all(variant -> configureTestVariant(target, android, ext, toolConfig, rootTask, failureCollector, variant));
+      android.getApplicationVariants().all(variant -> configureTestVariant(target, android, ext, toolConfig, rootTask, failureCollector, service, variant));
     });
 
     //TODO(madis) configure feature builds
@@ -184,10 +215,10 @@ public class EwPlugin implements Plugin<Project> {
     });
   }
 
-  public static void configureAppVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, ApplicationVariant variant) {
+  public static void configureAppVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, Provider<EwAsyncExecService> service, ApplicationVariant variant) {
     TestVariant testVariant = variant.getTestVariant();
     if (testVariant != null) {
-      configureEwTask(target, android, ext, toolConfig, rootTask, failureCollector, variant, task -> {
+      configureEwTask(target, android, ext, toolConfig, rootTask, failureCollector, service, variant, task -> {
         // TODO(madis) we could do better than main here, technically we do know the list of
         //             devices we're going to run against..
         BaseVariantOutput appOutput = getVariantOutput(testVariant.getTestedVariant());
@@ -202,10 +233,10 @@ public class EwPlugin implements Plugin<Project> {
     }
   }
 
-  public static void configureLibraryVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, LibraryVariant variant) {
+  public static void configureLibraryVariant(Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, Provider<EwAsyncExecService> service, LibraryVariant variant) {
     TestVariant testVariant = variant.getTestVariant();
     if (testVariant != null) {
-      configureEwTask(target, android, ext, toolConfig, rootTask, failureCollector, variant, task -> {
+      configureEwTask(target, android, ext, toolConfig, rootTask, failureCollector, service, variant, task -> {
         // library projects only have the test apk
         BaseVariantOutput testOutput = getVariantOutput(testVariant);
         task.dependsOn(testVariant.getPackageApplicationProvider());
@@ -214,8 +245,8 @@ public class EwPlugin implements Plugin<Project> {
     }
   }
 
-  public static void configureTestVariant(Project project, TestExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, ApplicationVariant variant) {
-    configureEwTask(project, android, ext, toolConfig, rootTask, failureCollector, variant, task -> {
+  public static void configureTestVariant(Project project, TestExtension android, EwExtension ext, Configuration toolConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, Provider<EwAsyncExecService> service, ApplicationVariant variant) {
+    configureEwTask(project, android, ext, toolConfig, rootTask, failureCollector, service, variant, task -> {
       // test projects have the test apk as a main output
       BaseVariantOutput testOutput = getVariantOutput(variant);
       task.dependsOn(variant.getPackageApplicationProvider());
@@ -248,6 +279,7 @@ public class EwPlugin implements Plugin<Project> {
       Configuration toolConfig,
       TaskProvider<EwExecSummaryTask> rootTask,
       SetProperty<String> failureCollector,
+      Provider<EwAsyncExecService> service,
       T variant,
       Consumer<EwExecTask> additionalConfigure
   ) {
@@ -282,107 +314,127 @@ public class EwPlugin implements Plugin<Project> {
 
     // register the work task
     String taskName = "test" + capitalize(variant.getName()) + "WithEmulatorWtf";
-    TaskProvider<EwExecTask> execTask = target.getTasks().register(taskName, EwExecTask.class, task -> {
-      task.setDescription("Run " + variant.getName() + " instrumentation tests with emulator.wtf");
-      task.setGroup("Verification");
 
-      if (ext.getSideEffects().isPresent() && ext.getSideEffects().get()) {
-        task.getOutputs().upToDateWhen((t) -> false);
-        task.getSideEffects().set(true);
-      }
+    final TaskProvider<? extends EwExecTask> execTask;
 
-      task.getClasspath().set(toolConfig);
-
-      task.getToken().set(ext.getToken().orElse(target.provider(() ->
-          System.getenv("EW_API_TOKEN"))));
-
-      // don't configure outputs in async mode
-      if (!task.getAsync().getOrElse(false)) {
-        task.getOutputsDir().set(ext.getBaseOutputDir().map(dir -> dir.dir(variant.getName())));
-        task.getOutputTypes().set(ext.getOutputs());
-      }
-
-      task.getRecordVideo().set(ext.getRecordVideo());
-
-      task.getDevices().set(ext.getDevices().map(devices -> devices.stream().map((config) -> {
-        final Map<String, String> out = new HashMap<>();
-        config.forEach((key, value) -> out.put(key, Objects.toString(value)));
-        return out;
-      }).collect(Collectors.toList())));
-
-      task.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(target.provider(() ->
-          android.getTestOptions().getExecution().equalsIgnoreCase("ANDROIDX_TEST_ORCHESTRATOR"))));
-
-      task.getClearPackageData().set(ext.getClearPackageData());
-
-      task.getWithCoverage().set(ext.getWithCoverage().orElse(target.provider(() ->
-          variant.getBuildType().isTestCoverageEnabled())));
-
-      task.getAdditionalApks().set(ext.getAdditionalApks());
-
-      task.getEnvironmentVariables().set(ext.getEnvironmentVariables()
-          .map((entries) -> {
-            // pick defaults from test instrumentation runner args, then fill with overrides
-            final Map<String, String> out = new HashMap<>(
-                variant.getMergedFlavor().getTestInstrumentationRunnerArguments());
-            entries.forEach((key, value) -> out.put(key, Objects.toString(value)));
-            return out;
-          }));
-
-      task.getNumUniformShards().set(ext.getNumUniformShards());
-      task.getNumShards().set(ext.getNumShards());
-      task.getNumBalancedShards().set(ext.getNumBalancedShards());
-      task.getShardTargetRuntime().set(ext.getShardTargetRuntime());
-
-      task.getDirectoriesToPull().set(ext.getDirectoriesToPull());
-
-      task.getTestTimeout().set(ext.getTimeout());
-
-      task.getFileCacheEnabled().set(ext.getFileCacheEnabled());
-      task.getFileCacheTtl().set(ext.getFileCacheTtl());
-
-      task.getTestCacheEnabled().set(ext.getTestCacheEnabled());
-
-      task.getNumFlakyTestAttempts().set(ext.getNumFlakyTestAttempts());
-      task.getFlakyTestRepeatMode().set(ext.getFlakyTestRepeatMode());
-
-      task.getScmUrl().set(ext.getScmUrl());
-      task.getScmCommitHash().set(ext.getScmCommitHash());
-
-      task.getPrintOutput().set(ext.getPrintOutput());
-
-      task.getDisplayName().set(ext.getDisplayName().orElse(ext.getVariantCount().map((count) -> {
-        String name = task.getProject().getPath();
-        if (name.equals(":")) {
-          // replace with rootProject name
-          name = task.getProject().getName();
-        }
-        if (count < 2) {
-          return name;
-        } else {
-          return name + ":" + variant.getName();
-        }
-      })));
-
-      task.getWorkingDir().set(target.getRootProject().getRootDir());
-
-      task.getOutputFailureFile().set(outputFailureFile);
-
-      task.getIgnoreFailures().set(ext.getIgnoreFailures());
-
-      task.getAsync().set(ext.getAsync());
-
-      task.getTestTargets().set(ext.getTestTargets());
-
-      task.getProxyHost().set(ext.getProxyHost());
-      task.getProxyPort().set(ext.getProxyPort());
-      task.getProxyUser().set(ext.getProxyUser());
-      task.getProxyPassword().set(ext.getProxyPassword());
-
-      additionalConfigure.accept(task);
-    });
+    if (ext.getAsync().isPresent() && ext.getAsync().get()) {
+      Consumer<EwAsyncExecTask> asyncAdditionalConfigure = (task) -> {
+        task.getExecService().set(service);
+        task.getOutputs().upToDateWhen((theTask) -> false);
+        additionalConfigure.accept(task);
+      };
+      execTask = target.getTasks().register(taskName, EwAsyncExecTask.class, task ->
+          configureTask(target, android, ext, toolConfig, variant, asyncAdditionalConfigure, outputFailureFile, task)
+      );
+    } else {
+      execTask = target.getTasks().register(taskName, EwExecTask.class, task ->
+          configureTask(target, android, ext, toolConfig, variant, additionalConfigure, outputFailureFile, task)
+      );
+    }
 
     rootTask.configure(task -> task.dependsOn(execTask));
+  }
+
+  private static <VariantType extends TestedVariant & BaseVariant, TaskType extends EwExecTask> void configureTask(
+      Project target, BaseExtension android, EwExtension ext, Configuration toolConfig, VariantType variant,
+      Consumer<TaskType> additionalConfigure, File outputFailureFile, TaskType task) {
+    task.setDescription("Run " + variant.getName() + " instrumentation tests with emulator.wtf");
+    task.setGroup("Verification");
+
+    if (ext.getSideEffects().isPresent() && ext.getSideEffects().get()) {
+      task.getOutputs().upToDateWhen((t) -> false);
+      task.getSideEffects().set(true);
+    }
+
+    task.getClasspath().set(toolConfig);
+
+    task.getToken().set(ext.getToken().orElse(target.provider(() ->
+        System.getenv("EW_API_TOKEN"))));
+
+    // don't configure outputs in async mode
+    if (!task.getAsync().getOrElse(false)) {
+      task.getOutputsDir().set(ext.getBaseOutputDir().map(dir -> dir.dir(variant.getName())));
+      task.getOutputTypes().set(ext.getOutputs());
+    }
+
+    task.getRecordVideo().set(ext.getRecordVideo());
+
+    task.getDevices().set(ext.getDevices().map(devices -> devices.stream().map((config) -> {
+      final Map<String, String> out = new HashMap<>();
+      config.forEach((key, value) -> out.put(key, Objects.toString(value)));
+      return out;
+    }).collect(Collectors.toList())));
+
+    task.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(target.provider(() ->
+        android.getTestOptions().getExecution().equalsIgnoreCase("ANDROIDX_TEST_ORCHESTRATOR"))));
+
+    task.getClearPackageData().set(ext.getClearPackageData());
+
+    task.getWithCoverage().set(ext.getWithCoverage().orElse(target.provider(() ->
+        variant.getBuildType().isTestCoverageEnabled())));
+
+    task.getAdditionalApks().set(ext.getAdditionalApks());
+
+    task.getEnvironmentVariables().set(ext.getEnvironmentVariables()
+        .map((entries) -> {
+          // pick defaults from test instrumentation runner args, then fill with overrides
+          final Map<String, String> out = new HashMap<>(
+              variant.getMergedFlavor().getTestInstrumentationRunnerArguments());
+          entries.forEach((key, value) -> out.put(key, Objects.toString(value)));
+          return out;
+        }));
+
+    task.getNumUniformShards().set(ext.getNumUniformShards());
+    task.getNumShards().set(ext.getNumShards());
+    task.getNumBalancedShards().set(ext.getNumBalancedShards());
+    task.getShardTargetRuntime().set(ext.getShardTargetRuntime());
+
+    task.getDirectoriesToPull().set(ext.getDirectoriesToPull());
+
+    task.getTestTimeout().set(ext.getTimeout());
+
+    task.getFileCacheEnabled().set(ext.getFileCacheEnabled());
+    task.getFileCacheTtl().set(ext.getFileCacheTtl());
+
+    task.getTestCacheEnabled().set(ext.getTestCacheEnabled());
+
+    task.getNumFlakyTestAttempts().set(ext.getNumFlakyTestAttempts());
+    task.getFlakyTestRepeatMode().set(ext.getFlakyTestRepeatMode());
+
+    task.getScmUrl().set(ext.getScmUrl());
+    task.getScmCommitHash().set(ext.getScmCommitHash());
+
+    task.getPrintOutput().set(ext.getPrintOutput());
+
+    task.getDisplayName().set(ext.getDisplayName().orElse(ext.getVariantCount().map((count) -> {
+      String name = target.getPath();
+      if (name.equals(":")) {
+        // replace with rootProject name
+        name = target.getName();
+      }
+      if (count < 2) {
+        return name;
+      } else {
+        return name + ":" + variant.getName();
+      }
+    })));
+
+    task.getWorkingDir().set(target.getRootProject().getRootDir());
+
+    task.getOutputFailureFile().set(outputFailureFile);
+
+    task.getIgnoreFailures().set(ext.getIgnoreFailures());
+
+    task.getAsync().set(ext.getAsync());
+
+    task.getTestTargets().set(ext.getTestTargets());
+
+    task.getProxyHost().set(ext.getProxyHost());
+    task.getProxyPort().set(ext.getProxyPort());
+    task.getProxyUser().set(ext.getProxyUser());
+    task.getProxyPassword().set(ext.getProxyPassword());
+
+    additionalConfigure.accept(task);
   }
 
   private static BaseVariantOutput getVariantOutput(BaseVariant variant) {
