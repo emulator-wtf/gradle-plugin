@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class EwAsyncExecService implements BuildService<BuildServiceParameters.None>, AutoCloseable {
   public static final String NAME = "ewAsyncExecService";
