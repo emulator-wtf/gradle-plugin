@@ -196,6 +196,19 @@ public class EwCliExecutor {
       spec.args("--outputs", outputs);
     }
 
+    if (parameters.getProxyHost().isPresent()) {
+      spec.args("--proxy-host", parameters.getProxyHost().get());
+    }
+    if (parameters.getProxyPort().isPresent()) {
+      spec.args("--proxy-port", parameters.getProxyPort().get().toString());
+    }
+    if (parameters.getProxyUser().isPresent()) {
+      spec.args("--proxy-user", parameters.getProxyUser().get());
+    }
+    if (parameters.getProxyPassword().isPresent()) {
+      spec.args("--proxy-password", parameters.getProxyPassword().get());
+    }
+
     spec.args("--json");
   }
 

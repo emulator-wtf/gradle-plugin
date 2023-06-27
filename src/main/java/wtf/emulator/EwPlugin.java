@@ -102,6 +102,11 @@ public class EwPlugin implements Plugin<Project> {
           task.getOutputTypes().set(ext.getOutputs());
           task.getPrintOutput().set(ext.getPrintOutput());
 
+          task.getProxyHost().set(ext.getProxyHost());
+          task.getProxyPort().set(ext.getProxyPort());
+          task.getProxyUser().set(ext.getProxyUser());
+          task.getProxyPassword().set(ext.getProxyPassword());
+
           // collect results task is never up-to-date
           task.getOutputs().upToDateWhen(it -> false);
         });

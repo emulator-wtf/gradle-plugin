@@ -17,4 +17,12 @@ public interface EwCollectResultsWorkParameters extends WorkParameters  {
   ListProperty<OutputType> getOutputs();
 
   Property<Boolean> getPrintOutput();
+
+  Property<String> getProxyHost();
+
+  Property<Integer> getProxyPort();
+
+  Property<String> getProxyUser();
+
+  Property<String> getProxyPassword();
 }

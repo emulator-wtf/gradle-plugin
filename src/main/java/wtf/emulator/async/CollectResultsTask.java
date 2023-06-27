@@ -36,6 +36,22 @@ public abstract class CollectResultsTask extends DefaultTask {
   @Input
   public abstract Property<Boolean> getPrintOutput();
 
+  @Optional
+  @Input
+  public abstract Property<String> getProxyHost();
+
+  @Optional
+  @Input
+  public abstract Property<Integer> getProxyPort();
+
+  @Optional
+  @Input
+  public abstract Property<String> getProxyUser();
+
+  @Optional
+  @Input
+  public abstract Property<String> getProxyPassword();
+
   @Internal
   public abstract Property<EwAsyncExecService> getExecService();
 
@@ -50,6 +66,10 @@ public abstract class CollectResultsTask extends DefaultTask {
     params.getOutputsDir().set(getOutputsDir());
     params.getOutputs().set(getOutputTypes());
     params.getPrintOutput().set(getPrintOutput());
+    params.getProxyHost().set(getProxyHost());
+    params.getProxyPort().set(getProxyPort());
+    params.getProxyUser().set(getProxyUser());
+    params.getProxyPassword().set(getProxyPassword());
 
     List<String> messages = getExecService().get().drainResults(params);
 
