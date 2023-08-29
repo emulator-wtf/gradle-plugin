@@ -10,4 +10,5 @@
 /integration-test/*/.gradle
 /integration-test/*/.idea
 /integration-test/*/build
+/integration-test/*/tests/build
 local.properties

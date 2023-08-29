@@ -1,0 +1,25 @@
+pluginManagement {
+  repositories {
+    maven {
+      mavenCentral()
+      url (new File(new File(rootDir.parentFile.parentFile, "build"), "maven-repo").toURI())
+    }
+  }
+
+  plugins {
+    id "wtf.emulator.gradle" version "+"
+  }
+}
+
+dependencyResolutionManagement {
+  repositories {
+    google()
+    mavenCentral()
+    maven {
+      url "https://maven.emulator.wtf/releases/"
+      content { includeGroup("wtf.emulator") }
+    }
+  }
+}
+
+include(":tests")

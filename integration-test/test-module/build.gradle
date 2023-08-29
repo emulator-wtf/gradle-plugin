@@ -1,0 +1,36 @@
+buildscript {
+  repositories {
+    google()
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:8.2.0-beta01'
+  }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+  compileSdk 33
+
+  defaultConfig {
+    applicationId 'wtf.emulator.sample'
+    minSdkVersion 23
+    targetSdkVersion 33
+    versionCode 1
+    versionName '1.0'
+  }
+
+  buildTypes {
+    debug {
+      testCoverageEnabled false
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility 1.8
+    targetCompatibility 1.8
+  }
+
+  namespace 'wtf.emulator.sample'
+}
