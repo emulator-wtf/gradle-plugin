@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     env:
-      EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
+      EW_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup JDK
@@ -46,7 +46,7 @@ jobs:
         working-directory: /usr/local/lib/android/sdk
       - name: Run latest tests
         env:
-          EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
+          EW_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: integration-test/latest
         run: ./gradlew testWithEmulatorWtf
 
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     env:
-      EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
+      EW_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup JDK
@@ -73,7 +73,7 @@ jobs:
         working-directory: /usr/local/lib/android/sdk
       - name: Run oldest tests
         env:
-          EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
+          EW_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: integration-test/oldest
         run: ./gradlew testWithEmulatorWtf
 
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     env:
-      EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
+      EW_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup JDK
@@ -100,6 +100,6 @@ jobs:
         working-directory: /usr/local/lib/android/sdk
       - name: Run abi splits tests
         env:
-          EW_API_TOKEN: ${{ secrets.EW_API_TOKEN }}
+          EW_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: integration-test/abi-splits
         run: ./gradlew testWithEmulatorWtf
