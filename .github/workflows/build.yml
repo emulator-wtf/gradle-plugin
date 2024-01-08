@@ -34,7 +34,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '20'
+          java-version: '21'
           cache: gradle
       - name: Fetch maven repo
         uses: actions/download-artifact@v3
