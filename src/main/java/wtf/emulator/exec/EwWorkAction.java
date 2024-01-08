@@ -1,9 +1,8 @@
 package wtf.emulator.exec;
 
+import org.gradle.api.file.FileSystemOperations;
 import org.gradle.process.ExecOperations;
 import org.gradle.workers.WorkAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
@@ -11,11 +10,17 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
   @Inject
   public abstract ExecOperations getExecOperations();
 
-  private final Logger log = LoggerFactory.getLogger("emulator.wtf");
+  @Inject
+  public abstract FileSystemOperations getFileSystemOperations();
 
   @Override
   public void execute() {
+    EwWorkParameters parameters = getParameters();
+    if (parameters.getOutputsDir().isPresent()) {
+      getFileSystemOperations().delete((spec) -> spec.delete(parameters.getOutputsDir()));
+    }
+
     EwCliExecutor cliExecutor = new EwCliExecutor(getExecOperations());
-    cliExecutor.invokeCli(getParameters());
+    cliExecutor.invokeCli(parameters);
   }
 }
