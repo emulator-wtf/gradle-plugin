@@ -9,9 +9,9 @@ gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.18.0"
 
 agp = "com.android.tools.build:gradle:4.0.0"
 
-gradle-api-v61 = "dev.gradleplugins:gradle-api:6.1.1"
-gradle-api-v66 = "dev.gradleplugins:gradle-api:6.6"
-gradle-api-v76 = "dev.gradleplugins:gradle-api:7.6"
+gradle-api-v61 = "dev.gradleplugins:gradle-api:8.4"
+gradle-api-v66 = "dev.gradleplugins:gradle-api:8.4"
+gradle-api-v76 = "dev.gradleplugins:gradle-api:8.4"
 
 semver4j = "com.vdurmont:semver4j:3.1.0"
 
