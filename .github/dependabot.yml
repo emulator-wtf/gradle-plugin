@@ -6,6 +6,9 @@ updates:
   schedule:
     interval: "daily"
     time: "16:00"
+  ignore:
+  # never bump gradle-api, we depend on specific versions for backwards-compat
+  - dependency-name: "dev.gradleplugins:gradle-api"
 - package-ecosystem: "gradle"
   directory: "/integration-test/latest"
   target-branch: "main"
