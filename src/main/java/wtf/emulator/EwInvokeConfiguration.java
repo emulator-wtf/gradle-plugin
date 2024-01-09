@@ -43,6 +43,10 @@ public interface EwInvokeConfiguration {
 
   Property<String> getScmCommitHash();
 
+  Property<String> getScmRefName();
+
+  Property<String> getScmPrUrl();
+
   Property<Boolean> getIgnoreFailures();
 
   Property<Boolean> getAsync();
