@@ -408,6 +408,8 @@ public class EwPlugin implements Plugin<Project> {
 
     task.getScmUrl().set(ext.getScmUrl());
     task.getScmCommitHash().set(ext.getScmCommitHash());
+    task.getScmRefName().set(ext.getScmRefName());
+    task.getScmPrUrl().set(ext.getScmPrUrl());
 
     task.getPrintOutput().set(ext.getPrintOutput());
 

@@ -150,6 +150,14 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract Property<String> getScmRefName();
+
+  @Optional
+  @Input
+  public abstract Property<String> getScmPrUrl();
+
+  @Optional
+  @Input
   public abstract Property<Boolean> getIgnoreFailures();
 
   @Optional
@@ -225,6 +233,8 @@ public abstract class EwExecTask extends DefaultTask {
     p.getDisplayName().set(getDisplayName());
     p.getScmUrl().set(getScmUrl());
     p.getScmCommitHash().set(getScmCommitHash());
+    p.getScmRefName().set(getScmRefName());
+    p.getScmPrUrl().set(getScmPrUrl());
     p.getWorkingDir().set(getWorkingDir());
     p.getIgnoreFailures().set(getIgnoreFailures());
     p.getOutputFailureFile().set(getOutputFailureFile());

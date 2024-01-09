@@ -236,6 +236,14 @@ public class EwCliExecutor {
       spec.args("--scm-commit", parameters.getScmCommitHash().get());
     }
 
+    if (parameters.getScmRefName().isPresent()) {
+      spec.args("--scm-ref-name", parameters.getScmRefName().get());
+    }
+
+    if (parameters.getScmPrUrl().isPresent()) {
+      spec.args("--scm-pr-url", parameters.getScmPrUrl().get());
+    }
+
     if (parameters.getLibraryTestApk().isPresent()) {
       spec.args("--library-test", parameters.getLibraryTestApk().get().getAsFile().getAbsolutePath());
     } else {
