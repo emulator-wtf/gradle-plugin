@@ -1,10 +1,10 @@
 [versions]
 
 [plugins]
-buildconfig = { id = "com.github.gmazzo.buildconfig", version = "4.0.2" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.3.3" }
 
 [libraries]
-gradle-plugins-buildconfig = "com.github.gmazzo.buildconfig:plugin:4.0.2"
+gradle-plugins-buildconfig = "com.github.gmazzo.buildconfig:plugin:5.3.3"
 gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.27.0"
 
 agp = "com.android.tools.build:gradle:4.0.0"
