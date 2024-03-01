@@ -41,5 +41,5 @@ dependencies {
   androidTestImplementation 'androidx.test:runner:1.5.2'
   androidTestImplementation 'androidx.test:core:1.5.0'
   androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
-  androidTestImplementation 'com.google.truth:truth:1.4.1'
+  androidTestImplementation 'com.google.truth:truth:1.4.2'
 }
