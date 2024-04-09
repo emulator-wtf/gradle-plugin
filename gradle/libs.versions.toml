@@ -17,7 +17,7 @@ semver4j = "com.vdurmont:semver4j:3.1.0"
 
 json = "org.json:json:20240303"
 
-commons-io = "commons-io:commons-io:2.16.0"
+commons-io = "commons-io:commons-io:2.16.1"
 
 [bundles]
 
