@@ -7,7 +7,7 @@ buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.3.5" }
 gradle-plugins-buildconfig = "com.github.gmazzo.buildconfig:plugin:5.3.5"
 gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.28.0"
 
-agp = "com.android.tools.build:gradle:4.0.0"
+agp = "com.android.tools.build:gradle:8.3.2"
 
 gradle-api-v61 = "dev.gradleplugins:gradle-api:6.1.1"
 gradle-api-v66 = "dev.gradleplugins:gradle-api:6.6"
