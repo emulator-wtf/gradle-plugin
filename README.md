@@ -269,6 +269,6 @@ The plugin is compatible with any working combination of these ranges:
 |-----------------------|--------|---------------|
 | JDK                   | 11     | 21            |
 | Gradle                | 6.6.1  | 8.7           |
-| Android Gradle Plugin | 4.0.0  | 8.5.0-alpha08 |
+| Android Gradle Plugin | 4.0.0  | 8.5.0-beta01 |
 
 NOTE: only the latest of any prerelase versions (`alpha`, `beta`, `rc`) is supported.
