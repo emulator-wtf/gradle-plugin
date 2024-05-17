@@ -97,8 +97,8 @@ The `emulatorwtf` plugin DSL supports the following configuration options:
 
 ```groovy
 emulatorwtf {
-  // CLI version to use, defaults to 0.10.9
-  version = '0.10.9'
+  // CLI version to use, defaults to 0.11.0
+  version = '0.11.0'
 
   // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
   // instead of this or passing this value in via a project property
@@ -271,4 +271,4 @@ The plugin is compatible with any working combination of these ranges:
 | Gradle                | 6.6.1  | 8.7           |
 | Android Gradle Plugin | 4.0.0  | 8.6.0-alpha01 |
 
-NOTE: only the latest of any prerelase versions (`alpha`, `beta`, `rc`) is supported.
+NOTE: only the latest of any prerelease versions (`alpha`, `beta`, `rc`) is supported.

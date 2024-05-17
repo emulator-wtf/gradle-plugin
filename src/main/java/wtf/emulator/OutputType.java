@@ -7,7 +7,8 @@ public enum OutputType {
   PULLED_DIRS("pulled_dirs"),
   RESULTS_XML("results_xml"),
   LOGCAT("logcat"),
-  CAPTURED_VIDEO("captured_video");
+  CAPTURED_VIDEO("captured_video"),
+  INDIVIDUAL_TEST_VIDEOS("individual_test_videos");
 
   private final String typeName;
 
