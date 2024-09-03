@@ -39,7 +39,7 @@ jobs:
           java-version: '21'
           cache: gradle
       - name: Fetch maven repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: gradle-plugin-repo
           path: build/maven-repo/
@@ -66,7 +66,7 @@ jobs:
           java-version: '11'
           cache: gradle
       - name: Fetch maven repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: gradle-plugin-repo
           path: build/maven-repo/
@@ -93,7 +93,7 @@ jobs:
           java-version: '20'
           cache: gradle
       - name: Fetch maven repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: gradle-plugin-repo
           path: build/maven-repo/
