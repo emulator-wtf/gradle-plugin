@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
@@ -20,7 +20,7 @@ jobs:
       - name: Build plugin
         run: ./gradlew assemble publishAllPublicationsToIntreeRepository -PRELEASE_SIGNING_ENABLED=false
       - name: Store maven repo as an artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: gradle-plugin-repo
           path: build/maven-repo/
@@ -31,15 +31,15 @@ jobs:
     env:
       EW_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '21'
           cache: gradle
       - name: Fetch maven repo
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: gradle-plugin-repo
           path: build/maven-repo/
@@ -66,7 +66,7 @@ jobs:
           java-version: '11'
           cache: gradle
       - name: Fetch maven repo
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: gradle-plugin-repo
           path: build/maven-repo/
@@ -93,7 +93,7 @@ jobs:
           java-version: '20'
           cache: gradle
       - name: Fetch maven repo
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: gradle-plugin-repo
           path: build/maven-repo/
