@@ -14,10 +14,11 @@ public enum EwProperties {
   }
 
   public boolean getFlag(Project project, boolean defaultValue) {
-    Object value = project.findProperty(PREFIX + "." + propName);
+    String value = GradleCompatFactory.get(project.getGradle()).
+        getGradleProperty(project, PREFIX + "." + propName);
     if (value == null) {
       return defaultValue;
     }
-    return Boolean.parseBoolean(value.toString());
+    return Boolean.parseBoolean(value);
   }
 }

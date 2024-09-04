@@ -8,7 +8,9 @@ dependencies {
   api(projects.gradleCompatApi)
 
   implementation(projects.gradleCompat61)
+  implementation(projects.gradleCompat65)
   implementation(projects.gradleCompat66)
+  implementation(projects.gradleCompat74)
   implementation(projects.gradleCompat76)
 
   implementation(libs.semver4j)

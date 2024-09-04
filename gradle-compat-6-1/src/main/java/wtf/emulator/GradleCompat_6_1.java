@@ -3,11 +3,23 @@ package wtf.emulator;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Provider;
 
+import javax.annotation.Nullable;
+
 public class GradleCompat_6_1 implements GradleCompat {
   @Override
   public boolean isConfigurationCacheEnabled() {
     // config cache starting from 6.6
     return false;
+  }
+
+  @Nullable
+  @Override
+  public String getGradleProperty(Project project, String name) {
+    Object value = project.getRootProject().findProperty(name);
+    if (value == null) {
+      return null;
+    }
+    return value.toString();
   }
 
   @Override

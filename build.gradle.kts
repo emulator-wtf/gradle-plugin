@@ -24,5 +24,5 @@ dependencies {
 
 buildConfig {
   packageName("wtf.emulator")
-  buildConfigField("String", "VERSION", "\"${project.findProperty("VERSION_NAME")?.toString() ?: project.version}\"")
+  buildConfigField("String", "VERSION", "\"${providers.gradleProperty("VERSION_NAME").orNull ?: project.version}\"")
 }

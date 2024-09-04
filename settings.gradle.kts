@@ -24,6 +24,8 @@ include(":gradle-compat-api")
 include(":gradle-compat")
 include(":gradle-compat-6-1")
 include(":gradle-compat-6-6")
+include(":gradle-compat-6-5")
+include(":gradle-compat-7-4")
 include(":gradle-compat-7-6")
 
 rootProject.name = "gradle-plugin"
