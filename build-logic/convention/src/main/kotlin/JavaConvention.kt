@@ -11,7 +11,7 @@ import java.net.URI
 class JavaConvention : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
-      target.version = target.findProperty("VERSION_NAME")?.toString() ?: target.version
+      target.version = providers.gradleProperty("VERSION_NAME").orNull ?: target.version
 
       with(pluginManager) {
         apply("java-library")
