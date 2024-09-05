@@ -3,14 +3,15 @@ pluginManagement {
   repositories {
     mavenCentral()
     maven("https://plugins.gradle.org/m2/")
+    google()
   }
 }
 
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
-    google()
     mavenCentral()
+    google()
   }
 }
 

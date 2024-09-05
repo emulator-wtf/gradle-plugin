@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.7.0-alpha09" type="baseline" client="gradle" dependencies="false" name="AGP (8.7.0-alpha09)" variant="all" version="8.7.0-alpha09">
+
+    <issue
+        id="EagerGradleConfiguration"
+        message="Avoid using method matching"
+        errorLine1="          target.getRootProject().subprojects(sub -> sub.getTasks().matching(t -> EwExecTask.class.isAssignableFrom(t.getClass())).forEach(task::mustRunAfter));"
+        errorLine2="                                                                    ~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/EwPlugin.java"
+            line="94"
+            column="69"/>
+    </issue>
+
+    <issue
+        id="EagerGradleConfiguration"
+        message="Use configureEach instead of all"
+        errorLine1="      android.getApplicationVariants().all(variant -> configureAppVariant(target, android, ext, toolConfig, rootTask, failureCollector, service, variant));"
+        errorLine2="                                       ~~~">
+        <location
+            file="src/main/java/wtf/emulator/EwPlugin.java"
+            line="143"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="EagerGradleConfiguration"
+        message="Use configureEach instead of all"
+        errorLine1="      android.getLibraryVariants().all(variant -> configureLibraryVariant(target, android, ext, toolConfig, rootTask, failureCollector, service, variant));"
+        errorLine2="                                   ~~~">
+        <location
+            file="src/main/java/wtf/emulator/EwPlugin.java"
+            line="149"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="EagerGradleConfiguration"
+        message="Use configureEach instead of all"
+        errorLine1="      android.getApplicationVariants().all(variant -> configureTestVariant(target, android, ext, toolConfig, rootTask, failureCollector, service, variant));"
+        errorLine2="                                       ~~~">
+        <location
+            file="src/main/java/wtf/emulator/EwPlugin.java"
+            line="155"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="EagerGradleConfiguration"
+        message="Use configureEach instead of all"
+        errorLine1="        targetAndroid.getApplicationVariants().all(targetVariant -> {"
+        errorLine2="                                               ~~~">
+        <location
+            file="src/main/java/wtf/emulator/EwPlugin.java"
+            line="268"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="GradleProjectIsolation"
+        message="Avoid using method getRootProject"
+        errorLine1="          target.getRootProject().subprojects(sub -> sub.getTasks().matching(t -> EwExecTask.class.isAssignableFrom(t.getClass())).forEach(task::mustRunAfter));"
+        errorLine2="                 ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/EwPlugin.java"
+            line="94"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="GradleProjectIsolation"
+        message="Avoid using method findProject"
+        errorLine1="      Project target = project.getRootProject().findProject(targetProjectPath);"
+        errorLine2="                                                ~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/EwPlugin.java"
+            line="262"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="GradleProjectIsolation"
+        message="Avoid using method getRootProject"
+        errorLine1="      Project target = project.getRootProject().findProject(targetProjectPath);"
+        errorLine2="                               ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/EwPlugin.java"
+            line="262"
+            column="32"/>
+    </issue>
+
+    <issue
+        id="GradleProjectIsolation"
+        message="Avoid using method getRootProject"
+        errorLine1="    task.getWorkingDir().set(target.getRootProject().getRootDir());"
+        errorLine2="                                    ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/EwPlugin.java"
+            line="429"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs"
+        errorLine1="import com.android.build.gradle.internal.api.TestedVariant;"
+        errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/EwPlugin.java"
+            line="13"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="InternalGradleApiUsage"
+        message="Avoid using internal Gradle APIs"
+        errorLine1="import org.gradle.api.internal.GradleInternal;"
+        errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/EwPlugin.java"
+            line="28"
+            column="1"/>
+    </issue>
+
+</issues>

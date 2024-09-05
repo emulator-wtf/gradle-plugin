@@ -6,6 +6,7 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JvmVendorSpec
+import org.gradle.kotlin.dsl.dependencies
 import java.net.URI
 
 class JavaConvention : Plugin<Project> {
@@ -17,6 +18,7 @@ class JavaConvention : Plugin<Project> {
         apply("java-library")
         apply("maven-publish")
         apply("com.vanniktech.maven.publish")
+        apply("com.android.lint")
       }
 
       with(extensions.getByType(JavaPluginExtension::class.java)) {
