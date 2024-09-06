@@ -65,6 +65,8 @@ public class TaskConfigurator {
     // create failure property for each variant
     Path intermediateFolder = target.getBuildDir().toPath().resolve("intermediates").resolve("emulatorwtf");
     File outputFailureFile = intermediateFolder.resolve("failure_" + variant.getName() + ".txt").toFile();
+    File outputFile = intermediateFolder.resolve(variant.getName() + ".json").toFile();
+
     Provider<String> outputFailure = target.provider(() -> {
       try {
         if (outputFailureFile.exists()) {
@@ -90,11 +92,11 @@ public class TaskConfigurator {
         additionalConfigure.accept(task);
       };
       execTask = target.getTasks().register(taskName, EwAsyncExecTask.class, task ->
-          configureTask(android, variant, asyncAdditionalConfigure, outputFailureFile, task)
+          configureTask(android, variant, asyncAdditionalConfigure, outputFile, outputFailureFile, task)
       );
     } else {
       execTask = target.getTasks().register(taskName, EwExecTask.class, task ->
-          configureTask(android, variant, additionalConfigure, outputFailureFile, task)
+          configureTask(android, variant, additionalConfigure, outputFile, outputFailureFile, task)
       );
     }
 
@@ -105,6 +107,7 @@ public class TaskConfigurator {
       BaseExtension android,
       VariantType variant,
       Consumer<TaskType> additionalConfigure,
+      File outputFile,
       File outputFailureFile,
       TaskType task
   ) {
@@ -115,6 +118,8 @@ public class TaskConfigurator {
       task.getOutputs().upToDateWhen((t) -> false);
       task.getSideEffects().set(true);
     }
+
+    task.getOutputFile().set(outputFile);
 
     task.getClasspath().set(toolConfig);
 

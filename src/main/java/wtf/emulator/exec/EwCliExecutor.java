@@ -137,12 +137,21 @@ public class EwCliExecutor {
         System.out.println(errorOut);
       }
 
-      // write output json to the intermediate file
       final EwCliOutput output;
       if (parameters.getAsync().getOrElse(false)) {
         output = EwCliOutput.create(gson.fromJson(jsonOut.toString(), CliOutputAsync.class));
       } else {
         output = EwCliOutput.create(gson.fromJson(jsonOut.toString(), CliOutputSync.class));
+      }
+
+      // write output json to the intermediate file
+      if (parameters.getOutputFile().isPresent()) {
+        File outputFile = parameters.getOutputFile().get().getAsFile();
+        try {
+          FileUtils.write(outputFile, gson.toJson(output), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+          /* ignore */
+        }
       }
 
       if (result.getExitValue() != 0 && output.sync() != null) {
