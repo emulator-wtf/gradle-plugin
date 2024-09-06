@@ -3,6 +3,7 @@ package wtf.emulator.exec;
 import org.gradle.api.file.FileSystemOperations;
 import org.gradle.process.ExecOperations;
 import org.gradle.workers.WorkAction;
+import wtf.emulator.EwPlugin;
 
 import javax.inject.Inject;
 
@@ -20,7 +21,7 @@ public abstract class EwWorkAction implements WorkAction<EwWorkParameters> {
       getFileSystemOperations().delete((spec) -> spec.delete(parameters.getOutputsDir()));
     }
 
-    EwCliExecutor cliExecutor = new EwCliExecutor(getExecOperations());
+    EwCliExecutor cliExecutor = new EwCliExecutor(EwPlugin.gson, getExecOperations());
     cliExecutor.invokeCli(parameters);
   }
 }

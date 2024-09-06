@@ -6,7 +6,10 @@ import org.gradle.process.ExecOperations;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wtf.emulator.EwPlugin;
+import wtf.emulator.data.CliOutputAsync;
 import wtf.emulator.exec.EwCliExecutor;
+import wtf.emulator.exec.EwCliOutput;
 import wtf.emulator.exec.EwCollectResultsWorkParameters;
 import wtf.emulator.exec.EwWorkParameters;
 
@@ -40,17 +43,19 @@ public abstract class EwAsyncExecService implements BuildService<BuildServicePar
   public void executeAsync(EwWorkParameters parameters) {
     log.info("Execute asynchronously: {}", parameters.getDisplayName().get());
 
-    EwCliExecutor cliExecutor = new EwCliExecutor(getExecOperations());
+    EwCliExecutor cliExecutor = new EwCliExecutor(EwPlugin.gson, getExecOperations());
 
     reqsInFlight.incrementAndGet();
     futures.add(CompletableFuture.supplyAsync(() -> {
       try {
-        JSONObject obj = cliExecutor.invokeCli(parameters);
-        String runUuid = obj.getString("runUuid");
-        String runToken = obj.getString("runToken");
-        String startTime = obj.getString("startTime");
+        CliOutputAsync out = cliExecutor.invokeCli(parameters).async();
+
+        if (out == null) {
+          throw new RuntimeException("No async output, this looks like a bug in the wtf.emulator.gradle plugin? Let us know at support@emulator.wtf!");
+        }
+
         String displayName = parameters.getDisplayName().get();
-        return new AsyncRunData(runUuid, runToken, startTime, displayName);
+        return new AsyncRunData(out.runUuid(), out.runToken(), out.startTime(), displayName);
       }
       finally {
         reqsInFlight.decrementAndGet();
@@ -59,7 +64,7 @@ public abstract class EwAsyncExecService implements BuildService<BuildServicePar
   }
 
   public List<String> drainResults(EwCollectResultsWorkParameters parameters) {
-    EwCliExecutor cliExecutor = new EwCliExecutor(getExecOperations());
+    EwCliExecutor cliExecutor = new EwCliExecutor(EwPlugin.gson, getExecOperations());
 
     //noinspection unchecked
     CompletableFuture<String>[] messageFutures = futures.stream().map((future) ->

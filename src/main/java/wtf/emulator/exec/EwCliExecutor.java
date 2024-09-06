@@ -1,5 +1,6 @@
 package wtf.emulator.exec;
 
+import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.gradle.api.GradleException;
@@ -7,12 +8,15 @@ import org.gradle.api.file.Directory;
 import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecResult;
 import org.gradle.process.JavaExecSpec;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wtf.emulator.BuildConfig;
 import wtf.emulator.OutputType;
+import wtf.emulator.data.CliOutputAsync;
+import wtf.emulator.data.CliOutputSync;
 import wtf.emulator.ext.Slf4jInfoOutputStream;
 
 import java.io.ByteArrayOutputStream;
@@ -28,9 +32,11 @@ import java.util.stream.Collectors;
 public class EwCliExecutor {
   private final Logger log = LoggerFactory.getLogger("emulator.wtf");
 
+  private final Gson gson;
   private final ExecOperations execOperations;
 
-  public EwCliExecutor(ExecOperations execOperations) {
+  public EwCliExecutor(Gson gson, ExecOperations execOperations) {
+    this.gson = gson;
     this.execOperations = execOperations;
   }
 
@@ -101,7 +107,7 @@ public class EwCliExecutor {
     }
   }
 
-  public JSONObject invokeCli(EwWorkParameters parameters) {
+  public EwCliOutput invokeCli(EwWorkParameters parameters) {
     // materialize token
     final String token = parameters.getToken().getOrNull();
     if (token == null) {
@@ -127,25 +133,29 @@ public class EwCliExecutor {
       });
 
       if (!parameters.getPrintOutput().getOrElse(false) && result.getExitValue() != 0) {
-        // always print output even if it wasn't request in case of an error
+        // always print output even if it wasn't requested in case of an error
         System.out.println(errorOut);
       }
 
-      if (result.getExitValue() != 0) {
-        JSONObject json = new JSONObject(jsonOut.toString());
-        String resultsUrl = json.optString("resultsUrl");
-        String error = json.optString("error");
+      final EwCliOutput output;
+      if (parameters.getAsync().getOrElse(false)) {
+        output = EwCliOutput.create(gson.fromJson(jsonOut.toString(), CliOutputAsync.class));
+      } else {
+        output = EwCliOutput.create(gson.fromJson(jsonOut.toString(), CliOutputSync.class));
+      }
 
-        final String message;
-        if (error != null && error.length() > 0) {
-          message = "emulator.wtf test run failed: " + error;
-        } else {
-          if (resultsUrl != null && resultsUrl.length() > 0) {
-            message = "emulator.wtf test run failed. Details: " + resultsUrl;
-          } else {
-            message = "emulator.wtf test run failed";
-          }
+      // write output json to the intermediate file
+      if (parameters.getOutputFile().isPresent()) {
+        File outputFile = parameters.getOutputFile().get().getAsFile();
+        try {
+          FileUtils.write(outputFile, gson.toJson(output), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+          /* ignore */
         }
+      }
+
+      if (result.getExitValue() != 0 && output.sync() != null) {
+        final String message = getFailureMessage(output.sync());
 
         if (parameters.getIgnoreFailures().getOrElse(false)) {
           log.warn(message);
@@ -163,16 +173,33 @@ public class EwCliExecutor {
               /* ignore */
             }
           }
-          return json;
+          return output;
         } else {
           throw new GradleException(message);
         }
       } else {
-        return new JSONObject(jsonOut.toString());
+        return output;
       }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static @NotNull String getFailureMessage(CliOutputSync output) {
+    String resultsUrl = output.resultsUrl();
+    String error = output.runResultsSummary() != null ? output.runResultsSummary().error() : null;
+
+    final String message;
+    if (error != null && !error.isEmpty()) {
+      message = "emulator.wtf test run failed: " + error;
+    } else {
+      if (resultsUrl != null && !resultsUrl.isEmpty()) {
+        message = "emulator.wtf test run failed. Details: " + resultsUrl;
+      } else {
+        message = "emulator.wtf test run failed";
+      }
+    }
+    return message;
   }
 
   protected static void configureCollectExec(JavaExecSpec spec, EwCollectResultsWorkParameters parameters,
