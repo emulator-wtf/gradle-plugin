@@ -55,11 +55,11 @@ public abstract class EwExtension implements EwInvokeConfiguration {
     this.filter = filter;
   }
 
-  protected Action<EwVariantFilter> getFilter() {
+  public Action<EwVariantFilter> getFilter() {
     return this.filter;
   }
 
-  protected Property<Integer> getVariantCount() {
+  public Property<Integer> getVariantCount() {
     return this.variantCount;
   }
 
