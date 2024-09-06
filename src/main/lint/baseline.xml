@@ -7,53 +7,9 @@
         errorLine1="          target.getRootProject().subprojects(sub -> sub.getTasks().matching(t -> EwExecTask.class.isAssignableFrom(t.getClass())).forEach(task::mustRunAfter));"
         errorLine2="                                                                    ~~~~~~~~">
         <location
-            file="src/main/java/wtf/emulator/EwPlugin.java"
-            line="94"
+            file="src/main/java/wtf/emulator/setup/ProjectConfigurator.java"
+            line="154"
             column="69"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Use configureEach instead of all"
-        errorLine1="      android.getApplicationVariants().all(variant -> configureAppVariant(target, android, ext, toolConfig, rootTask, failureCollector, service, variant));"
-        errorLine2="                                       ~~~">
-        <location
-            file="src/main/java/wtf/emulator/EwPlugin.java"
-            line="143"
-            column="40"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Use configureEach instead of all"
-        errorLine1="      android.getLibraryVariants().all(variant -> configureLibraryVariant(target, android, ext, toolConfig, rootTask, failureCollector, service, variant));"
-        errorLine2="                                   ~~~">
-        <location
-            file="src/main/java/wtf/emulator/EwPlugin.java"
-            line="149"
-            column="36"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Use configureEach instead of all"
-        errorLine1="      android.getApplicationVariants().all(variant -> configureTestVariant(target, android, ext, toolConfig, rootTask, failureCollector, service, variant));"
-        errorLine2="                                       ~~~">
-        <location
-            file="src/main/java/wtf/emulator/EwPlugin.java"
-            line="155"
-            column="40"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Use configureEach instead of all"
-        errorLine1="        targetAndroid.getApplicationVariants().all(targetVariant -> {"
-        errorLine2="                                               ~~~">
-        <location
-            file="src/main/java/wtf/emulator/EwPlugin.java"
-            line="268"
-            column="48"/>
     </issue>
 
     <issue
@@ -62,31 +18,9 @@
         errorLine1="          target.getRootProject().subprojects(sub -> sub.getTasks().matching(t -> EwExecTask.class.isAssignableFrom(t.getClass())).forEach(task::mustRunAfter));"
         errorLine2="                 ~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/wtf/emulator/EwPlugin.java"
-            line="94"
+            file="src/main/java/wtf/emulator/setup/ProjectConfigurator.java"
+            line="154"
             column="18"/>
-    </issue>
-
-    <issue
-        id="GradleProjectIsolation"
-        message="Avoid using method findProject"
-        errorLine1="      Project target = project.getRootProject().findProject(targetProjectPath);"
-        errorLine2="                                                ~~~~~~~~~~~">
-        <location
-            file="src/main/java/wtf/emulator/EwPlugin.java"
-            line="262"
-            column="49"/>
-    </issue>
-
-    <issue
-        id="GradleProjectIsolation"
-        message="Avoid using method getRootProject"
-        errorLine1="      Project target = project.getRootProject().findProject(targetProjectPath);"
-        errorLine2="                               ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/wtf/emulator/EwPlugin.java"
-            line="262"
-            column="32"/>
     </issue>
 
     <issue
@@ -95,9 +29,31 @@
         errorLine1="    task.getWorkingDir().set(target.getRootProject().getRootDir());"
         errorLine2="                                    ~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/wtf/emulator/EwPlugin.java"
-            line="429"
+            file="src/main/java/wtf/emulator/setup/TaskConfigurator.java"
+            line="194"
             column="37"/>
+    </issue>
+
+    <issue
+        id="GradleProjectIsolation"
+        message="Avoid using method findProject"
+        errorLine1="      Project testTarget = target.getRootProject().findProject(targetProjectPath);"
+        errorLine2="                                                   ~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
+            line="89"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="GradleProjectIsolation"
+        message="Avoid using method getRootProject"
+        errorLine1="      Project testTarget = target.getRootProject().findProject(targetProjectPath);"
+        errorLine2="                                  ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
+            line="89"
+            column="35"/>
     </issue>
 
     <issue
@@ -106,8 +62,8 @@
         errorLine1="import com.android.build.gradle.internal.api.TestedVariant;"
         errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/wtf/emulator/EwPlugin.java"
-            line="13"
+            file="src/main/java/wtf/emulator/setup/TaskConfigurator.java"
+            line="5"
             column="1"/>
     </issue>
 
@@ -117,8 +73,8 @@
         errorLine1="import org.gradle.api.internal.GradleInternal;"
         errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/wtf/emulator/EwPlugin.java"
-            line="28"
+            file="src/main/java/wtf/emulator/setup/ProjectConfigurator.java"
+            line="13"
             column="1"/>
     </issue>
 

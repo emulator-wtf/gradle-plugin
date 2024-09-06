@@ -6,7 +6,7 @@ public class EwVariantFilter {
   private final BaseVariant variant;
   private boolean enabled = true;
 
-  protected EwVariantFilter(BaseVariant variant) {
+  public EwVariantFilter(BaseVariant variant) {
     this.variant = variant;
   }
 
