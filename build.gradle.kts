@@ -16,11 +16,20 @@ gradlePlugin {
 
 dependencies {
   compileOnly(libs.agp)
+  compileOnly(libs.autovalue.annotations)
+
+  api(libs.jsr305)
+
+  annotationProcessor(libs.autovalue.compiler)
+  annotationProcessor(libs.autovalue.gson.extension)
+  annotationProcessor(libs.autovalue.gson.factory)
 
   implementation(projects.gradleCompat)
   implementation(libs.semver4j)
   implementation(libs.json)
+  implementation(libs.gson)
   implementation(libs.commons.io)
+  implementation(libs.autovalue.gson.runtime)
 
   lintChecks(libs.lint.gradle)
 }

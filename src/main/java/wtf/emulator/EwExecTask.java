@@ -15,6 +15,7 @@ import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskAction;
@@ -54,6 +55,9 @@ public abstract class EwExecTask extends DefaultTask {
   @Optional
   @OutputDirectory
   public abstract DirectoryProperty getOutputsDir();
+
+  @OutputFile
+  public abstract RegularFileProperty getOutputFile();
 
   @Optional
   @Input
@@ -245,5 +249,6 @@ public abstract class EwExecTask extends DefaultTask {
     p.getProxyPort().set(getProxyPort());
     p.getProxyUser().set(getProxyUser());
     p.getProxyPassword().set(getProxyPassword());
+    p.getOutputFile().set(getOutputFile());
   }
 }
