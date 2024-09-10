@@ -34,6 +34,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 
 dependencies {
   implementation(libs.gradle.plugins.publish)
+  implementation(libs.gradle.plugins.lint)
 }
 
 gradlePlugin {

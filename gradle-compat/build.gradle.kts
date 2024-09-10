@@ -10,8 +10,15 @@ dependencies {
   implementation(projects.gradleCompat61)
   implementation(projects.gradleCompat65)
   implementation(projects.gradleCompat66)
+  implementation(projects.gradleCompat68)
   implementation(projects.gradleCompat74)
-  implementation(projects.gradleCompat76)
 
   implementation(libs.semver4j)
+}
+
+lint {
+  // TODO(madis): these two trigger for various dev.gradle.plugins:gradle-api:* for some reason,
+  //              but why in this project? need to investigate
+  disable.add("GradleDependency")
+  disable.add("SimilarGradleDependency")
 }
