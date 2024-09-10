@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.8.0-alpha01" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0-alpha01)" variant="all" version="8.8.0-alpha01">
+
+    <issue
+        id="GradleProjectIsolation"
+        message="Avoid using method findProject"
+        errorLine1="      Project testTarget = target.getRootProject().findProject(targetProjectPath);"
+        errorLine2="                                                   ~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
+            line="89"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="GradleProjectIsolation"
+        message="Avoid using method getRootProject"
+        errorLine1="      Project testTarget = target.getRootProject().findProject(targetProjectPath);"
+        errorLine2="                                  ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
+            line="89"
+            column="35"/>
+    </issue>
+
+</issues>

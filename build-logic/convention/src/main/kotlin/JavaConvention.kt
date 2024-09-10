@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.Lint
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -6,7 +7,6 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JvmVendorSpec
-import org.gradle.kotlin.dsl.dependencies
 import java.net.URI
 
 class JavaConvention : Plugin<Project> {
@@ -29,6 +29,10 @@ class JavaConvention : Plugin<Project> {
           languageVersion.set(JavaLanguageVersion.of(11))
           vendor.set(JvmVendorSpec.AZUL)
         }
+      }
+
+      with(extensions.getByType(Lint::class.java)) {
+        baseline = target.file("src/lint/baseline.xml")
       }
 
       // in-tree and mavenlocal publishing

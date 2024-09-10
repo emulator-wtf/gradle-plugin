@@ -6,11 +6,6 @@ import org.gradle.api.provider.Provider;
 import javax.annotation.Nullable;
 
 public class GradleCompat_6_1 implements GradleCompat {
-  @Override
-  public boolean isConfigurationCacheEnabled() {
-    // config cache starting from 6.6
-    return false;
-  }
 
   @Nullable
   @Override
@@ -28,5 +23,20 @@ public class GradleCompat_6_1 implements GradleCompat {
     project.afterEvaluate(it ->
       it.getDependencies().add(configurationName, notationProvider.get())
     );
+  }
+
+  @Override
+  public boolean canAddMavenRepoToProject(Project project) {
+    return true;
+  }
+
+  @Override
+  public boolean isRepoRegistered(Project project, String repository) {
+    return false;
+  }
+
+  @Override
+  public String getCategoryAttributeVerification() {
+    return "verification";
   }
 }
