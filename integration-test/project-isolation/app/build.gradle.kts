@@ -26,6 +26,7 @@ android {
 
 emulatorwtf {
   version.set("1.0.0-SNAPSHOT")
+  async.set(true)
 }
 
 dependencies {
@@ -35,4 +36,6 @@ dependencies {
   androidTestImplementation("androidx.test:core:1.6.1")
   androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
   androidTestImplementation("com.google.truth:truth:1.4.4")
+
+  testImplementation("junit:junit:4.13.2")
 }

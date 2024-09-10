@@ -1,2 +1,2 @@
 [plugins]
-android = { id = "com.android.application", version = "8.7.0-beta01" }
+android = { id = "com.android.application", version = "8.8.0-alpha01" }

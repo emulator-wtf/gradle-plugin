@@ -3,13 +3,9 @@ package wtf.emulator.exec;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.TeeOutputStream;
-import org.gradle.api.GradleException;
-import org.gradle.api.file.Directory;
 import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecResult;
 import org.gradle.process.JavaExecSpec;
-import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wtf.emulator.BuildConfig;
@@ -40,28 +36,13 @@ public class EwCliExecutor {
     this.execOperations = execOperations;
   }
 
-  public String collectRunResults(EwCollectResultsWorkParameters parameters, String runUuid, String runToken, String startTime, String displayName, String folderName) {
-    // materialize token
-    if (runToken == null) {
-      throw new IllegalArgumentException("Missing token for collecting emulator.wtf results. This is probably a bug - let us know at support@emulator.wtf.");
-    }
-
+  public void collectRunResults(EwCollectResultsWorkParameters parameters) {
     try {
       ByteArrayOutputStream jsonOut = new ByteArrayOutputStream();
       ByteArrayOutputStream errorOut = new ByteArrayOutputStream();
 
       ExecResult result = execOperations.javaexec(spec -> {
-
-        Directory baseOutputDir = parameters.getOutputsDir().getOrNull();
-        final File outputsDir;
-
-        if (baseOutputDir == null) {
-          outputsDir = null;
-        } else {
-          outputsDir = new File(baseOutputDir.getAsFile(), folderName);
-        }
-
-        configureCollectExec(spec, parameters, runUuid, runToken, startTime, outputsDir);
+        configureCollectExec(spec, parameters);
         if (parameters.getPrintOutput().getOrElse(false)) {
           // redirect forked proc stderr to stdout
           spec.setErrorOutput(System.out);
@@ -78,28 +59,21 @@ public class EwCliExecutor {
         System.out.println(errorOut);
       }
 
-      JSONObject json = new JSONObject(jsonOut.toString());
-      String resultsUrl = json.optString("resultsUrl");
+      CliOutputSync resultsOutput = gson.fromJson(jsonOut.toString(), CliOutputSync.class).toBuilder().timeMs(null).build();
+      EwCliOutput.Builder outputBuilder = EwCliOutput.builder(resultsOutput);
 
-      if (result.getExitValue() != 0) {
-        String error = json.optString("error");
+      if (parameters.getDisplayName().isPresent()) {
+        outputBuilder.displayName(parameters.getDisplayName().get());
+      }
 
-        final String message;
-        if (error != null && error.length() > 0) {
-          message = "❌ " + displayName + " tests failed: " + error;
-        } else {
-          if (resultsUrl != null && resultsUrl.length() > 0) {
-            message = "❌ " + displayName + " tests failed.\nDetails: " + resultsUrl + "\n";
-          } else {
-            message = "❌ " + displayName + " tests failed";
-          }
-        }
-        return message;
-      } else {
-        if (resultsUrl != null && resultsUrl.length() > 0) {
-          return "✅ " + displayName + " tests passed.\nDetails: " + resultsUrl + "\n";
-        } else {
-          return "✅ " + displayName + " tests passed";
+      final EwCliOutput output = outputBuilder.taskPath(parameters.getTaskPath().get()).exitCode(result.getExitValue()).build();
+      // write output json to the intermediate file
+      if (parameters.getOutputFile().isPresent()) {
+        File outputFile = parameters.getOutputFile().get().getAsFile();
+        try {
+          FileUtils.write(outputFile, gson.toJson(output), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+          /* ignore */
         }
       }
     } catch (Exception e) {
@@ -107,7 +81,7 @@ public class EwCliExecutor {
     }
   }
 
-  public EwCliOutput invokeCli(EwWorkParameters parameters) {
+  public void invokeCli(EwWorkParameters parameters) {
     // materialize token
     final String token = parameters.getToken().getOrNull();
     if (token == null) {
@@ -165,34 +139,23 @@ public class EwCliExecutor {
 
         if (parameters.getIgnoreFailures().getOrElse(false)) {
           log.warn(message);
-          // if output failure file was given, write message there
-          if (parameters.getOutputFailureFile().isPresent()) {
-            File failureFile = parameters.getOutputFailureFile().get().getAsFile();
-            try {
-              StringBuilder fileMessage = new StringBuilder();
-              if (parameters.getDisplayName().isPresent()) {
-                fileMessage.append(parameters.getDisplayName().get()).append(": ");
-                fileMessage.append(message);
-              }
-              FileUtils.write(failureFile, fileMessage.toString(), StandardCharsets.UTF_8);
-            } catch (IOException e) {
-              /* ignore */
-            }
-          }
-          return output;
         } else {
           throw new EmulatorWtfException(message);
         }
-      } else {
-        return output;
       }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  protected static void configureCollectExec(JavaExecSpec spec, EwCollectResultsWorkParameters parameters,
-                                             String runUuid, String runToken, String startTime, @Nullable File outputFolder) {
+  protected static void configureCollectExec(JavaExecSpec spec, EwCollectResultsWorkParameters parameters) {
+    // materialize token
+    if (!parameters.getRunToken().isPresent()) {
+      throw new IllegalArgumentException("Missing token for collecting emulator.wtf results. This is probably a bug - let us know at support@emulator.wtf.");
+    }
+
+    String runToken = parameters.getRunToken().get();
+
     // use env var for passing token so it doesn't get logged out with --info
     spec.environment("EW_RUN_TOKEN", runToken);
 
@@ -200,9 +163,13 @@ public class EwCliExecutor {
 
     spec.args("--collect-results");
 
-    spec.args("--run-uuid", runUuid);
-    spec.args("--start-time", startTime);
+    spec.args("--run-uuid", parameters.getRunUuid());
 
+    if (parameters.getStartTime().isPresent()) {
+      spec.args("--start-time", parameters.getStartTime().get());
+    }
+
+    File outputFolder = parameters.getOutputsDir().getAsFile().getOrNull();
     if (outputFolder != null) {
       spec.args("--outputs-dir", outputFolder.getAbsolutePath());
     }

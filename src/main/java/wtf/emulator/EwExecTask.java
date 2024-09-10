@@ -174,9 +174,6 @@ public abstract class EwExecTask extends DefaultTask {
   @Inject
   public abstract WorkerExecutor getWorkerExecutor();
 
-  @Internal
-  public abstract RegularFileProperty getOutputFailureFile();
-
   @Optional
   @Input
   public abstract Property<Boolean> getPrintOutput();
@@ -241,7 +238,6 @@ public abstract class EwExecTask extends DefaultTask {
     p.getScmPrUrl().set(getScmPrUrl());
     p.getWorkingDir().set(getWorkingDir());
     p.getIgnoreFailures().set(getIgnoreFailures());
-    p.getOutputFailureFile().set(getOutputFailureFile());
     p.getAsync().set(getAsync());
     p.getPrintOutput().set(getPrintOutput());
     p.getTestTargets().set(getTestTargets());

@@ -15,6 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// original source from https://github.com/zeroturnaround/zt-exec/blob/6149c117ef835355c2e96bd331a3fa27b6a14394/src/main/java/org/zeroturnaround/exec/stream/LogOutputStream.java
 package wtf.emulator.ext;
 
 import java.io.ByteArrayOutputStream;
