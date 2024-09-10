@@ -7,6 +7,8 @@ import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
+import org.gradle.api.attributes.Category;
+import org.gradle.api.attributes.Usage;
 import org.gradle.api.initialization.Settings;
 import org.gradle.api.initialization.resolve.DependencyResolutionManagement;
 import org.gradle.api.initialization.resolve.RepositoriesMode;
@@ -19,8 +21,11 @@ import wtf.emulator.EwExecTask;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwProperties;
 import wtf.emulator.GradleCompat;
+import wtf.emulator.PrintMode;
 import wtf.emulator.async.CollectResultsTask;
 import wtf.emulator.async.EwAsyncExecService;
+import wtf.emulator.attributes.EwArtifactType;
+import wtf.emulator.attributes.EwUsage;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -32,6 +37,7 @@ public class ProjectConfigurator {
   private static final String MAVEN_URL = "https://maven.emulator.wtf/releases/";
 
   private static final String TOOL_CONFIGURATION = "emulatorWtfCli";
+  private static final String RESULTS_CONFIGURATION = "emulatorWtf";
 
   private static final String COLLECT_TASK_NAME = "collectEmulatorWtfResults";
   private static final String ROOT_TASK_NAME = "testWithEmulatorWtf";
@@ -52,16 +58,17 @@ public class ProjectConfigurator {
     configureRepository();
 
     Configuration toolConfig = createToolConfiguration();
+    Configuration resultsConfig = createResultsConfiguration();
 
     createCollectResultsTask(toolConfig, asyncService);
 
-    TaskProvider<EwExecSummaryTask> rootTask = createRootTask();
+    TaskProvider<EwExecSummaryTask> rootTask = createRootTask(resultsConfig);
 
     SetProperty<String> failureCollector = target.getObjects().setProperty(String.class);
 
     addFailurePrinter(failureCollector);
 
-    TaskConfigurator taskConfigurator = new TaskConfigurator(target, ext, toolConfig, rootTask, failureCollector, asyncService);
+    TaskConfigurator taskConfigurator = new TaskConfigurator(target, ext, toolConfig, resultsConfig, rootTask, failureCollector, asyncService);
 
     VariantConfigurator variantConfigurator = new VariantConfigurator(target, taskConfigurator);
 
@@ -146,6 +153,20 @@ public class ProjectConfigurator {
     return toolConfig;
   }
 
+  private Configuration createResultsConfiguration() {
+    final Configuration resultsConfig = target.getConfigurations().maybeCreate(RESULTS_CONFIGURATION);
+    resultsConfig.setCanBeConsumed(true);
+    resultsConfig.setCanBeResolved(true);
+
+    resultsConfig.attributes(attributes -> {
+      attributes.attribute(Category.CATEGORY_ATTRIBUTE, target.getObjects().named(Category.class, Category.VERIFICATION));
+      attributes.attribute(Usage.USAGE_ATTRIBUTE, target.getObjects().named(EwUsage.class, EwUsage.EW_USAGE));
+      attributes.attribute(EwArtifactType.EW_ARTIFACT_TYPE_ATTRIBUTE, target.getObjects().named(EwArtifactType.class, EwArtifactType.SUMMARY_JSON));
+    });
+
+    return resultsConfig;
+  }
+
   private void createCollectResultsTask(Configuration toolConfig, Provider<EwAsyncExecService> service) {
     // if asked, create collect results task
     target.afterEvaluate(_proj -> {
@@ -174,12 +195,18 @@ public class ProjectConfigurator {
     });
   }
 
-  private TaskProvider<EwExecSummaryTask> createRootTask() {
-    boolean configCache = compat.isConfigurationCacheEnabled();
+  private TaskProvider<EwExecSummaryTask> createRootTask(Configuration resultsConfiguration) {
     // create root anchor task
     return target.getTasks().register(ROOT_TASK_NAME, EwExecSummaryTask.class, task -> {
       task.setDescription("Run instrumentation tests of all variants with emulator.wtf");
-      task.getPrintingEnabled().set(ext.getIgnoreFailures().map(ignoreFailures -> configCache && ignoreFailures));
+      task.getPrintMode().set(PrintMode.ALL);
+      // root task depends on result summary files
+      task.dependsOn(resultsConfiguration);
+      task.getInputSummaryFiles().set(resultsConfiguration.getOutgoing().getArtifacts().getFiles().plus(
+          resultsConfiguration.getIncoming().artifactView((view) -> {
+            view.getAttributes().attribute(EwArtifactType.EW_ARTIFACT_TYPE_ATTRIBUTE, target.getObjects().named(EwArtifactType.class, EwArtifactType.SUMMARY_JSON));
+          }).getFiles()
+      ));
       // root task is never up-to-date
       task.getOutputs().upToDateWhen(it -> false);
     });

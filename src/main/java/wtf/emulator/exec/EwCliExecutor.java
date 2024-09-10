@@ -8,12 +8,12 @@ import org.gradle.api.file.Directory;
 import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecResult;
 import org.gradle.process.JavaExecSpec;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wtf.emulator.BuildConfig;
+import wtf.emulator.EmulatorWtfException;
 import wtf.emulator.OutputType;
 import wtf.emulator.data.CliOutputAsync;
 import wtf.emulator.data.CliOutputSync;
@@ -137,12 +137,18 @@ public class EwCliExecutor {
         System.out.println(errorOut);
       }
 
-      final EwCliOutput output;
+      final EwCliOutput.Builder outputBuilder;
       if (parameters.getAsync().getOrElse(false)) {
-        output = EwCliOutput.create(gson.fromJson(jsonOut.toString(), CliOutputAsync.class));
+        outputBuilder = EwCliOutput.builder(gson.fromJson(jsonOut.toString(), CliOutputAsync.class));
       } else {
-        output = EwCliOutput.create(gson.fromJson(jsonOut.toString(), CliOutputSync.class));
+        outputBuilder = EwCliOutput.builder(gson.fromJson(jsonOut.toString(), CliOutputSync.class));
       }
+
+      if (parameters.getDisplayName().isPresent()) {
+        outputBuilder.displayName(parameters.getDisplayName().get());
+      }
+
+      final EwCliOutput output = outputBuilder.taskPath(parameters.getTaskPath().get()).exitCode(result.getExitValue()).build();
 
       // write output json to the intermediate file
       if (parameters.getOutputFile().isPresent()) {
@@ -154,8 +160,8 @@ public class EwCliExecutor {
         }
       }
 
-      if (result.getExitValue() != 0 && output.sync() != null) {
-        final String message = getFailureMessage(output.sync());
+      if (result.getExitValue() != 0) {
+        final String message = new CliOutputPrinter().getSummaryLines(output);
 
         if (parameters.getIgnoreFailures().getOrElse(false)) {
           log.warn(message);
@@ -175,7 +181,7 @@ public class EwCliExecutor {
           }
           return output;
         } else {
-          throw new GradleException(message);
+          throw new EmulatorWtfException(message);
         }
       } else {
         return output;
@@ -183,23 +189,6 @@ public class EwCliExecutor {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private static @NotNull String getFailureMessage(CliOutputSync output) {
-    String resultsUrl = output.resultsUrl();
-    String error = output.runResultsSummary() != null ? output.runResultsSummary().error() : null;
-
-    final String message;
-    if (error != null && !error.isEmpty()) {
-      message = "emulator.wtf test run failed: " + error;
-    } else {
-      if (resultsUrl != null && !resultsUrl.isEmpty()) {
-        message = "emulator.wtf test run failed. Details: " + resultsUrl;
-      } else {
-        message = "emulator.wtf test run failed";
-      }
-    }
-    return message;
   }
 
   protected static void configureCollectExec(JavaExecSpec spec, EwCollectResultsWorkParameters parameters,

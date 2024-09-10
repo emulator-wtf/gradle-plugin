@@ -34,4 +34,6 @@ public interface EwWorkParameters extends EwInvokeConfiguration, WorkParameters 
   RegularFileProperty getOutputFailureFile();
 
   RegularFileProperty getOutputFile();
+
+  Property<String> getTaskPath();
 }

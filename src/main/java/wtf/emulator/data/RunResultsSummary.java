@@ -12,6 +12,19 @@ import javax.annotation.Nullable;
   @Nullable public abstract String error();
   @Nullable public abstract TestFailure firstFailure();
 
+  public static Builder builder() {
+    return new AutoValue_RunResultsSummary.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder runResult(RunResult runResult);
+    public abstract Builder counts(TestCounts counts);
+    public abstract Builder error(String error);
+    public abstract Builder firstFailure(TestFailure firstFailure);
+    public abstract RunResultsSummary build();
+  }
+
   public static TypeAdapter<RunResultsSummary> typeAdapter(Gson gson) {
     return new AutoValue_RunResultsSummary.GsonTypeAdapter(gson);
   }
