@@ -250,5 +250,6 @@ public abstract class EwExecTask extends DefaultTask {
     p.getProxyUser().set(getProxyUser());
     p.getProxyPassword().set(getProxyPassword());
     p.getOutputFile().set(getOutputFile());
+    p.getTaskPath().set(getPath());
   }
 }

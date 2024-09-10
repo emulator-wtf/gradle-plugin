@@ -31,6 +31,8 @@ dependencies {
   implementation(libs.commons.io)
   implementation(libs.autovalue.gson.runtime)
 
+  testImplementation(libs.bundles.test)
+
   lintChecks(libs.lint.gradle)
 }
 

@@ -32,14 +32,16 @@ public class TaskConfigurator {
   private final Project target;
   private final EwExtension ext;
   private final Configuration toolConfig;
+  private final Configuration resultsConfig;
   private final TaskProvider<EwExecSummaryTask> rootTask;
   private final SetProperty<String> failureCollector;
   private final Provider<EwAsyncExecService> service;
 
-  public TaskConfigurator(Project target, EwExtension ext, Configuration toolConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, Provider<EwAsyncExecService> service) {
+  public TaskConfigurator(Project target, EwExtension ext, Configuration toolConfig, Configuration resultsConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, Provider<EwAsyncExecService> service) {
     this.target = target;
     this.ext = ext;
     this.toolConfig = toolConfig;
+    this.resultsConfig = resultsConfig;
     this.rootTask = rootTask;
     this.failureCollector = failureCollector;
     this.service = service;
@@ -78,7 +80,7 @@ public class TaskConfigurator {
       return "";
     });
     failureCollector.add(outputFailure);
-    rootTask.configure(task -> task.getFailureMessages().add(outputFailureFile));
+//    rootTask.configure(task -> task.getFailureMessages().add(outputFailureFile));
 
     // register the work task
     String taskName = "test" + capitalize(variant.getName()) + "WithEmulatorWtf";
@@ -100,7 +102,8 @@ public class TaskConfigurator {
       );
     }
 
-    rootTask.configure(task -> task.dependsOn(execTask));
+    // register output file to results config
+    resultsConfig.getOutgoing().artifact(outputFile, (it) -> it.builtBy(execTask));
   }
 
   private <VariantType extends TestedVariant & BaseVariant, TaskType extends EwExecTask> void configureTask(

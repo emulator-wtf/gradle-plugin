@@ -9,6 +9,18 @@ import com.google.gson.TypeAdapter;
   public abstract int api();
   public abstract GpuMode gpuMode();
 
+  public static Builder builder() {
+    return new AutoValue_DeviceSpec.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder model(String model);
+    public abstract Builder api(int api);
+    public abstract Builder gpuMode(GpuMode gpuMode);
+    public abstract DeviceSpec build();
+  }
+
   public static TypeAdapter<DeviceSpec> typeAdapter(Gson gson) {
     return new AutoValue_DeviceSpec.GsonTypeAdapter(gson);
   }

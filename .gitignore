@@ -2,6 +2,7 @@
 */build/
 *.swp
 *.iml
+.DS_Store
 /.idea/
 /.gradle/
 /build-logic/.gradle
@@ -10,4 +11,5 @@
 /integration-test/*/.gradle
 /integration-test/*/.idea
 /integration-test/*/build
+/integration-test/project-isolation/*/build
 local.properties

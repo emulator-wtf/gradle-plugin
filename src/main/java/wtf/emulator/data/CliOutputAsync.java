@@ -9,6 +9,18 @@ import com.google.gson.TypeAdapter;
   public abstract String runToken();
   public abstract String startTime();
 
+  public static Builder builder() {
+    return new AutoValue_CliOutputAsync.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder runUuid(String runUuid);
+    public abstract Builder runToken(String runToken);
+    public abstract Builder startTime(String startTime);
+    public abstract CliOutputAsync build();
+  }
+
   public static TypeAdapter<CliOutputAsync> typeAdapter(Gson gson) {
     return new AutoValue_CliOutputAsync.GsonTypeAdapter(gson);
   }
