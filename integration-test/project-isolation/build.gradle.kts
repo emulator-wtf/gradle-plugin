@@ -6,3 +6,7 @@ plugins {
 dependencies {
   emulatorWtf(project(":app"))
 }
+
+emulatorwtf {
+  version.set("1.0.0-SNAPSHOT")
+}

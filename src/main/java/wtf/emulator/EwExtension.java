@@ -19,8 +19,6 @@ import static java.util.function.Function.identity;
 public abstract class EwExtension implements EwInvokeConfiguration {
   private final Property<Integer> variantCount;
 
-  public abstract Property<Boolean> getCollectResultsTaskEnabled();
-
   public abstract Property<Boolean> getRepositoryCheckEnabled();
 
   public abstract Property<String> getVersion();

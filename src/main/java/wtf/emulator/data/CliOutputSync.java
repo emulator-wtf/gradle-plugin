@@ -13,6 +13,8 @@ import javax.annotation.Nullable;
   @Nullable public abstract String resultsUrl();
   @Nullable public abstract RunResultsSummary runResultsSummary();
 
+  public abstract Builder toBuilder();
+
   public static Builder builder() {
     return new AutoValue_CliOutputSync.Builder();
   }

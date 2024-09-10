@@ -22,7 +22,6 @@ lint-gradle = "androidx.lint:lint-gradle:1.0.0-alpha02"
 semver4j = "com.vdurmont:semver4j:3.1.0"
 
 gson = "com.google.code.gson:gson:2.11.0"
-json = "org.json:json:20240303"
 
 jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
 

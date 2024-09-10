@@ -26,7 +26,6 @@ dependencies {
 
   implementation(projects.gradleCompat)
   implementation(libs.semver4j)
-  implementation(libs.json)
   implementation(libs.gson)
   implementation(libs.commons.io)
   implementation(libs.autovalue.gson.runtime)

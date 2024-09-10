@@ -3,23 +3,18 @@ package wtf.emulator.setup;
 import com.android.build.gradle.BaseExtension;
 import com.android.build.gradle.api.BaseVariant;
 import com.android.build.gradle.internal.api.TestedVariant;
-import org.apache.commons.io.FileUtils;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.provider.Provider;
-import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.TaskProvider;
 import wtf.emulator.EwExecSummaryTask;
 import wtf.emulator.EwExecTask;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwVariantFilter;
-import wtf.emulator.async.EwAsyncExecService;
-import wtf.emulator.async.EwAsyncExecTask;
+import wtf.emulator.PrintMode;
+import wtf.emulator.attributes.EwArtifactType;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
@@ -33,18 +28,45 @@ public class TaskConfigurator {
   private final EwExtension ext;
   private final Configuration toolConfig;
   private final Configuration resultsConfig;
-  private final TaskProvider<EwExecSummaryTask> rootTask;
-  private final SetProperty<String> failureCollector;
-  private final Provider<EwAsyncExecService> service;
 
-  public TaskConfigurator(Project target, EwExtension ext, Configuration toolConfig, Configuration resultsConfig, TaskProvider<EwExecSummaryTask> rootTask, SetProperty<String> failureCollector, Provider<EwAsyncExecService> service) {
+  private static final String ROOT_TASK_NAME = "testWithEmulatorWtf";
+
+  public TaskConfigurator(Project target, EwExtension ext, Configuration toolConfig, Configuration resultsConfig) {
     this.target = target;
     this.ext = ext;
     this.toolConfig = toolConfig;
     this.resultsConfig = resultsConfig;
-    this.rootTask = rootTask;
-    this.failureCollector = failureCollector;
-    this.service = service;
+  }
+
+  public void configureRootTask() {
+    // create root anchor task
+    target.getTasks().register(ROOT_TASK_NAME, EwExecSummaryTask.class, task -> {
+      task.setDescription("Run all instrumentation tests of all variants with emulator.wtf");
+      task.setGroup("Verification");
+
+      task.getPrintMode().set(PrintMode.ALL);
+      task.getInputSummaryFiles().set(resultsConfig.getOutgoing().getArtifacts().getFiles().plus(
+          resultsConfig.getIncoming().artifactView((view) -> {
+            view.getAttributes().attribute(EwArtifactType.EW_ARTIFACT_TYPE_ATTRIBUTE, target.getObjects().named(EwArtifactType.class, EwArtifactType.SUMMARY_JSON));
+          }).getFiles()
+      ));
+
+      task.getWaitForAsync().set(true);
+
+      // props necessary for collecting results
+      task.getClasspath().set(toolConfig);
+      task.getIntermediateOutputsDir().set(target.getBuildDir().toPath().resolve("intermediates").resolve("emulatorwtf").toFile());
+      task.getOutputsDir().set(target.getBuildDir().toPath().resolve("test-results").resolve(task.getName()).toFile());
+      task.getOutputTypes().set(ext.getOutputs());
+      task.getPrintOutput().set(ext.getPrintOutput());
+      task.getProxyHost().set(ext.getProxyHost());
+      task.getProxyPort().set(ext.getProxyPort());
+      task.getProxyUser().set(ext.getProxyUser());
+      task.getProxyPassword().set(ext.getProxyPassword());
+
+      // root task is never up-to-date
+      task.getOutputs().upToDateWhen(it -> false);
+    });
   }
 
   public <T extends TestedVariant & BaseVariant> void configureEwTask(
@@ -66,41 +88,16 @@ public class TaskConfigurator {
 
     // create failure property for each variant
     Path intermediateFolder = target.getBuildDir().toPath().resolve("intermediates").resolve("emulatorwtf");
-    File outputFailureFile = intermediateFolder.resolve("failure_" + variant.getName() + ".txt").toFile();
     File outputFile = intermediateFolder.resolve(variant.getName() + ".json").toFile();
-
-    Provider<String> outputFailure = target.provider(() -> {
-      try {
-        if (outputFailureFile.exists()) {
-          return FileUtils.readFileToString(outputFailureFile, StandardCharsets.UTF_8);
-        }
-      } catch (IOException ioe) {
-        /* ignore */
-      }
-      return "";
-    });
-    failureCollector.add(outputFailure);
-//    rootTask.configure(task -> task.getFailureMessages().add(outputFailureFile));
 
     // register the work task
     String taskName = "test" + capitalize(variant.getName()) + "WithEmulatorWtf";
 
     final TaskProvider<? extends EwExecTask> execTask;
 
-    if (ext.getAsync().isPresent() && ext.getAsync().get()) {
-      Consumer<EwAsyncExecTask> asyncAdditionalConfigure = (task) -> {
-        task.getExecService().set(service);
-        task.getOutputs().upToDateWhen((theTask) -> false);
-        additionalConfigure.accept(task);
-      };
-      execTask = target.getTasks().register(taskName, EwAsyncExecTask.class, task ->
-          configureTask(android, variant, asyncAdditionalConfigure, outputFile, outputFailureFile, task)
-      );
-    } else {
-      execTask = target.getTasks().register(taskName, EwExecTask.class, task ->
-          configureTask(android, variant, additionalConfigure, outputFile, outputFailureFile, task)
-      );
-    }
+    execTask = target.getTasks().register(taskName, EwExecTask.class, task ->
+        configureTask(android, variant, additionalConfigure, outputFile, task)
+    );
 
     // register output file to results config
     resultsConfig.getOutgoing().artifact(outputFile, (it) -> it.builtBy(execTask));
@@ -111,7 +108,6 @@ public class TaskConfigurator {
       VariantType variant,
       Consumer<TaskType> additionalConfigure,
       File outputFile,
-      File outputFailureFile,
       TaskType task
   ) {
     task.setDescription("Run " + variant.getName() + " instrumentation tests with emulator.wtf");
@@ -121,6 +117,8 @@ public class TaskConfigurator {
       task.getOutputs().upToDateWhen((t) -> false);
       task.getSideEffects().set(true);
     }
+
+    task.getAsync().set(ext.getAsync());
 
     task.getOutputFile().set(outputFile);
 
@@ -201,11 +199,7 @@ public class TaskConfigurator {
 
     task.getWorkingDir().set(target.getRootProject().getRootDir());
 
-    task.getOutputFailureFile().set(outputFailureFile);
-
     task.getIgnoreFailures().set(ext.getIgnoreFailures());
-
-    task.getAsync().set(ext.getAsync());
 
     task.getTestTargets().set(ext.getTestTargets());
 
@@ -218,7 +212,7 @@ public class TaskConfigurator {
   }
 
   private static String capitalize(String str) {
-    if (str.length() == 0) {
+    if (str.isEmpty()) {
       return str;
     }
     return str.substring(0, 1).toUpperCase(Locale.US) + str.substring(1);

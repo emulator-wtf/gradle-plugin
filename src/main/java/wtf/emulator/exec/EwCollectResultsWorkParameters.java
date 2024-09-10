@@ -1,6 +1,7 @@
 package wtf.emulator.exec;
 
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
@@ -14,6 +15,8 @@ public interface EwCollectResultsWorkParameters extends WorkParameters  {
 
   DirectoryProperty getOutputsDir();
 
+  RegularFileProperty getOutputFile();
+
   ListProperty<OutputType> getOutputs();
 
   Property<Boolean> getPrintOutput();
@@ -25,4 +28,14 @@ public interface EwCollectResultsWorkParameters extends WorkParameters  {
   Property<String> getProxyUser();
 
   Property<String> getProxyPassword();
+
+  Property<String> getRunUuid();
+
+  Property<String> getRunToken();
+
+  Property<String> getDisplayName();
+
+  Property<String> getStartTime();
+
+  Property<String> getTaskPath();
 }

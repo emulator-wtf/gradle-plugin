@@ -5,8 +5,10 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import wtf.emulator.data.CliOutputAsync;
 import wtf.emulator.data.CliOutputSync;
+import wtf.emulator.data.RunResult;
 
 import javax.annotation.Nullable;
+import java.util.EnumSet;
 
 @AutoValue public abstract class EwCliOutput {
   @Nullable public abstract CliOutputAsync async();
@@ -14,6 +16,28 @@ import javax.annotation.Nullable;
   @Nullable public abstract String displayName();
   public abstract String taskPath();
   public abstract int exitCode();
+
+  private static final EnumSet<RunResult> SUCCESSY_RESULTS = EnumSet.of(RunResult.SUCCESS, RunResult.FLAKY, RunResult.CANCELED);
+
+  public boolean isSuccess() {
+    if (exitCode() != 0) {
+      return false;
+    }
+
+    if (sync() == null) {
+      return true;
+    }
+
+    if (sync().runResultsSummary() == null) {
+      return true;
+    }
+
+    return SUCCESSY_RESULTS.contains(sync().runResultsSummary().runResult());
+  }
+
+  public boolean isFailure() {
+    return !isSuccess();
+  }
 
   // Used for JSON deserialization only, code callers should be using the specific builders below
   static Builder builder() {
