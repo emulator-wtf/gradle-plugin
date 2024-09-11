@@ -1,0 +1,37 @@
+apply plugin: 'com.android.application'
+apply plugin: 'wtf.emulator.gradle'
+
+android {
+  compileSdkVersion 27
+
+  defaultConfig {
+    applicationId 'wtf.emulator.sample'
+    minSdkVersion 23
+    targetSdkVersion 27
+    versionCode 1
+    versionName '1.0'
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  buildTypes {
+    debug {
+      testCoverageEnabled false
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility 1.8
+    targetCompatibility 1.8
+  }
+}
+
+dependencies {
+  implementation(project(":library"))
+
+  androidTestImplementation 'wtf.emulator:test-runtime-android:0.2.0'
+  androidTestImplementation 'androidx.test:rules:1.5.0'
+  androidTestImplementation 'androidx.test:runner:1.5.2'
+  androidTestImplementation 'androidx.test:core:1.5.0'
+  androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
+  androidTestImplementation 'com.google.truth:truth:1.1.3'
+}
