@@ -1,0 +1,65 @@
+buildscript {
+  repositories {
+    google()
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:8.6.0'
+  }
+}
+
+plugins {
+  id "wtf.emulator.gradle"
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'wtf.emulator.gradle'
+
+android {
+  compileSdk 33
+
+  defaultConfig {
+    applicationId 'wtf.emulator.sample'
+    minSdkVersion 23
+    targetSdkVersion 33
+    versionCode 1
+    versionName '1.0'
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  buildTypes {
+    debug {
+      testCoverageEnabled false
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility 1.8
+    targetCompatibility 1.8
+  }
+
+  splits {
+    abi {
+      it.enable = true
+      it.reset()
+      it.include("x86_64", "armeabi-v7a", "arm64-v8a")
+      it.universalApk = true
+    }
+  }
+
+  namespace 'wtf.emulator.sample'
+}
+
+dependencies {
+  implementation 'com.facebook.fresco:fresco:3.0.0'
+
+  androidTestImplementation 'androidx.test:rules:1.5.0'
+  androidTestImplementation 'androidx.test:runner:1.5.2'
+  androidTestImplementation 'androidx.test:core:1.5.0'
+  androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
+  androidTestImplementation 'com.google.truth:truth:1.1.3'
+}
+
+emulatorwtf {
+  devices = [[model: 'Pixel2', version: 29]]
+}

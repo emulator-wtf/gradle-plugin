@@ -6,15 +6,7 @@ plugins {
 }
 
 dependencies {
-  emulatorwtf(project(":app"))
-  emulatorwtf(project(":library"))
-  emulatorwtf(project(":test"))
-
-  emulatorwtf {
-    
-  }
-}
-
-emulatorwtf {
-//  devices = listOf()
+  emulatorwtf(projects.app)
+  emulatorwtf(projects.library)
+  emulatorwtf(projects.test)
 }
