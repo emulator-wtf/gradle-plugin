@@ -25,4 +25,8 @@ dependencyResolutionManagement {
   }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 include(":app")
+include(":library")
+include(":test")

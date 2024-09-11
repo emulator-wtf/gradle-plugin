@@ -18,7 +18,6 @@ gradle-api-v65 = "dev.gradleplugins:gradle-api:6.5"
 gradle-api-v66 = "dev.gradleplugins:gradle-api:6.6"
 gradle-api-v68 = "dev.gradleplugins:gradle-api:6.8"
 gradle-api-v74 = "dev.gradleplugins:gradle-api:7.4"
-gradle-api-v76 = "dev.gradleplugins:gradle-api:7.6"
 
 lint-gradle = "androidx.lint:lint-gradle:1.0.0-alpha02"
 

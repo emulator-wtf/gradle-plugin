@@ -1,5 +1,5 @@
 plugins {
-  alias(libs.plugins.android.application)
+  alias(libs.plugins.android.library)
   id("wtf.emulator.gradle")
 }
 
@@ -7,11 +7,7 @@ android {
   compileSdk = 34
 
   defaultConfig {
-    applicationId = "wtf.emulator.sample"
     minSdk = 23
-    targetSdk = 34
-    versionCode = 1
-    versionName = "1.0"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
@@ -21,7 +17,7 @@ android {
     }
   }
 
-  namespace = "wtf.emulator.sample"
+  namespace = "wtf.emulator.sample.library"
 }
 
 emulatorwtf {
@@ -30,14 +26,10 @@ emulatorwtf {
 }
 
 dependencies {
-  implementation(project(":library"))
-
   androidTestImplementation("wtf.emulator:test-runtime-android:0.2.0")
   androidTestImplementation("androidx.test:rules:1.6.1")
   androidTestImplementation("androidx.test:runner:1.6.2")
   androidTestImplementation("androidx.test:core:1.6.1")
   androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
   androidTestImplementation("com.google.truth:truth:1.4.4")
-
-  testImplementation("junit:junit:4.13.2")
 }

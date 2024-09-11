@@ -26,6 +26,7 @@ public class VariantConfigurator {
   }
 
   public void configureVariants() {
+
     // configure application builds
     target.getPluginManager().withPlugin("com.android.application", plugin -> {
       AppExtension android = target.getExtensions().getByType(AppExtension.class);
@@ -91,7 +92,7 @@ public class VariantConfigurator {
         throw new IllegalArgumentException("No target project '" + targetProjectPath + "'");
       }
       testTarget.getPluginManager().withPlugin("com.android.application", (plugin) -> {
-        AppExtension targetAndroid = target.getExtensions().getByType(AppExtension.class);
+        AppExtension targetAndroid = testTarget.getExtensions().getByType(AppExtension.class);
         targetAndroid.getApplicationVariants().configureEach(targetVariant -> {
           // direct variant <-> variant matching between the two
           if (variant.getName().equals(targetVariant.getName())) {
