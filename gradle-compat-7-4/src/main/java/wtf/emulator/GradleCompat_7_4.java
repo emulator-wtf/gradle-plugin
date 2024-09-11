@@ -5,7 +5,7 @@ import org.gradle.api.invocation.Gradle;
 import org.gradle.api.provider.Provider;
 
 @SuppressWarnings("UnstableApiUsage")
-public class GradleCompat_7_4 extends GradleCompat_6_8 {
+public class GradleCompat_7_4 extends GradleCompat_7_0 {
   public GradleCompat_7_4(Gradle gradle) {
     super(gradle);
   }
