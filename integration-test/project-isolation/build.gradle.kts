@@ -6,11 +6,15 @@ plugins {
 }
 
 dependencies {
-  emulatorWtf(project(":app"))
-  emulatorWtf(project(":library"))
-  emulatorWtf(project(":test"))
+  emulatorwtf(project(":app"))
+  emulatorwtf(project(":library"))
+  emulatorwtf(project(":test"))
+
+  emulatorwtf {
+    
+  }
 }
 
 emulatorwtf {
-  version.set("1.0.0-SNAPSHOT")
+//  devices = listOf()
 }

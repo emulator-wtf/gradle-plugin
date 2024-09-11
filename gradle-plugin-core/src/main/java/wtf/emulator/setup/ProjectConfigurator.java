@@ -25,7 +25,7 @@ public class ProjectConfigurator {
   private static final String MAVEN_URL = "https://maven.emulator.wtf/releases/";
 
   private static final String TOOL_CONFIGURATION = "emulatorWtfCli";
-  private static final String RESULTS_CONFIGURATION = "emulatorWtf";
+  private static final String RESULTS_CONFIGURATION = "emulatorwtf";
 
   private final Project target;
   private final EwExtension ext;
@@ -47,7 +47,7 @@ public class ProjectConfigurator {
     Configuration resultsConfig = createResultsConfiguration();
 
     TaskConfigurator taskConfigurator = new TaskConfigurator(target, ext, extInternals, toolConfig, resultsConfig);
-    VariantConfigurator variantConfigurator = new VariantConfigurator(target, taskConfigurator);
+    VariantConfigurator variantConfigurator = new VariantConfigurator(target, compat, taskConfigurator);
 
     taskConfigurator.configureRootTask();
     variantConfigurator.configureVariants();

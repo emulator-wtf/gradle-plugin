@@ -10,7 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wtf.emulator.BuildConfig;
 import wtf.emulator.EmulatorWtfException;
+import wtf.emulator.EwJson;
 import wtf.emulator.OutputType;
+import wtf.emulator.data.AgpOutputMetadata;
+import wtf.emulator.data.AgpOutputMetadataVersion;
 import wtf.emulator.data.CliOutputAsync;
 import wtf.emulator.data.CliOutputSync;
 import wtf.emulator.ext.Slf4jInfoOutputStream;
@@ -230,7 +233,17 @@ public class EwCliExecutor {
     if (parameters.getLibraryTestApk().isPresent()) {
       spec.args("--library-test", parameters.getLibraryTestApk().get().getAsFile().getAbsolutePath());
     } else {
-      spec.args("--app", parameters.getAppApk().get().getAsFile().getAbsolutePath());
+      Set<File> files = parameters.getApks().get();
+      if (files.size() > 1) {
+        throw new RuntimeException("Unexpected number of app apks encountered: " + files.size());
+      }
+      File appApk = files.iterator().next();
+      if (appApk.isDirectory()) {
+        // read output-metadata.json to pick the best apk
+        appApk = pickBestApk(appApk);
+      }
+      spec.args("--app", appApk.getAbsolutePath());
+
       spec.args("--test", parameters.getTestApk().get().getAsFile().getAbsolutePath());
     }
 
@@ -358,5 +371,32 @@ public class EwCliExecutor {
 
   private static String toCliString(Duration duration) {
     return duration.getSeconds() + "s";
+  }
+
+  private static File pickBestApk(File apkDirectory) {
+    try {
+      File metadataFile = new File(apkDirectory, "output-metadata.json");
+      String metadataJson = FileUtils.readFileToString(metadataFile, StandardCharsets.UTF_8);
+
+      // read and validate version first
+      AgpOutputMetadataVersion outputMetaVersion = EwJson.gson.fromJson(metadataJson, AgpOutputMetadataVersion.class);
+      if (outputMetaVersion.version() != 3) {
+        throw new RuntimeException("Unsupported AGP output-metadata.json version: " + outputMetaVersion);
+      }
+
+      AgpOutputMetadata outputMetadata = EwJson.gson.fromJson(metadataJson, AgpOutputMetadata.class);
+
+      if (!outputMetadata.artifactType().type().equals("APK")) {
+        throw new IllegalArgumentException("Unexpected artifactType=" + outputMetadata.artifactType().type() + " in " + metadataFile.getAbsolutePath());
+      }
+
+      if (outputMetadata.elements().size() != 1) {
+        throw new IllegalArgumentException("Unexpected number of elements=" + outputMetadata.elements().size() + " in " + metadataFile.getAbsolutePath());
+      }
+
+      return new File(apkDirectory, outputMetadata.elements().get(0).outputFile());
+    } catch (IOException ioe) {
+      throw new RuntimeException("Failed to read output-metadata.json from " + apkDirectory.getAbsolutePath(), ioe);
+    }
   }
 }

@@ -20,7 +20,7 @@ android {
     }
   }
 
-  namespace = "wtf.emulator.sample"
+  namespace = "wtf.emulator.sample.test"
 }
 
 dependencies {
