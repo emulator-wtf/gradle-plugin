@@ -23,10 +23,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":gradle-compat-api")
 include(":gradle-compat")
-include(":gradle-compat-6-1")
-include(":gradle-compat-6-5")
-include(":gradle-compat-6-6")
-include(":gradle-compat-6-8")
+include(":gradle-compat-7-0")
 include(":gradle-compat-7-4")
 
 include(":gradle-plugin")

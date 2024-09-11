@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-  compileOnly(libs.gradle.api.v61)
+  compileOnly(libs.gradle.api.v70)
 }
