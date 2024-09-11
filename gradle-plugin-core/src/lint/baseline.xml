@@ -8,7 +8,7 @@
         errorLine2="                                                   ~~~~~~~~~~~">
         <location
             file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
-            line="89"
+            line="90"
             column="52"/>
     </issue>
 
@@ -19,8 +19,19 @@
         errorLine2="                                  ~~~~~~~~~~~~~~">
         <location
             file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
-            line="89"
+            line="90"
             column="35"/>
+    </issue>
+
+    <issue
+        id="InternalGradleApiUsage"
+        message="Avoid using internal Gradle APIs"
+        errorLine1="import org.gradle.api.internal.GradleInternal;"
+        errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/setup/ProjectConfigurator.java"
+            line="12"
+            column="1"/>
     </issue>
 
 </issues>
