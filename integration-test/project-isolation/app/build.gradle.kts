@@ -24,11 +24,6 @@ android {
   namespace = "wtf.emulator.sample"
 }
 
-emulatorwtf {
-  version.set("1.0.0-SNAPSHOT")
-  async.set(true)
-}
-
 dependencies {
   implementation(project(":library"))
 

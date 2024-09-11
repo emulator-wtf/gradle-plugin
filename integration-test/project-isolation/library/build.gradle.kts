@@ -20,11 +20,6 @@ android {
   namespace = "wtf.emulator.sample.library"
 }
 
-emulatorwtf {
-  version.set("1.0.0-SNAPSHOT")
-  async.set(true)
-}
-
 dependencies {
   androidTestImplementation("wtf.emulator:test-runtime-android:0.2.0")
   androidTestImplementation("androidx.test:rules:1.6.1")

@@ -14,3 +14,5 @@ pluginManagement {
     id "wtf.emulator.gradle" version props.getProperty("VERSION_NAME")
   }
 }
+
+include ':app', ':library', ':test'
