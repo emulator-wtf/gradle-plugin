@@ -33,9 +33,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/run-integration-tests
+        name: "Run integration tests against latest Gradle/AGP w/ project-isolation and config cache"
         with:
           jdk-version: '21'
-          test-project: 'latest'
+          test-project: 'project-isolation'
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
   test-latest:
@@ -46,6 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/run-integration-tests
+        name: "Run integration tests against latest Gradle/AGP"
         with:
           jdk-version: '21'
           test-project: 'latest'
@@ -59,6 +61,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/run-integration-tests
+        name: "Run integration tests against oldest supported Gradle/AGP"
         with:
           jdk-version: '11'
           test-project: 'oldest'
@@ -72,6 +75,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/run-integration-tests
+        name: "Run integration tests against various ABI splits"
         with:
           jdk-version: '20'
           test-project: 'abi-splits'
