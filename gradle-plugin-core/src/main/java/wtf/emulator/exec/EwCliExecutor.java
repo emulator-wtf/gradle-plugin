@@ -390,11 +390,31 @@ public class EwCliExecutor {
         throw new IllegalArgumentException("Unexpected artifactType=" + outputMetadata.artifactType().type() + " in " + metadataFile.getAbsolutePath());
       }
 
-      if (outputMetadata.elements().size() != 1) {
-        throw new IllegalArgumentException("Unexpected number of elements=" + outputMetadata.elements().size() + " in " + metadataFile.getAbsolutePath());
+      if (outputMetadata.elements().size() == 1) {
+        return new File(apkDirectory, outputMetadata.elements().get(0).outputFile());
       }
 
-      return new File(apkDirectory, outputMetadata.elements().get(0).outputFile());
+      // if there are splits, prefer x86 split as they're faster to upload
+      List<AgpOutputMetadata.Element> x86Splits = outputMetadata.elements().stream()
+          .filter(it -> it.type().equals("ONE_OF_MANY") &&
+            it.filters().stream().anyMatch(filter -> filter.filterType().equals("ABI") && filter.value().equals("x86")))
+          .collect(Collectors.toList());
+
+      if (x86Splits.size() == 1) {
+        return new File(apkDirectory, x86Splits.get(0).outputFile());
+      }
+
+      // if there are no splits, look for universal
+      List<AgpOutputMetadata.Element> universalSplits = outputMetadata.elements().stream()
+          .filter(it -> it.type().equals("UNIVERSAL") && it.filters().isEmpty())
+          .collect(Collectors.toList());
+
+      if (universalSplits.size() == 1) {
+        return new File(apkDirectory, universalSplits.get(0).outputFile());
+      }
+
+      throw new RuntimeException("Failed to pick best apk from " + apkDirectory.getAbsolutePath() + ". Please send the output-metadata.json file from that folder to support@emulator.wtf.");
+
     } catch (IOException ioe) {
       throw new RuntimeException("Failed to read output-metadata.json from " + apkDirectory.getAbsolutePath(), ioe);
     }

@@ -46,11 +46,6 @@ public class VariantConfigurator {
 
     // configure test project builds
     target.getPluginManager().withPlugin("com.android.test", plugin -> {
-//      TestExtension android = target.getExtensions().getByType(TestExtension.class);
-//      TestAndroidComponentsExtension androidComponents = target.getExtensions().getByType(TestAndroidComponentsExtension.class);
-//      androidComponents.onVariants(androidComponents.selector().all(), variant -> {
-//        configureTestVariant(android, variant);
-//      });
       TestExtension android = target.getExtensions().getByType(TestExtension.class);
       android.getApplicationVariants().configureEach(variant -> configureTestVariant(android, variant));
     });
