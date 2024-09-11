@@ -9,6 +9,9 @@ inputs:
     description: 'Test project to run, from the integration-test folder'
     required: true
     default: 'latest'
+  gh-token:
+    description: 'GitHub token'
+    required: true
 runs:
   using: composite
   steps:
@@ -31,6 +34,6 @@ runs:
   - name: Run latest tests
     shell: bash
     env:
-      EW_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      EW_API_TOKEN: ${{ inputs.gh-token }}
     working-directory: integration-test/${{ inputs.test-project }}
     run: ./gradlew :testWithEmulatorWtf
