@@ -3,8 +3,13 @@ package wtf.emulator.setup;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.attributes.Category;
 import org.gradle.api.attributes.Usage;
+import org.gradle.api.initialization.Settings;
+import org.gradle.api.initialization.resolve.DependencyResolutionManagement;
+import org.gradle.api.initialization.resolve.RepositoriesMode;
+import org.gradle.api.internal.GradleInternal;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.EwProperties;
@@ -58,8 +63,8 @@ public class ProjectConfigurator {
       return;
     }
 
-    if (!compat.isRepoRegistered(target, MAVEN_URL)) {
-      if (compat.canAddMavenRepoToProject(target)) {
+    if (!isRepoRegistered(MAVEN_URL)) {
+      if (canAddMavenRepoToProject()) {
         registerMavenRepo();
       } else {
         // ping user after project evaluate to allow suppressing this check in dsl
@@ -94,7 +99,7 @@ public class ProjectConfigurator {
 
   private Configuration createToolConfiguration() {
     final Configuration toolConfig = target.getConfigurations().maybeCreate(TOOL_CONFIGURATION);
-    compat.addProviderDependency(target, TOOL_CONFIGURATION, ext.getVersion().map(version -> "wtf.emulator:ew-cli:" + version));
+    target.getDependencies().add(TOOL_CONFIGURATION, ext.getVersion().map(version -> "wtf.emulator:ew-cli:" + version));
     return toolConfig;
   }
 
@@ -110,5 +115,28 @@ public class ProjectConfigurator {
     });
 
     return resultsConfig;
+  }
+
+  private boolean canAddMavenRepoToProject() {
+    Settings settings = getGradleSettings();
+
+    RepositoriesMode mode = settings.getDependencyResolutionManagement().getRepositoriesMode().getOrNull();
+    int settingsRepoCount = settings.getDependencyResolutionManagement().getRepositories().size();
+
+    return (mode == null || mode == RepositoriesMode.PREFER_PROJECT) && settingsRepoCount == 0;
+  }
+
+  public boolean isRepoRegistered(String repoUrl) {
+    DependencyResolutionManagement mgmt = getGradleSettings().getDependencyResolutionManagement();
+    return mgmt.getRepositories().stream()
+      .filter(artifactRepository -> artifactRepository instanceof MavenArtifactRepository)
+      .map(artifactRepository -> (MavenArtifactRepository) artifactRepository)
+      .anyMatch(it -> repoUrl.equals(it.getUrl().toString()) || repoUrl.equals(it.getUrl() + "/"));
+  }
+
+  private Settings getGradleSettings() {
+    // TODO(madis) yuck
+    // https://github.com/gradle/gradle/issues/17295
+    return ((GradleInternal) target.getGradle()).getSettings();
   }
 }

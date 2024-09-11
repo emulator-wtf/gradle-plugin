@@ -10,9 +10,9 @@ public class GradleCompatFactory {
     Semver gradleVersion = new Semver(gradle.getGradleVersion(), Semver.SemverType.LOOSE);
 
     if (gradleVersion.isGreaterThanOrEqualTo(GRADLE_7_4)) {
-      return new GradleCompat_7_4(gradle);
+      return new GradleCompat_7_4();
     } else {
-      return new GradleCompat_7_0(gradle);
+      return new GradleCompat_7_0();
     }
   }
 }

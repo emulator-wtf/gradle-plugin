@@ -1,19 +1,16 @@
 package wtf.emulator;
 
+import org.gradle.api.Project;
 import org.gradle.api.attributes.Category;
-import org.gradle.api.invocation.Gradle;
-import org.gradle.api.provider.Provider;
+
+import javax.annotation.Nullable;
 
 @SuppressWarnings("UnstableApiUsage")
-public class GradleCompat_7_4 extends GradleCompat_7_0 {
-  public GradleCompat_7_4(Gradle gradle) {
-    super(gradle);
-  }
-
+public class GradleCompat_7_4 implements GradleCompat {
+  @Nullable
   @Override
-  protected Provider<String> configureGradlePropertyProvider(Provider<String> provider) {
-    // forUseAtConfigurationTime is now deprecated
-    return provider;
+  public String getGradleProperty(Project project, String name) {
+    return project.getProviders().gradleProperty(name).getOrNull();
   }
 
   @Override
