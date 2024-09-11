@@ -25,6 +25,7 @@ dependencyResolutionManagement {
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+rootProject.name = "project-isolation"
 
 include(":app")
 include(":library")

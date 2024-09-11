@@ -2,25 +2,14 @@
 <issues format="6" by="lint 8.8.0-alpha01" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0-alpha01)" variant="all" version="8.8.0-alpha01">
 
     <issue
-        id="GradleProjectIsolation"
-        message="Avoid using method findProject"
-        errorLine1="      Project testTarget = target.getRootProject().findProject(targetProjectPath);"
-        errorLine2="                                                   ~~~~~~~~~~~">
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs"
+        errorLine1="import com.android.build.gradle.internal.attributes.VariantAttr;"
+        errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
-            line="90"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="GradleProjectIsolation"
-        message="Avoid using method getRootProject"
-        errorLine1="      Project testTarget = target.getRootProject().findProject(targetProjectPath);"
-        errorLine2="                                  ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
-            line="90"
-            column="35"/>
+            line="15"
+            column="1"/>
     </issue>
 
     <issue

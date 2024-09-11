@@ -1,0 +1,39 @@
+name: Run integration tests
+description: Run Gradle integration tests
+inputs:
+  jdk-version:
+    description: 'JDK version to use'
+    required: true
+    default: '21'
+  test-project:
+    description: 'Test project to run, from the integration-test folder'
+    required: true
+    default: 'latest'
+  gh-token:
+    description: 'GitHub token'
+    required: true
+runs:
+  using: composite
+  steps:
+  - uses: actions/checkout@v4
+  - name: Setup JDK
+    uses: actions/setup-java@v4
+    with:
+      distribution: 'zulu'
+      java-version: ${{ inputs.jdk-version }}
+      cache: gradle
+  - name: Fetch maven repo
+    uses: actions/download-artifact@v4
+    with:
+      name: gradle-plugin-repo
+      path: build/maven-repo/
+  - name: accept Android SDK licenses
+    run: yes | cmdline-tools/latest/bin/sdkmanager --licenses || true
+    shell: bash
+    working-directory: /usr/local/lib/android/sdk
+  - name: Run latest tests
+    shell: bash
+    env:
+      EW_API_TOKEN: ${{ inputs.gh-token }}
+    working-directory: integration-test/${{ inputs.test-project }}
+    run: ./gradlew :testWithEmulatorWtf

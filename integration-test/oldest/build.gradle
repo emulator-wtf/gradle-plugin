@@ -21,7 +21,7 @@ allprojects {
 }
 
 dependencies {
-  emulatorWtf(project(":app"))
-  emulatorWtf(project(":library"))
-  emulatorWtf(project(":test"))
+  emulatorwtf(project(":app"))
+  emulatorwtf(project(":library"))
+  emulatorwtf(project(":test"))
 }

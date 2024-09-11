@@ -38,9 +38,9 @@ public abstract class EwExecTask extends DefaultTask {
   public abstract Property<String> getToken();
 
   @Optional
-  @InputFile
+  @InputFiles
   @PathSensitive(PathSensitivity.NONE)
-  public abstract RegularFileProperty getAppApk();
+  public abstract Property<FileCollection> getApks();
 
   @Optional
   @InputFile
@@ -207,7 +207,7 @@ public abstract class EwExecTask extends DefaultTask {
   protected void fillWorkParameters(EwWorkParameters p) {
     p.getClasspath().set(getClasspath().get().getFiles());
     p.getToken().set(getToken());
-    p.getAppApk().set(getAppApk());
+    p.getApks().set(getApks());
     p.getTestApk().set(getTestApk());
     p.getLibraryTestApk().set(getLibraryTestApk());
     p.getOutputsDir().set(getOutputsDir());

@@ -10,7 +10,10 @@ import com.android.build.gradle.api.BaseVariant;
 import com.android.build.gradle.api.BaseVariantOutput;
 import com.android.build.gradle.api.LibraryVariant;
 import com.android.build.gradle.api.TestVariant;
+import com.android.build.gradle.internal.attributes.VariantAttr;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
+import wtf.emulator.GradleCompat;
 
 import java.util.Optional;
 
@@ -18,10 +21,12 @@ import static com.android.build.VariantOutput.FilterType.ABI;
 
 public class VariantConfigurator {
   private final Project target;
+  private final GradleCompat compat;
   private final TaskConfigurator taskConfigurator;
 
-  public VariantConfigurator(Project target, TaskConfigurator taskConfigurator) {
+  public VariantConfigurator(Project target, GradleCompat compat, TaskConfigurator taskConfigurator) {
     this.target = target;
+    this.compat = compat;
     this.taskConfigurator = taskConfigurator;
   }
 
@@ -60,7 +65,8 @@ public class VariantConfigurator {
         task.dependsOn(testVariant.getPackageApplicationProvider());
         task.dependsOn(variant.getPackageApplicationProvider());
 
-        task.getAppApk().set(appOutput.getOutputFile());
+        task.getApks().set(target.files(appOutput.getOutputFile()));
+
         task.getTestApk().set(testOutput.getOutputFile());
       });
     }
@@ -86,22 +92,15 @@ public class VariantConfigurator {
       task.getTestApk().set(testOutput.getOutputFile());
 
       // look up the referenced target variant
-      String targetProjectPath = android.getTargetProjectPath();
-      Project testTarget = target.getRootProject().findProject(targetProjectPath);
-      if (testTarget == null) {
-        throw new IllegalArgumentException("No target project '" + targetProjectPath + "'");
-      }
-      testTarget.getPluginManager().withPlugin("com.android.application", (plugin) -> {
-        AppExtension targetAndroid = testTarget.getExtensions().getByType(AppExtension.class);
-        targetAndroid.getApplicationVariants().configureEach(targetVariant -> {
-          // direct variant <-> variant matching between the two
-          if (variant.getName().equals(targetVariant.getName())) {
-            BaseVariantOutput appOutput = getVariantOutput(targetVariant);
-            task.dependsOn(targetVariant.getPackageApplicationProvider());
-            task.getAppApk().set(appOutput.getOutputFile());
-          }
-        });
-      });
+      // TODO(madis) use artifact apis here instead?
+      Configuration testedApks = target.getConfigurations().maybeCreate(variant.getName() + "TestedApks");
+      task.getApks().set(
+        testedApks.getIncoming().artifactView(view -> {
+          view.getAttributes().attribute(VariantAttr.ATTRIBUTE,
+            target.getObjects().named(VariantAttr.class, variant.getName()));
+          view.getAttributes().attribute(compat.getArtifactTypeAttribute(), "apk");
+        }).getFiles()
+      );
     });
   }
 

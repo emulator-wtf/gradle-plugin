@@ -6,11 +6,7 @@ plugins {
 }
 
 dependencies {
-  emulatorWtf(project(":app"))
-  emulatorWtf(project(":library"))
-  emulatorWtf(project(":test"))
-}
-
-emulatorwtf {
-  version.set("1.0.0-SNAPSHOT")
+  emulatorwtf(projects.app)
+  emulatorwtf(projects.library)
+  emulatorwtf(projects.test)
 }

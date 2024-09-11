@@ -1,6 +1,7 @@
 package wtf.emulator.exec;
 
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
@@ -19,7 +20,7 @@ public interface EwWorkParameters extends EwInvokeConfiguration, WorkParameters 
 
   SetProperty<File> getClasspath();
 
-  RegularFileProperty getAppApk();
+  SetProperty<File> getApks();
 
   RegularFileProperty getTestApk();
 
