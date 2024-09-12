@@ -58,7 +58,7 @@ public class TaskConfigurator {
       // props necessary for collecting results
       task.getClasspath().set(toolConfig);
       task.getIntermediateOutputsDir().set(target.getBuildDir().toPath().resolve("intermediates").resolve("emulatorwtf").toFile());
-      task.getOutputsDir().set(target.getBuildDir().toPath().resolve("test-results").resolve(task.getName()).toFile());
+      task.getOutputsDir().set(ext.getBaseOutputDir().dir(task.getName()));
       task.getOutputTypes().set(ext.getOutputs());
       task.getPrintOutput().set(ext.getPrintOutput());
       task.getProxyHost().set(ext.getProxyHost());
@@ -133,7 +133,7 @@ public class TaskConfigurator {
 
     // don't configure outputs in async mode
     if (!task.getAsync().getOrElse(false)) {
-      task.getOutputsDir().set(ext.getBaseOutputDir().map(dir -> dir.dir(variantName)));
+      task.getOutputsDir().set(ext.getBaseOutputDir().dir(task.getName()));
       task.getOutputTypes().set(ext.getOutputs());
     }
 
