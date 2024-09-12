@@ -94,10 +94,11 @@ public class VariantConfigurator {
       // look up the referenced target variant
       // TODO(madis) use artifact apis here instead?
       Configuration testedApks = target.getConfigurations().maybeCreate(variant.getName() + "TestedApks");
+      final String variantName = variant.getName();
       task.getApks().set(
         testedApks.getIncoming().artifactView(view -> {
           view.getAttributes().attribute(VariantAttr.ATTRIBUTE,
-            target.getObjects().named(VariantAttr.class, variant.getName()));
+            target.getObjects().named(VariantAttr.class, variantName));
           view.getAttributes().attribute(compat.getArtifactTypeAttribute(), "apk");
         }).getFiles()
       );

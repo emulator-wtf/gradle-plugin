@@ -88,7 +88,7 @@ public class TaskConfigurator {
     // bump the variant count
     extInternals.getVariantCount().set(extInternals.getVariantCount().get() + 1);
 
-    // create failure property for each variant
+    // create output file property for each variant
     Path intermediateFolder = target.getBuildDir().toPath().resolve("intermediates").resolve("emulatorwtf");
     File outputFile = intermediateFolder.resolve(variant.getName() + ".json").toFile();
 
@@ -98,21 +98,23 @@ public class TaskConfigurator {
     final TaskProvider<? extends EwExecTask> execTask;
 
     execTask = target.getTasks().register(taskName, EwExecTask.class, task ->
-        configureTask(android, variant, additionalConfigure, outputFile, task)
+        configureTask(android, variant.getName(), variant.getBuildType().isTestCoverageEnabled(), variant.getMergedFlavor().getTestInstrumentationRunnerArguments(), additionalConfigure, outputFile, task)
     );
 
     // register output file to results config
     resultsConfig.getOutgoing().artifact(outputFile, (it) -> it.builtBy(execTask));
   }
 
-  private <VariantType extends BaseVariant, TaskType extends EwExecTask> void configureTask(
+  private void configureTask(
       BaseExtension android,
-      VariantType variant,
-      Consumer<TaskType> additionalConfigure,
+      String variantName,
+      boolean testCoverageEnabled,
+      Map<String, String> instrumentationRunnerArguments,
+      Consumer<EwExecTask> additionalConfigure,
       File outputFile,
-      TaskType task
+      EwExecTask task
   ) {
-    task.setDescription("Run " + variant.getName() + " instrumentation tests with emulator.wtf");
+    task.setDescription("Run " + variantName + " instrumentation tests with emulator.wtf");
     task.setGroup("Verification");
 
     if (ext.getSideEffects().isPresent() && ext.getSideEffects().get()) {
@@ -131,7 +133,7 @@ public class TaskConfigurator {
 
     // don't configure outputs in async mode
     if (!task.getAsync().getOrElse(false)) {
-      task.getOutputsDir().set(ext.getBaseOutputDir().map(dir -> dir.dir(variant.getName())));
+      task.getOutputsDir().set(ext.getBaseOutputDir().map(dir -> dir.dir(variantName)));
       task.getOutputTypes().set(ext.getOutputs());
     }
 
@@ -148,16 +150,14 @@ public class TaskConfigurator {
 
     task.getClearPackageData().set(ext.getClearPackageData());
 
-    task.getWithCoverage().set(ext.getWithCoverage().orElse(target.provider(() ->
-        variant.getBuildType().isTestCoverageEnabled())));
+    task.getWithCoverage().set(ext.getWithCoverage().orElse(target.provider(() -> testCoverageEnabled)));
 
     task.getAdditionalApks().set(ext.getAdditionalApks());
 
     task.getEnvironmentVariables().set(ext.getEnvironmentVariables()
         .map((entries) -> {
           // pick defaults from test instrumentation runner args, then fill with overrides
-          final Map<String, String> out = new HashMap<>(
-              variant.getMergedFlavor().getTestInstrumentationRunnerArguments());
+          final Map<String, String> out = new HashMap<>(instrumentationRunnerArguments);
           entries.forEach((key, value) -> out.put(key, Objects.toString(value)));
           return out;
         }));
@@ -195,7 +195,7 @@ public class TaskConfigurator {
       if (count < 2) {
         return name;
       } else {
-        return name + ":" + variant.getName();
+        return name + ":" + variantName;
       }
     })));
 
