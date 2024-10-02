@@ -11,7 +11,7 @@ lint = { id = "com.android.lint", version.ref = "lint" }
 gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.29.0"
 gradle-plugins-lint = { module = "com.android.lint:com.android.lint.gradle.plugin ", version.ref = "lint" }
 
-agp = "com.android.tools.build:gradle:7.0.0"
+agp = "com.android.tools.build:gradle:8.7.0"
 
 gradle-api-v70 = "dev.gradleplugins:gradle-api:7.0"
 gradle-api-v74 = "dev.gradleplugins:gradle-api:7.4"
