@@ -8,7 +8,7 @@ buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.5.0" }
 lint = { id = "com.android.lint", version.ref = "lint" }
 
 [libraries]
-gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.29.0"
+gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.30.0"
 gradle-plugins-lint = { module = "com.android.lint:com.android.lint.gradle.plugin ", version.ref = "lint" }
 
 agp = "com.android.tools.build:gradle:7.0.0"
