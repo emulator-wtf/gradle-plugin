@@ -175,6 +175,10 @@ public class TaskConfigurator {
     task.getFileCacheTtl().set(ext.getFileCacheTtl());
 
     task.getTestCacheEnabled().set(ext.getTestCacheEnabled());
+    if (ext.getTestCacheEnabled().isPresent() && !ext.getTestCacheEnabled().get()) {
+      // if test cache is disabled, always rerun the task
+      task.getOutputs().upToDateWhen(it -> false);
+    }
 
     task.getNumFlakyTestAttempts().set(ext.getNumFlakyTestAttempts());
     task.getFlakyTestRepeatMode().set(ext.getFlakyTestRepeatMode());
