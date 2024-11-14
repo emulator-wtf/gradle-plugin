@@ -1,6 +1,7 @@
 package wtf.emulator;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -40,11 +41,11 @@ public class EwDeviceSpec implements Serializable {
   }
 
   public Map<String, String> toCliMap() {
-    return Map.of(
-        "model", model.getCliValue(),
-        "version", Integer.toString(version),
-        "gpu", gpu.getCliValue()
-    );
+    Map<String, String> map = new HashMap<>();
+    map.put("model", model.getCliValue());
+    map.put("version", Integer.toString(version));
+    map.put("gpu", gpu.getCliValue());
+    return map;
   }
 
   public EwDeviceSpecBuilder toBuilder() {
