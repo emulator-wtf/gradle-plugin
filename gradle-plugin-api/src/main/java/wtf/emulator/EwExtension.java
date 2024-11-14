@@ -1,6 +1,8 @@
 package wtf.emulator;
 
 import org.gradle.api.Action;
+import org.gradle.api.DomainObjectCollection;
+import org.gradle.api.DomainObjectSet;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
@@ -11,7 +13,6 @@ import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 import static java.util.function.Function.identity;
@@ -27,8 +28,6 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
   public abstract DirectoryProperty getBaseOutputDir();
 
-  public abstract ListProperty<Map<String, Object>> getDevices();
-
   public abstract Property<String> getTestRunnerClass();
 
   public abstract MapProperty<String, Object> getEnvironmentVariables();
@@ -38,6 +37,8 @@ public abstract class EwExtension implements EwInvokeConfiguration {
   public abstract ListProperty<TestReporter> getTestReporters();
 
   private Action<EwVariantFilter> filter = null;
+
+  private final DomainObjectSet<EwDeviceSpec> devices;
 
   @Inject
   public EwExtension(ObjectFactory objectFactory) {
@@ -52,11 +53,23 @@ public abstract class EwExtension implements EwInvokeConfiguration {
     sysPropConvention(getProxyPassword(), "https.proxyPassword", "http.proxyPassword");
 
     this.variantCount = objectFactory.property(Integer.class).convention(0);
+
+    this.devices = objectFactory.domainObjectSet(EwDeviceSpec.class);
   }
 
   @SuppressWarnings("unused")
   public void variantFilter(Action<EwVariantFilter> filter) {
     this.filter = filter;
+  }
+
+  public DomainObjectCollection<EwDeviceSpec> getDevices() {
+    return this.devices;
+  }
+
+  public void device(Action<EwDeviceSpecBuilder> action) {
+    EwDeviceSpecBuilder builder = new EwDeviceSpecBuilder();
+    action.execute(builder);
+    this.devices.add(builder.build());
   }
 
   protected Action<EwVariantFilter> getFilter() {

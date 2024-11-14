@@ -125,11 +125,17 @@ emulatorwtf {
   //       check for test failures
   ignoreFailures = false
 
-  // devices to test on, Defaults to [[model: 'Pixel2', version: 27]]
-  devices = [
-    [model: 'NexusLowRes', version: 30, atd: true],
-    [model: 'Pixel2', version: 23]
-  ]
+  // devices to test on, Defaults to Pixel7, version 30, gpu auto
+  device {
+    model = EwDeviceModel.Pixel7
+    version = 30
+    gpu = EwGpuMode.auto
+  }
+  device {
+    model = EwDeviceModel.NexusLowRes
+    version = 21
+    gpu = EwGpuMode.software
+  }
 
   // Set the test timeout, defaults to 15 minutes
   timeout = Duration.ofHours(1)
