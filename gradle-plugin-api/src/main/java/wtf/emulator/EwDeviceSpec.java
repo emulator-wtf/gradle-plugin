@@ -8,15 +8,15 @@ import java.util.Objects;
  * Specific device configuration to run tests on.
  */
 public class EwDeviceSpec implements Serializable {
-  private final EwDeviceModel model;
+  private final DeviceModel model;
   private final int version;
-  private final EwGpuMode gpu;
+  private final GpuMode gpu;
 
   public static EwDeviceSpecBuilder builder() {
     return new EwDeviceSpecBuilder();
   }
 
-  public EwDeviceSpec(EwDeviceModel model, int version, EwGpuMode gpu) {
+  public EwDeviceSpec(DeviceModel model, int version, GpuMode gpu) {
     this.model = model;
     this.version = version;
     this.gpu = gpu;

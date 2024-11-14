@@ -1,6 +1,6 @@
 package wtf.emulator;
 
-public enum EwGpuMode {
+public enum GpuMode {
   /**
    * Use software rendering. Use this if you need deterministic pixel-perfect rendering, e.g. for
    * screenshot testing.
@@ -16,7 +16,7 @@ public enum EwGpuMode {
 
   private final String cliValue;
 
-  EwGpuMode(String cliValue) {
+  GpuMode(String cliValue) {
     this.cliValue = cliValue;
   }
 
