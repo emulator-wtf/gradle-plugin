@@ -54,5 +54,8 @@ dependencies {
 }
 
 emulatorwtf {
-  devices = [[model: 'Pixel2', version: 29]]
+  device {
+    model = PIXEL_2
+    version = 29
+  }
 }
