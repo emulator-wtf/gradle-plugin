@@ -4,15 +4,15 @@ package wtf.emulator;
  * Specific device configuration to run tests on.
  */
 public class EwDeviceSpecBuilder {
-  private EwDeviceModel model = EwDeviceModel.PIXEL_7;
+  private DeviceModel model = DeviceModel.PIXEL_7;
   private int version = 30;
-  private EwGpuMode gpu = EwGpuMode.AUTO;
+  private GpuMode gpu = GpuMode.AUTO;
 
   /**
-   * Sets the device model to use, see {@link EwDeviceModel} or
+   * Sets the device model to use, see {@link DeviceModel} or
    * <a href="https://docs.emulator.wtf/emulators/">https://docs.emulator.wtf/emulators/</a> for available values.
    */
-  public EwDeviceSpecBuilder model(EwDeviceModel model) {
+  public EwDeviceSpecBuilder model(DeviceModel model) {
     this.model = model;
     return this;
   }
@@ -28,13 +28,13 @@ public class EwDeviceSpecBuilder {
   }
 
   /**
-   * Sets the GPU mode to use. NOTE: when using {@link EwGpuMode#AUTO} there's no guarantee that the emulator will
+   * Sets the GPU mode to use. NOTE: when using {@link GpuMode#AUTO} there's no guarantee that the emulator will
    * actually use GPU acceleration in rare cases.
    *
-   * @param gpuMode either {@link EwGpuMode#SOFTWARE} or {@link EwGpuMode#AUTO} (default).
+   * @param gpuMode either {@link GpuMode#SOFTWARE} or {@link GpuMode#AUTO} (default).
    * @return
    */
-  public EwDeviceSpecBuilder gpu(EwGpuMode gpuMode) {
+  public EwDeviceSpecBuilder gpu(GpuMode gpuMode) {
     this.gpu = gpuMode;
     return this;
   }

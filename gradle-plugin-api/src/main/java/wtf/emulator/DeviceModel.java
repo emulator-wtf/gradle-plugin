@@ -3,7 +3,7 @@ package wtf.emulator;
 /**
  * Device model (screen size, density) to use for executing tests.
  */
-public enum EwDeviceModel {
+public enum DeviceModel {
   PIXEL_2("Pixel2"),
   PIXEL_2_ATD("Pixel2Atd"),
   PIXEL_7("Pixel7"),
@@ -16,7 +16,7 @@ public enum EwDeviceModel {
 
   private final String cliValue;
 
-  EwDeviceModel(String cliValue) {
+  DeviceModel(String cliValue) {
     this.cliValue = cliValue;
   }
 

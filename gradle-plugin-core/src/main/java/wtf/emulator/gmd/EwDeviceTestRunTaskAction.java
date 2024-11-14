@@ -125,7 +125,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
         Map.of(
           "model", device,
           "version", String.valueOf(apiLevel),
-          "gpu", testRunInput.getGpu().getOrElse(GpuMode.auto).toString()
+          "gpu", testRunInput.getGpu().getOrElse(GpuMode.AUTO).getCliValue()
         )
       )
     );
