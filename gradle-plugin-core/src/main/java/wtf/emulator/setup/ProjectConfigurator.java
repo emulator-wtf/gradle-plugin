@@ -10,6 +10,7 @@ import org.gradle.api.initialization.Settings;
 import org.gradle.api.initialization.resolve.DependencyResolutionManagement;
 import org.gradle.api.initialization.resolve.RepositoriesMode;
 import org.gradle.api.internal.GradleInternal;
+import org.gradle.api.provider.Provider;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.EwProperties;
@@ -26,6 +27,8 @@ public class ProjectConfigurator {
 
   private static final String TOOL_CONFIGURATION = "emulatorWtfCli";
   private static final String RESULTS_CONFIGURATION = "emulatorwtf";
+  private static final String RESULTS_EXPORT_CONFIGURATION = "_emulatorwtf_export";
+  private static final String RESULTS_IMPORT_CONFIGURATION = "_emulatorwtf_import";
 
   private final Project target;
   private final EwExtension ext;
@@ -43,10 +46,11 @@ public class ProjectConfigurator {
     setupExtensionDefaults();
     configureRepository();
 
-    Configuration toolConfig = createToolConfiguration();
-    Configuration resultsConfig = createResultsConfiguration();
+    Provider<Configuration> toolConfig = createToolConfiguration();
+    Configuration resultsExportConfig = createResultsExportConfiguration();
+    Provider<Configuration> resultsImportConfig = createResultsImportConfiguration(resultsExportConfig);
 
-    TaskConfigurator taskConfigurator = new TaskConfigurator(target, ext, extInternals, toolConfig, resultsConfig);
+    TaskConfigurator taskConfigurator = new TaskConfigurator(target, ext, extInternals, toolConfig, resultsExportConfig, resultsImportConfig);
     VariantConfigurator variantConfigurator = new VariantConfigurator(target, compat, taskConfigurator);
 
     taskConfigurator.configureRootTask();
@@ -97,24 +101,50 @@ public class ProjectConfigurator {
     });
   }
 
-  private Configuration createToolConfiguration() {
-    final Configuration toolConfig = target.getConfigurations().maybeCreate(TOOL_CONFIGURATION);
-    target.getDependencies().add(TOOL_CONFIGURATION, ext.getVersion().map(version -> "wtf.emulator:ew-cli:" + version));
+  private Provider<Configuration> createToolConfiguration() {
+    Provider<Configuration> toolConfig = target.getConfigurations().register(TOOL_CONFIGURATION, config -> {
+      config.setVisible(false);
+      config.setCanBeConsumed(false);
+      config.setCanBeResolved(true);
+      target.getDependencies().add(TOOL_CONFIGURATION, ext.getVersion().map(version -> "wtf.emulator:ew-cli:" + version));
+    });
     return toolConfig;
   }
 
-  private Configuration createResultsConfiguration() {
-    final Configuration resultsConfig = target.getConfigurations().maybeCreate(RESULTS_CONFIGURATION);
-    resultsConfig.setCanBeConsumed(true);
-    resultsConfig.setCanBeResolved(true);
+  private Configuration createResultsExportConfiguration() {
+    final Configuration resultsExportConfig = target.getConfigurations().maybeCreate(RESULTS_EXPORT_CONFIGURATION);
+    resultsExportConfig.setCanBeConsumed(true);
+    resultsExportConfig.setCanBeResolved(true);
+    resultsExportConfig.setVisible(false);
 
-    resultsConfig.attributes(attributes -> {
+    resultsExportConfig.attributes(attributes -> {
       attributes.attribute(Category.CATEGORY_ATTRIBUTE, target.getObjects().named(Category.class, compat.getCategoryAttributeVerification()));
       attributes.attribute(Usage.USAGE_ATTRIBUTE, target.getObjects().named(EwUsage.class, EwUsage.EW_USAGE));
       attributes.attribute(EwArtifactType.EW_ARTIFACT_TYPE_ATTRIBUTE, target.getObjects().named(EwArtifactType.class, EwArtifactType.SUMMARY_JSON));
     });
 
-    return resultsConfig;
+    return resultsExportConfig;
+  }
+
+  private Provider<Configuration> createResultsImportConfiguration(Configuration resultsExportConfig) {
+    final Configuration resultsConfig = target.getConfigurations().maybeCreate(RESULTS_CONFIGURATION);
+    resultsConfig.setCanBeConsumed(false);
+    resultsConfig.setCanBeResolved(false);
+    resultsConfig.setVisible(true);
+
+    return target.getConfigurations().register(RESULTS_IMPORT_CONFIGURATION, config -> {
+      config.setCanBeConsumed(false);
+      config.setCanBeResolved(true);
+      config.setVisible(false);
+      config.extendsFrom(resultsConfig);
+      config.extendsFrom(resultsExportConfig); // local loopback of artifacts
+
+      config.attributes(attributes -> {
+        attributes.attribute(Category.CATEGORY_ATTRIBUTE, target.getObjects().named(Category.class, compat.getCategoryAttributeVerification()));
+        attributes.attribute(Usage.USAGE_ATTRIBUTE, target.getObjects().named(EwUsage.class, EwUsage.EW_USAGE));
+        attributes.attribute(EwArtifactType.EW_ARTIFACT_TYPE_ATTRIBUTE, target.getObjects().named(EwArtifactType.class, EwArtifactType.SUMMARY_JSON));
+      });
+    });
   }
 
   private boolean canAddMavenRepoToProject() {

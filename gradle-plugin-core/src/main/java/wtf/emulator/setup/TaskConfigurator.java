@@ -5,6 +5,7 @@ import com.android.build.gradle.api.BaseVariant;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
 import wtf.emulator.EwExecSummaryTask;
 import wtf.emulator.EwExecTask;
@@ -27,17 +28,19 @@ public class TaskConfigurator {
   private final Project target;
   private final EwExtension ext;
   private final EwExtensionInternal extInternals;
-  private final Configuration toolConfig;
-  private final Configuration resultsConfig;
+  private final Provider<Configuration> toolConfig;
+  private final Configuration resultsExportConfig;
+  private final Provider<Configuration> resultsImportConfig;
 
   private static final String ROOT_TASK_NAME = "testWithEmulatorWtf";
 
-  public TaskConfigurator(Project target, EwExtension ext, EwExtensionInternal extInternals, Configuration toolConfig, Configuration resultsConfig) {
+  public TaskConfigurator(Project target, EwExtension ext, EwExtensionInternal extInternals, Provider<Configuration> toolConfig, Configuration resultsExportConfig, Provider<Configuration> resultsImportConfig) {
     this.target = target;
     this.ext = ext;
     this.extInternals = extInternals;
     this.toolConfig = toolConfig;
-    this.resultsConfig = resultsConfig;
+    this.resultsExportConfig = resultsExportConfig;
+    this.resultsImportConfig = resultsImportConfig;
   }
 
   public void configureRootTask() {
@@ -47,10 +50,12 @@ public class TaskConfigurator {
       task.setGroup("Verification");
 
       task.getPrintMode().set(PrintMode.ALL);
-      task.getInputSummaryFiles().set(resultsConfig.getOutgoing().getArtifacts().getFiles().plus(
-          resultsConfig.getIncoming().artifactView((view) -> {
+      task.getInputSummaryFiles().set(resultsImportConfig.map(importConfig ->
+        resultsExportConfig.getOutgoing().getArtifacts().getFiles().plus(
+          importConfig.getIncoming().artifactView((view) -> {
             view.getAttributes().attribute(EwArtifactType.EW_ARTIFACT_TYPE_ATTRIBUTE, target.getObjects().named(EwArtifactType.class, EwArtifactType.SUMMARY_JSON));
           }).getFiles()
+        )
       ));
 
       task.getWaitForAsync().set(true);
@@ -102,7 +107,7 @@ public class TaskConfigurator {
     );
 
     // register output file to results config
-    resultsConfig.getOutgoing().artifact(outputFile, (it) -> it.builtBy(execTask));
+    resultsExportConfig.getOutgoing().artifact(outputFile, (it) -> it.builtBy(execTask));
   }
 
   private void configureTask(
