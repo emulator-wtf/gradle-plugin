@@ -7,6 +7,7 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
+import wtf.emulator.EwDeviceSpec;
 import wtf.emulator.EwExecSummaryTask;
 import wtf.emulator.EwExecTask;
 import wtf.emulator.EwExtension;
@@ -144,11 +145,7 @@ public class TaskConfigurator {
 
     task.getRecordVideo().set(ext.getRecordVideo());
 
-    task.getDevices().set(ext.getDevices().map(devices -> devices.stream().map((config) -> {
-      final Map<String, String> out = new HashMap<>();
-      config.forEach((key, value) -> out.put(key, Objects.toString(value)));
-      return out;
-    }).collect(Collectors.toList())));
+    task.getDevices().set(ext.getDevices().stream().map(EwDeviceSpec::toCliMap).collect(Collectors.toList()));
 
     task.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(target.provider(() ->
         android.getTestOptions().getExecution().equalsIgnoreCase("ANDROIDX_TEST_ORCHESTRATOR"))));
