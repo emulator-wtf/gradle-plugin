@@ -16,7 +16,7 @@ agp = "com.android.tools.build:gradle:7.0.0"
 gradle-api-v70 = "dev.gradleplugins:gradle-api:7.0"
 gradle-api-v74 = "dev.gradleplugins:gradle-api:7.4"
 
-lint-gradle = "androidx.lint:lint-gradle:1.0.0-alpha02"
+lint-gradle = "androidx.lint:lint-gradle:1.0.0-alpha03"
 
 semver4j = "com.vdurmont:semver4j:3.1.0"
 
