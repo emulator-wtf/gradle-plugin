@@ -306,6 +306,17 @@ public class EwCliExecutor {
       }
     }
 
+    if (parameters.getSecretEnvironmentVariables().isPresent()) {
+      Map<String, String> secretEnv = parameters.getEnvironmentVariables().get();
+      if (!secretEnv.isEmpty()) {
+        String secretEnvLine = secretEnv.entrySet().stream()
+            .filter(entry -> entry.getValue() != null)
+            .map(entry -> entry.getKey() + "=" + entry.getValue())
+            .collect(Collectors.joining(","));
+        spec.args("--secret-environment-variables", secretEnvLine);
+      }
+    }
+
     if (parameters.getShardTargetRuntime().isPresent()) {
       spec.args("--shard-target-runtime", parameters.getShardTargetRuntime().get() + "m");
     } else if (parameters.getNumBalancedShards().isPresent()) {
@@ -351,6 +362,20 @@ public class EwCliExecutor {
 
     if (parameters.getTestTargets().isPresent()) {
       spec.args("--test-targets", parameters.getTestTargets().get());
+    }
+
+    if (parameters.getDnsServers().isPresent()) {
+      parameters.getDnsServers().get().stream().limit(4).forEach(addr -> {
+        spec.args("--dns-server", addr);
+      });
+    }
+
+    if (parameters.getEgressTunnel().isPresent()) {
+      spec.args("--egress-tunnel");
+    }
+
+    if (parameters.getEgressLocalhostForwardIp().isPresent()) {
+      spec.args("--egress-localhost-forward-ip", parameters.getEgressLocalhostForwardIp().get());
     }
 
     if (parameters.getProxyHost().isPresent()) {
