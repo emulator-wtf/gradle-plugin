@@ -3,10 +3,12 @@ package wtf.emulator;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.RegularFile;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
@@ -55,6 +57,12 @@ public abstract class EwExecTask extends DefaultTask {
   @Optional
   @OutputDirectory
   public abstract DirectoryProperty getOutputsDir();
+
+  @Optional
+  @OutputFile
+  public Provider<RegularFile> getMergedXml() {
+    return getOutputsDir().file("results.xml");
+  }
 
   @OutputFile
   public abstract RegularFileProperty getOutputFile();
