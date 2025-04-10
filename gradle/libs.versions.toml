@@ -13,6 +13,8 @@ gradle-plugins-lint = { module = "com.android.lint:com.android.lint.gradle.plugi
 
 agp = "com.android.tools.build:gradle:7.0.0"
 
+develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.0"
+
 gradle-api-v70 = "dev.gradleplugins:gradle-api:7.0"
 gradle-api-v74 = "dev.gradleplugins:gradle-api:7.4"
 
