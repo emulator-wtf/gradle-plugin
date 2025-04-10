@@ -18,6 +18,8 @@ dependencies {
   annotationProcessor(libs.autovalue.gson.factory)
 
   implementation(projects.gradleCompat)
+  implementation(projects.develocityReporter)
+
   implementation(libs.semver4j)
   implementation(libs.gson)
   implementation(libs.commons.io)
