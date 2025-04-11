@@ -31,11 +31,13 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
   public abstract MapProperty<String, Object> getEnvironmentVariables();
 
+  public abstract MapProperty<String, Object> getSecretEnvironmentVariables();
+
   private Action<EwVariantFilter> filter = null;
 
   @Inject
   public EwExtension(ObjectFactory objectFactory) {
-    getVersion().convention("0.11.1");
+    getVersion().convention("0.12.1");
     getSideEffects().convention(false);
     getOutputs().convention(Collections.emptyList());
 

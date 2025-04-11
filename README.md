@@ -97,8 +97,8 @@ The `emulatorwtf` plugin DSL supports the following configuration options:
 
 ```groovy
 emulatorwtf {
-  // CLI version to use, defaults to 0.11.1
-  version = '0.11.1'
+  // CLI version to use, defaults to 0.12.1
+  version = '0.12.1'
 
   // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
   // instead of this or passing this value in via a project property
@@ -160,6 +160,11 @@ emulatorwtf {
   // for instance to only run medium tests:
   environmentVariables = [size: 'medium']
 
+  // additional arguments to AndroidJUnitRunner, similar to the environmentVariables
+  // above, but in this case the arguments will be hidden in the emulator.wtf UI.
+  // Use this for passing any sort of secrets - tokens, passwords, credentials, etc.
+  secretEnvironmentVariables = [token: 'hunter2']
+
   // Set to the a minutes value to split your tests into multiple shards
   // dynamically, the number of shards will be figured out based on historical
   // test times. This is a good way to ensure a consistent runtime as your
@@ -220,6 +225,19 @@ emulatorwtf {
       enabled = false
     }
   }
+
+  // Use a specific DNS server instead of the default one.
+  dnsServers = ["1.1.1.1"]
+  
+  // Redirects all network traffic from the emulator instance to the Gradle plugin
+  // as if you were running the emulator locally.
+  // You can use this to test your app with a local server or an internal
+  // environment only accessible to your local machine or CI runner.
+  egressTunnel = false
+
+  // Makes the machine the Gradle build is running on visible to the emulator under the given ipv4 address,
+  // only works together with the egressTunnel option
+  egressLocalhostForwardIp = "192.168.200.1"
 
   // Configure a HTTP proxy to use when making requests to emulator.wtf API
   // these values default to standard JVM system properties `http.proxyHost`,

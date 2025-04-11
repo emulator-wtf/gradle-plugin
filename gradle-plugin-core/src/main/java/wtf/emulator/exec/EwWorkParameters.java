@@ -32,6 +32,8 @@ public interface EwWorkParameters extends EwInvokeConfiguration, WorkParameters 
 
   MapProperty<String, String> getEnvironmentVariables();
 
+  MapProperty<String, String> getSecretEnvironmentVariables();
+
   RegularFileProperty getOutputFile();
 
   Property<String> getTaskPath();

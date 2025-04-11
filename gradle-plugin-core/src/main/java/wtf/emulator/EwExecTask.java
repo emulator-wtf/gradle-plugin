@@ -94,6 +94,10 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract MapProperty<String, String> getSecretEnvironmentVariables();
+
+  @Optional
+  @Input
   public abstract Property<Integer> getNumUniformShards();
 
   @Optional
@@ -143,6 +147,18 @@ public abstract class EwExecTask extends DefaultTask {
   @Optional
   @Input
   public abstract Property<String> getDisplayName();
+
+  @Optional
+  @Input
+  public abstract ListProperty<String> getDnsServers();
+
+  @Optional
+  @Input
+  public abstract Property<Boolean> getEgressTunnel();
+
+  @Optional
+  @Input
+  public abstract Property<String> getEgressLocalhostForwardIp();
 
   @Optional
   @Input
@@ -219,6 +235,7 @@ public abstract class EwExecTask extends DefaultTask {
     p.getWithCoverage().set(getWithCoverage());
     p.getAdditionalApks().set(getAdditionalApks());
     p.getEnvironmentVariables().set(getEnvironmentVariables());
+    p.getSecretEnvironmentVariables().set(getSecretEnvironmentVariables());
     p.getNumUniformShards().set(getNumUniformShards());
     p.getNumBalancedShards().set(getNumBalancedShards());
     p.getNumShards().set(getNumShards());
@@ -232,6 +249,9 @@ public abstract class EwExecTask extends DefaultTask {
     p.getNumFlakyTestAttempts().set(getNumFlakyTestAttempts());
     p.getFlakyTestRepeatMode().set(getFlakyTestRepeatMode());
     p.getDisplayName().set(getDisplayName());
+    p.getDnsServers().set(getDnsServers());
+    p.getEgressTunnel().set(getEgressTunnel());
+    p.getEgressLocalhostForwardIp().set(getEgressLocalhostForwardIp());
     p.getScmUrl().set(getScmUrl());
     p.getScmCommitHash().set(getScmCommitHash());
     p.getScmRefName().set(getScmRefName());
