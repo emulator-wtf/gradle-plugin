@@ -160,6 +160,11 @@ emulatorwtf {
   // for instance to only run medium tests:
   environmentVariables = [size: 'medium']
 
+  // additional arguments to AndroidJUnitRunner, similar to the environmentVariables
+  // above, but in this case the arguments will be hidden in the emulator.wtf UI.
+  // Use this for passing any sort of secrets - tokens, passwords, credentials, etc.
+  secretEnvironmentVariables = [token: 'hunter2']
+
   // Set to the a minutes value to split your tests into multiple shards
   // dynamically, the number of shards will be figured out based on historical
   // test times. This is a good way to ensure a consistent runtime as your
