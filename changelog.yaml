@@ -1,0 +1,8 @@
+# To-be-released changelog collection file
+# When making changes that should get reflected in the changelog, add them to one of the sections below, example:
+# unreleased:
+# - "Made `thingamajig` faster, read more [here](https://example.com)."
+#
+# (Markdown is supported and encouraged)
+
+unreleased: []
