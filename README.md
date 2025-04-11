@@ -248,6 +248,8 @@ emulatorwtf {
   proxyPort = 8080
   proxyUser = "user"
   proxyPassword = "hunter2"
+    
+  testReporters = listOf(TestReporter.DEVELOCITY, TestReporter.GRADLE_TEST_REPORTING_API)  
 }
 ```
 

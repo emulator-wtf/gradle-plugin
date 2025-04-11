@@ -28,6 +28,7 @@ include(":gradle-compat-api")
 include(":gradle-compat")
 include(":gradle-compat-7-0")
 include(":gradle-compat-7-4")
+include(":gradle-compat-8-13")
 
 include(":gradle-plugin")
 include(":gradle-plugin-api")
