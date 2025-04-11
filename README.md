@@ -221,6 +221,19 @@ emulatorwtf {
     }
   }
 
+  // Use a specific DNS server instead of the default one.
+  dnsServers = ["1.1.1.1"]
+  
+  // Redirects all network traffic from the emulator instance to the Gradle plugin
+  // as if you were running the emulator locally.
+  // You can use this to test your app with a local server or an internal
+  // environment only accessible to your local machine or CI runner.
+  egressTunnel = false
+
+  // Makes the machine the Gradle build is running on visible to the emulator under the given ipv4 address,
+  // only works together with the egressTunnel option
+  egressLocalhostForwardIp = "192.168.200.1"
+
   // Configure a HTTP proxy to use when making requests to emulator.wtf API
   // these values default to standard JVM system properties `http.proxyHost`,
   // `http.proxyPort`, `http.proxyUser` and `http.proxyPassword` - there's no need to specify
