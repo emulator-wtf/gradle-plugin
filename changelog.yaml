@@ -5,4 +5,5 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased: []
+unreleased:
+- "* New: integrate with Gradle's [Test Reporting API](https://docs.gradle.org/8.13/userguide/test_reporting_api.html) (Gradle 8.13+) and Develocity's [JUnit importer](https://docs.gradle.com/enterprise/gradle-plugin/api/com/gradle/develocity/agent/gradle/test/ImportJUnitXmlReports.html)."

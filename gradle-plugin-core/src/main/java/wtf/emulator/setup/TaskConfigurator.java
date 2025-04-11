@@ -12,6 +12,7 @@ import wtf.emulator.EwExecSummaryTask;
 import wtf.emulator.EwExecTask;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
+import wtf.emulator.EwReportTask;
 import wtf.emulator.EwVariantFilter;
 import wtf.emulator.PrintMode;
 import wtf.emulator.TestReporter;
@@ -66,7 +67,7 @@ public class TaskConfigurator {
 
       // props necessary for collecting results
       task.getClasspath().set(toolConfig);
-      task.getIntermediateOutputsDir().set(target.getBuildDir().toPath().resolve("intermediates").resolve("emulatorwtf").toFile());
+      task.getIntermediateOutputsDir().set(target.getBuildDir().toPath().resolve("intermediates").resolve("emulatorwtf").resolve("async").toFile());
       task.getOutputsDir().set(ext.getBaseOutputDir().dir(task.getName()));
       task.getOutputTypes().set(ext.getOutputs());
       task.getPrintOutput().set(ext.getPrintOutput());
@@ -110,7 +111,7 @@ public class TaskConfigurator {
         configureTask(android, variant.getName(), variant.getBuildType().isTestCoverageEnabled(), variant.getMergedFlavor().getTestInstrumentationRunnerArguments(), additionalConfigure, outputFile, task)
     );
 
-    if (ext.getTestReporters().isPresent()) {
+    if (ext.getTestReporters().isPresent() && !ext.getAsync().getOrElse(false)) {
       Set<TestReporter> reporters = new HashSet<>(ext.getTestReporters().get());
       for (TestReporter reporter : reporters) {
         switch (reporter) {
@@ -118,7 +119,12 @@ public class TaskConfigurator {
           DevelocityReporter.configure(target, execTask, EwExecTask::getMergedXml);
           break;
         case GRADLE_TEST_REPORTING_API:
-          // TODO(madis) implement
+          String reportTaskName = "report" + capitalize(variant.getName()) + "EmulatorWtfTestResults";
+          TaskProvider<? extends EwReportTask> reportTask = target.getTasks().register(reportTaskName, EwReportTask.class, task -> {
+            task.getCliOutputFile().set(execTask.flatMap(EwExecTask::getOutputFile));
+            task.getOutputDir().set(execTask.flatMap(EwExecTask::getOutputsDir));
+          });
+          execTask.configure(task -> task.finalizedBy(reportTask));
           break;
         }
       }

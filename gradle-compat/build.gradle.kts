@@ -9,6 +9,7 @@ dependencies {
 
   implementation(projects.gradleCompat70)
   implementation(projects.gradleCompat74)
+  implementation(projects.gradleCompat813)
 
   implementation(libs.semver4j)
 }
