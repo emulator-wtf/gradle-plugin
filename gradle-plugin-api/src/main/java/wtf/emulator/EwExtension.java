@@ -33,6 +33,8 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
   public abstract MapProperty<String, Object> getSecretEnvironmentVariables();
 
+  public abstract ListProperty<TestReporter> getTestReporters();
+
   private Action<EwVariantFilter> filter = null;
 
   @Inject

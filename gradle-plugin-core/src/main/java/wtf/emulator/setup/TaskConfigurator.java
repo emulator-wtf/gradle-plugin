@@ -7,20 +7,25 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
+import wtf.emulator.DevelocityReporter;
 import wtf.emulator.EwExecSummaryTask;
 import wtf.emulator.EwExecTask;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
+import wtf.emulator.EwReportTask;
 import wtf.emulator.EwVariantFilter;
 import wtf.emulator.PrintMode;
+import wtf.emulator.TestReporter;
 import wtf.emulator.attributes.EwArtifactType;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -62,7 +67,7 @@ public class TaskConfigurator {
 
       // props necessary for collecting results
       task.getClasspath().set(toolConfig);
-      task.getIntermediateOutputsDir().set(target.getBuildDir().toPath().resolve("intermediates").resolve("emulatorwtf").toFile());
+      task.getIntermediateOutputsDir().set(target.getBuildDir().toPath().resolve("intermediates").resolve("emulatorwtf").resolve("async").toFile());
       task.getOutputsDir().set(ext.getBaseOutputDir().dir(task.getName()));
       task.getOutputTypes().set(ext.getOutputs());
       task.getPrintOutput().set(ext.getPrintOutput());
@@ -105,6 +110,25 @@ public class TaskConfigurator {
     execTask = target.getTasks().register(taskName, EwExecTask.class, task ->
         configureTask(android, variant.getName(), variant.getBuildType().isTestCoverageEnabled(), variant.getMergedFlavor().getTestInstrumentationRunnerArguments(), additionalConfigure, outputFile, task)
     );
+
+    if (ext.getTestReporters().isPresent() && !ext.getAsync().getOrElse(false)) {
+      Set<TestReporter> reporters = new HashSet<>(ext.getTestReporters().get());
+      for (TestReporter reporter : reporters) {
+        switch (reporter) {
+        case DEVELOCITY:
+          DevelocityReporter.configure(target, execTask, EwExecTask::getMergedXml);
+          break;
+        case GRADLE_TEST_REPORTING_API:
+          String reportTaskName = "report" + capitalize(variant.getName()) + "EmulatorWtfTestResults";
+          TaskProvider<? extends EwReportTask> reportTask = target.getTasks().register(reportTaskName, EwReportTask.class, task -> {
+            task.getCliOutputFile().set(execTask.flatMap(EwExecTask::getOutputFile));
+            task.getOutputDir().set(execTask.flatMap(EwExecTask::getOutputsDir));
+          });
+          execTask.configure(task -> task.finalizedBy(reportTask));
+          break;
+        }
+      }
+    }
 
     // register output file to results config
     resultsExportConfig.getOutgoing().artifact(outputFile, (it) -> it.builtBy(execTask));

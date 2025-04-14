@@ -4,6 +4,7 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition;
 import org.gradle.api.attributes.Attribute;
 import org.gradle.api.attributes.Category;
+import wtf.emulator.junit.JUnitResults;
 
 import javax.annotation.Nullable;
 
@@ -24,4 +25,10 @@ public class GradleCompat_7_4 implements GradleCompat {
   public Attribute<String> getArtifactTypeAttribute() {
     return ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE;
   }
+
+  @Override
+  public void reportTestResults(Project project, JUnitResults junitResults, @Nullable String resultsUrl) {
+    /* intentionally empty */
+  }
+
 }

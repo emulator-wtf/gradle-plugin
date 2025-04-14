@@ -12,6 +12,7 @@ dependencyResolutionManagement {
   repositories {
     mavenCentral()
     google()
+    gradlePluginPortal()
   }
 }
 
@@ -21,10 +22,13 @@ plugins {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+include(":develocity-reporter")
+
 include(":gradle-compat-api")
 include(":gradle-compat")
 include(":gradle-compat-7-0")
 include(":gradle-compat-7-4")
+include(":gradle-compat-8-13")
 
 include(":gradle-plugin")
 include(":gradle-plugin-api")
