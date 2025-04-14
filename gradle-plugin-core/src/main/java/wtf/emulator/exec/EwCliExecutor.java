@@ -307,7 +307,7 @@ public class EwCliExecutor {
     }
 
     if (parameters.getSecretEnvironmentVariables().isPresent()) {
-      Map<String, String> secretEnv = parameters.getEnvironmentVariables().get();
+      Map<String, String> secretEnv = parameters.getSecretEnvironmentVariables().get();
       if (!secretEnv.isEmpty()) {
         String secretEnvLine = secretEnv.entrySet().stream()
             .filter(entry -> entry.getValue() != null)
