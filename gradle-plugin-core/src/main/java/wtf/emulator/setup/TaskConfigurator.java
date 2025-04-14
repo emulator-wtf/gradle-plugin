@@ -167,6 +167,14 @@ public class TaskConfigurator {
           return out;
         }));
 
+    task.getSecretEnvironmentVariables().set(ext.getSecretEnvironmentVariables()
+      .map((entries) -> {
+        // toString the values
+        final Map<String, String> out = new HashMap<>();
+        entries.forEach((key, value) -> out.put(key, Objects.toString(value)));
+        return out;
+      }));
+
     task.getNumUniformShards().set(ext.getNumUniformShards());
     task.getNumShards().set(ext.getNumShards());
     task.getNumBalancedShards().set(ext.getNumBalancedShards());
@@ -192,6 +200,10 @@ public class TaskConfigurator {
     task.getScmCommitHash().set(ext.getScmCommitHash());
     task.getScmRefName().set(ext.getScmRefName());
     task.getScmPrUrl().set(ext.getScmPrUrl());
+
+    task.getDnsServers().set(ext.getDnsServers());
+    task.getEgressTunnel().set(ext.getEgressTunnel());
+    task.getEgressLocalhostForwardIp().set(ext.getEgressLocalhostForwardIp());
 
     task.getPrintOutput().set(ext.getPrintOutput());
 

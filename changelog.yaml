@@ -5,4 +5,11 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased: []
+unreleased:
+- "Bumped default `ew-cli` version to 0.12.1"
+- |
+  New: added support for passing secret runner arguments via `secretEnvironmentVariables`, for use with things like
+  tokens, credentials, passwords, etc.
+- |
+  New: added support for tunneling emulator egress networking to the machine the Gradle build is running on. Read more
+  about this feature [here](https://docs.emulator.wtf/concepts/networking/#egress-tunnel).
