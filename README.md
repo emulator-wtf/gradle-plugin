@@ -249,7 +249,12 @@ emulatorwtf {
   proxyUser = "user"
   proxyPassword = "hunter2"
     
-  testReporters = listOf(TestReporter.DEVELOCITY, TestReporter.GRADLE_TEST_REPORTING_API)  
+  // Configure the test reporters to use.
+  // GRADLE_TEST_REPORTING_API - test results will be reported via Gradle Test Reporting API (Gradle 8.13+)
+  // and will show up in console summaries, HTML reports, and build scans.
+  // DEVELOCITY - test results will be reported via Develocity JUnit importer API.
+  // By default no reporters are enabled.
+  testReporters = [TestReporter.DEVELOCITY, TestReporter.GRADLE_TEST_REPORTING_API]
 }
 ```
 
