@@ -12,7 +12,6 @@ import javax.annotation.Nullable;
   @Nullable public abstract Integer billableMinutes();
   @Nullable public abstract String resultsUrl();
   @Nullable public abstract RunResultsSummary runResultsSummary();
-  @Nullable public abstract String mergedJunitXml();
 
   public abstract Builder toBuilder();
 
@@ -27,7 +26,6 @@ import javax.annotation.Nullable;
     public abstract Builder billableMinutes(@Nullable Integer billableMinutes);
     public abstract Builder resultsUrl(@Nullable String resultsUrl);
     public abstract Builder runResultsSummary(@Nullable RunResultsSummary runResultsSummary);
-    public abstract Builder mergedJunitXml(@Nullable String mergedJunitXml);
     public abstract CliOutputSync build();
   }
 

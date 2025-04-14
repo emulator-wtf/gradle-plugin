@@ -6,8 +6,11 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.*;
-import org.jetbrains.annotations.NotNull;
+import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
+import org.gradle.api.tasks.TaskAction;
 import wtf.emulator.data.CliOutputSync;
 import wtf.emulator.exec.EwCliOutput;
 import wtf.emulator.junit.JUnitResults;
@@ -29,7 +32,8 @@ public abstract class EwReportTask extends DefaultTask {
   public abstract DirectoryProperty getOutputDir();
 
   @InputFile
-  @NotNull Provider<RegularFile> getMergedXml() {
+  @PathSensitive(PathSensitivity.RELATIVE)
+  Provider<RegularFile> getMergedXml() {
     return getOutputDir().file("results.xml");
   }
 

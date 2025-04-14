@@ -27,6 +27,6 @@ public class GradleCompat_7_0 implements GradleCompat {
 
   @Override
   public void reportTestResults(Project project, JUnitResults junitResults, @Nullable String resultsUrl) {
-
+    /* intentionally empty */
   }
 }
