@@ -5,4 +5,5 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased: []
+unreleased:
+- "Fixed: `secretEnvironmentVariables` were not passed to the emulator correctly and had no effect."
