@@ -5,4 +5,7 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased: []
+unreleased:
+- |
+  Fixed `Invocation of 'Task.project' by task '...' at execution time is unsupported` errors when using the configuration cache
+  and `TestReporter.GRADLE_TEST_REPORTING_API` together.
