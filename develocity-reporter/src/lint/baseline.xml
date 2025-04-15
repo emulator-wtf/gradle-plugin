@@ -24,17 +24,6 @@
     </issue>
 
     <issue
-        id="NewerVersionAvailable"
-        message="A newer version of commons-io:commons-io than 2.18.0 is available: 2.19.0"
-        errorLine1="commons-io = &quot;commons-io:commons-io:2.18.0&quot;"
-        errorLine2="             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="29"
-            column="14"/>
-    </issue>
-
-    <issue
         id="SimilarGradleDependency"
         message="There are multiple dependencies dev.gradleplugins:gradle-api but with different version"
         errorLine1="gradle-api-v70 = &quot;dev.gradleplugins:gradle-api:7.0&quot;"
