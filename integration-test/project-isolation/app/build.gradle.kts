@@ -3,6 +3,8 @@ plugins {
   id("wtf.emulator.gradle")
 }
 
+import wtf.emulator.TestReporter
+
 android {
   compileSdk = 34
 
@@ -35,4 +37,8 @@ dependencies {
   androidTestImplementation("com.google.truth:truth:1.4.4")
 
   testImplementation("junit:junit:4.13.2")
+}
+
+emulatorwtf {
+  testReporters = listOf(TestReporter.GRADLE_TEST_REPORTING_API)
 }
