@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.8.0-alpha01" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0-alpha01)" variant="all" version="8.8.0-alpha01">
+<issues format="6" by="lint 8.11.0-alpha07" type="baseline" client="gradle" dependencies="false" name="AGP (8.11.0-alpha07)" variant="all" version="8.11.0-alpha07">
 
     <issue
         id="InternalAgpApiUsage"
@@ -8,8 +8,30 @@
         errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
-            line="15"
+            line="13"
             column="1"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (method getTestVariant from com.android.build.gradle.internal.api.TestedVariant)"
+        errorLine1="    TestVariant testVariant = variant.getTestVariant();"
+        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
+            line="57"
+            column="31"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (method getTestVariant from com.android.build.gradle.internal.api.TestedVariant)"
+        errorLine1="    TestVariant testVariant = variant.getTestVariant();"
+        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
+            line="76"
+            column="31"/>
     </issue>
 
     <issue
@@ -21,6 +43,17 @@
             file="src/main/java/wtf/emulator/setup/ProjectConfigurator.java"
             line="12"
             column="1"/>
+    </issue>
+
+    <issue
+        id="InternalGradleApiUsage"
+        message="Avoid using internal Gradle APIs (method getSettings from org.gradle.api.internal.GradleInternal)"
+        errorLine1="    return ((GradleInternal) target.getGradle()).getSettings();"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/setup/ProjectConfigurator.java"
+            line="170"
+            column="12"/>
     </issue>
 
 </issues>
