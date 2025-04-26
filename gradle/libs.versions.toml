@@ -18,7 +18,7 @@ develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.0.1"
 gradle-api-v70 = "dev.gradleplugins:gradle-api:7.0"
 gradle-api-v74 = "dev.gradleplugins:gradle-api:7.4"
 
-lint-gradle = "androidx.lint:lint-gradle:1.0.0-alpha03"
+lint-gradle = "androidx.lint:lint-gradle:1.0.0-alpha04"
 
 semver4j = "com.vdurmont:semver4j:3.1.0"
 
