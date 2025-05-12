@@ -128,6 +128,7 @@ public class TaskConfigurator {
           TaskProvider<? extends EwReportTask> reportTask = target.getTasks().register(reportTaskName, EwReportTask.class, task -> {
             task.getCliOutputFile().set(outputFile);
             task.getOutputDir().set(outputDirectory);
+            task.getGradleVersion().set(target.getGradle().getGradleVersion());
           });
           execTask.configure(task -> task.finalizedBy(reportTask));
           break;
