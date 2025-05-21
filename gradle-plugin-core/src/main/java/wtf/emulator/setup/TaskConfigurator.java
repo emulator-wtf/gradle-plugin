@@ -5,6 +5,7 @@ import com.android.build.gradle.api.BaseVariant;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
 import wtf.emulator.DevelocityReporter;
@@ -107,8 +108,12 @@ public class TaskConfigurator {
 
     final TaskProvider<? extends EwExecTask> execTask;
 
+    Provider<Directory> outputDirectory = ext.getBaseOutputDir().dir(taskName);
     execTask = target.getTasks().register(taskName, EwExecTask.class, task ->
-        configureTask(android, variant.getName(), variant.getBuildType().isTestCoverageEnabled(), variant.getMergedFlavor().getTestInstrumentationRunnerArguments(), additionalConfigure, outputFile, task)
+        configureTask(android, variant.getName(), variant.getBuildType().isTestCoverageEnabled(),
+          variant.getMergedFlavor().getTestInstrumentationRunnerArguments(), additionalConfigure, outputFile,
+          outputDirectory,
+          task)
     );
 
     if (ext.getTestReporters().isPresent() && !ext.getAsync().getOrElse(false)) {
@@ -121,8 +126,8 @@ public class TaskConfigurator {
         case GRADLE_TEST_REPORTING_API:
           String reportTaskName = "report" + capitalize(variant.getName()) + "EmulatorWtfTestResults";
           TaskProvider<? extends EwReportTask> reportTask = target.getTasks().register(reportTaskName, EwReportTask.class, task -> {
-            task.getCliOutputFile().set(execTask.flatMap(EwExecTask::getOutputFile));
-            task.getOutputDir().set(execTask.flatMap(EwExecTask::getOutputsDir));
+            task.getCliOutputFile().set(outputFile);
+            task.getOutputDir().set(outputDirectory);
             task.getGradleVersion().set(target.getGradle().getGradleVersion());
           });
           execTask.configure(task -> task.finalizedBy(reportTask));
@@ -142,6 +147,7 @@ public class TaskConfigurator {
       Map<String, String> instrumentationRunnerArguments,
       Consumer<EwExecTask> additionalConfigure,
       File outputFile,
+      Provider<Directory> outputDirectory,
       EwExecTask task
   ) {
     task.setDescription("Run " + variantName + " instrumentation tests with emulator.wtf");
@@ -163,7 +169,7 @@ public class TaskConfigurator {
 
     // don't configure outputs in async mode
     if (!task.getAsync().getOrElse(false)) {
-      task.getOutputsDir().set(ext.getBaseOutputDir().dir(task.getName()));
+      task.getOutputsDir().set(outputDirectory);
       task.getOutputTypes().set(ext.getOutputs());
     }
 
