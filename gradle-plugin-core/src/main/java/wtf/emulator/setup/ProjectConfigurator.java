@@ -112,6 +112,8 @@ public class ProjectConfigurator {
   }
 
   private Configuration createResultsExportConfiguration() {
+    // has to be created eagerly, otherwise nothing will run from the summary tasks
+    // TODO(madis) find a better workaround for this
     final Configuration resultsExportConfig = target.getConfigurations().maybeCreate(RESULTS_EXPORT_CONFIGURATION);
     resultsExportConfig.setCanBeConsumed(true);
     resultsExportConfig.setCanBeResolved(true);
@@ -127,6 +129,8 @@ public class ProjectConfigurator {
   }
 
   private Provider<Configuration> createResultsImportConfiguration(Configuration resultsExportConfig) {
+    // has to be created eagerly, otherwise nothing will run from the summary tasks
+    // TODO(madis) find a better workaround for this
     final Configuration resultsConfig = target.getConfigurations().maybeCreate(RESULTS_CONFIGURATION);
     resultsConfig.setCanBeConsumed(false);
     resultsConfig.setCanBeResolved(false);

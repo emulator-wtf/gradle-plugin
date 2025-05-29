@@ -13,6 +13,7 @@ import com.android.build.gradle.api.TestVariant;
 import com.android.build.gradle.internal.attributes.VariantAttr;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.provider.Provider;
 import wtf.emulator.GradleCompat;
 
 import java.util.Optional;
@@ -93,14 +94,16 @@ public class VariantConfigurator {
 
       // look up the referenced target variant
       // TODO(madis) use artifact apis here instead?
-      Configuration testedApks = target.getConfigurations().maybeCreate(variant.getName() + "TestedApks");
       final String variantName = variant.getName();
+      Provider<Configuration> testedApks = target.getConfigurations().named(variantName + "TestedApks");
       task.getApks().set(
-        testedApks.getIncoming().artifactView(view -> {
-          view.getAttributes().attribute(VariantAttr.ATTRIBUTE,
-            target.getObjects().named(VariantAttr.class, variantName));
-          view.getAttributes().attribute(compat.getArtifactTypeAttribute(), "apk");
-        }).getFiles()
+        testedApks.map(it ->
+          it.getIncoming().artifactView(view -> {
+            view.getAttributes().attribute(VariantAttr.ATTRIBUTE,
+              target.getObjects().named(VariantAttr.class, variantName));
+            view.getAttributes().attribute(compat.getArtifactTypeAttribute(), "apk");
+          }).getFiles()
+        )
       );
     });
   }

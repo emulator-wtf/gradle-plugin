@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.11.0-alpha07" type="baseline" client="gradle" dependencies="false" name="AGP (8.11.0-alpha07)" variant="all" version="8.11.0-alpha07">
+<issues format="6" by="lint 8.11.0-alpha10" type="baseline" client="gradle" dependencies="false" name="AGP (8.11.0-alpha10)" variant="all" version="8.11.0-alpha10">
+
+    <issue
+        id="EagerGradleConfiguration"
+        message="Use register instead of maybeCreate"
+        errorLine1="    final Configuration resultsExportConfig = target.getConfigurations().maybeCreate(RESULTS_EXPORT_CONFIGURATION);"
+        errorLine2="                                                                         ~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/setup/ProjectConfigurator.java"
+            line="117"
+            column="74"/>
+    </issue>
+
+    <issue
+        id="EagerGradleConfiguration"
+        message="Use register instead of maybeCreate"
+        errorLine1="    final Configuration resultsConfig = target.getConfigurations().maybeCreate(RESULTS_CONFIGURATION);"
+        errorLine2="                                                                   ~~~~~~~~~~~">
+        <location
+            file="src/main/java/wtf/emulator/setup/ProjectConfigurator.java"
+            line="134"
+            column="68"/>
+    </issue>
 
     <issue
         id="InternalAgpApiUsage"
@@ -19,7 +41,7 @@
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
-            line="57"
+            line="58"
             column="31"/>
     </issue>
 
@@ -30,7 +52,7 @@
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/wtf/emulator/setup/VariantConfigurator.java"
-            line="76"
+            line="77"
             column="31"/>
     </issue>
 
@@ -52,7 +74,7 @@
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/wtf/emulator/setup/ProjectConfigurator.java"
-            line="170"
+            line="174"
             column="12"/>
     </issue>
 
