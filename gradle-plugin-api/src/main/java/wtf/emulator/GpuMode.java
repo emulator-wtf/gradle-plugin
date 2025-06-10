@@ -1,4 +1,4 @@
-package wtf.emulator.data;
+package wtf.emulator;
 
 public enum GpuMode {
   auto,

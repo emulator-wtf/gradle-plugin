@@ -4,7 +4,7 @@ import org.junit.Test;
 import wtf.emulator.data.CliOutputAsync;
 import wtf.emulator.data.CliOutputSync;
 import wtf.emulator.data.DeviceSpec;
-import wtf.emulator.data.GpuMode;
+import wtf.emulator.GpuMode;
 import wtf.emulator.data.RunResult;
 import wtf.emulator.data.RunResultsSummary;
 import wtf.emulator.data.TestCaseResult;
