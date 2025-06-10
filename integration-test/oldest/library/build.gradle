@@ -22,6 +22,8 @@ android {
     sourceCompatibility 1.8
     targetCompatibility 1.8
   }
+
+  namespace 'wtf.emulator.sample.library'
 }
 
 dependencies {
