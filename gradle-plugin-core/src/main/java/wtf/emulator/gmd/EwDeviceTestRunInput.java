@@ -1,6 +1,6 @@
-package wtf.emulator;
+package wtf.emulator.gmd;
 
-import org.gradle.api.DefaultTask;
+import com.android.build.api.instrumentation.manageddevice.DeviceTestRunInput;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.RegularFile;
@@ -9,10 +9,8 @@ import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.CacheableTask;
-import org.gradle.api.tasks.Classpath;
+import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
@@ -20,39 +18,31 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
-import org.gradle.api.tasks.TaskAction;
-import org.gradle.workers.WorkQueue;
-import org.gradle.workers.WorkerExecutor;
-import wtf.emulator.exec.EwWorkAction;
-import wtf.emulator.exec.EwWorkParameters;
+import wtf.emulator.GpuMode;
+import wtf.emulator.OutputType;
 
-import javax.inject.Inject;
+import java.io.File;
 import java.time.Duration;
 import java.util.Map;
 
-@CacheableTask
-public abstract class EwExecTask extends DefaultTask {
-  @Classpath
-  @InputFiles
-  public abstract Property<FileCollection> getClasspath();
+public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
+
+  @Optional
+  @Input
+  public abstract Property<String> getDevice();
+
+  @Optional
+  @Input
+  public abstract Property<Integer> getApiLevel();
+
+  @Optional
+  @Input
+  public abstract Property<GpuMode> getGpu();
+
+  // Extension properties from emulatorwtf{} block that are relevant for GMD test runs
 
   @Input
   public abstract Property<String> getToken();
-
-  @Optional
-  @InputFiles
-  @PathSensitive(PathSensitivity.NONE)
-  public abstract Property<FileCollection> getApks();
-
-  @Optional
-  @InputFile
-  @PathSensitive(PathSensitivity.NONE)
-  public abstract RegularFileProperty getTestApk();
-
-  @Optional
-  @InputFile
-  @PathSensitive(PathSensitivity.NONE)
-  public abstract RegularFileProperty getLibraryTestApk();
 
   @Optional
   @OutputDirectory
@@ -63,9 +53,6 @@ public abstract class EwExecTask extends DefaultTask {
   public Provider<RegularFile> getMergedXml() {
     return getOutputsDir().file("results.xml");
   }
-
-  @OutputFile
-  public abstract RegularFileProperty getOutputFile();
 
   @Optional
   @Input
@@ -95,10 +82,6 @@ public abstract class EwExecTask extends DefaultTask {
   @InputFiles
   @PathSensitive(PathSensitivity.NONE)
   public abstract Property<FileCollection> getAdditionalApks();
-
-  @Optional
-  @Input
-  public abstract Property<String> getInstrumentationRunner();
 
   @Optional
   @Input
@@ -199,9 +182,6 @@ public abstract class EwExecTask extends DefaultTask {
   @Internal
   public abstract RegularFileProperty getWorkingDir();
 
-  @Inject
-  public abstract WorkerExecutor getWorkerExecutor();
-
   @Optional
   @Input
   public abstract Property<Boolean> getPrintOutput();
@@ -226,59 +206,10 @@ public abstract class EwExecTask extends DefaultTask {
   @Input
   public abstract Property<String> getProxyPassword();
 
-  @TaskAction
-  public void runTests() {
-    WorkQueue workQueue = getWorkerExecutor().noIsolation();
-    workQueue.submit(EwWorkAction.class, this::fillWorkParameters);
-  }
+  @Input
+  public abstract SetProperty<File> getClasspath();
 
-  protected void fillWorkParameters(EwWorkParameters p) {
-    p.getClasspath().set(getClasspath().get().getFiles());
-    p.getToken().set(getToken());
-    p.getApks().set(getApks());
-    p.getTestApk().set(getTestApk());
-    p.getLibraryTestApk().set(getLibraryTestApk());
-    p.getOutputsDir().set(getOutputsDir());
-    p.getOutputs().set(getOutputTypes());
-    p.getRecordVideo().set(getRecordVideo());
-    p.getDevices().set(getDevices());
-    p.getUseOrchestrator().set(getUseOrchestrator());
-    p.getClearPackageData().set(getClearPackageData());
-    p.getWithCoverage().set(getWithCoverage());
-    p.getAdditionalApks().set(getAdditionalApks());
-    p.getInstrumentationRunner().set(getInstrumentationRunner());
-    p.getEnvironmentVariables().set(getEnvironmentVariables());
-    p.getSecretEnvironmentVariables().set(getSecretEnvironmentVariables());
-    p.getNumUniformShards().set(getNumUniformShards());
-    p.getNumBalancedShards().set(getNumBalancedShards());
-    p.getNumShards().set(getNumShards());
-    p.getShardTargetRuntime().set(getShardTargetRuntime());
-    p.getDirectoriesToPull().set(getDirectoriesToPull());
-    p.getSideEffects().set(getSideEffects());
-    p.getTimeout().set(getTestTimeout());
-    p.getFileCacheEnabled().set(getFileCacheEnabled());
-    p.getFileCacheTtl().set(getFileCacheTtl());
-    p.getTestCacheEnabled().set(getTestCacheEnabled());
-    p.getNumFlakyTestAttempts().set(getNumFlakyTestAttempts());
-    p.getFlakyTestRepeatMode().set(getFlakyTestRepeatMode());
-    p.getDisplayName().set(getDisplayName());
-    p.getDnsServers().set(getDnsServers());
-    p.getEgressTunnel().set(getEgressTunnel());
-    p.getEgressLocalhostForwardIp().set(getEgressLocalhostForwardIp());
-    p.getScmUrl().set(getScmUrl());
-    p.getScmCommitHash().set(getScmCommitHash());
-    p.getScmRefName().set(getScmRefName());
-    p.getScmPrUrl().set(getScmPrUrl());
-    p.getWorkingDir().set(getWorkingDir());
-    p.getIgnoreFailures().set(getIgnoreFailures());
-    p.getAsync().set(getAsync());
-    p.getPrintOutput().set(getPrintOutput());
-    p.getTestTargets().set(getTestTargets());
-    p.getProxyHost().set(getProxyHost());
-    p.getProxyPort().set(getProxyPort());
-    p.getProxyUser().set(getProxyUser());
-    p.getProxyPassword().set(getProxyPassword());
-    p.getOutputFile().set(getOutputFile());
-    p.getTaskPath().set(getPath());
-  }
+  @Internal
+  public abstract DirectoryProperty getIntermediatesOutputs();
+
 }

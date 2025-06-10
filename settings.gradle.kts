@@ -34,4 +34,6 @@ include(":gradle-plugin")
 include(":gradle-plugin-api")
 include(":gradle-plugin-core")
 
+include(":kotlin-extensions")
+
 rootProject.name = "ew-gradle"

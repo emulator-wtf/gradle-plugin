@@ -84,7 +84,7 @@ public class EwCliExecutor {
     }
   }
 
-  public void invokeCli(EwWorkParameters parameters) {
+  public EwCliOutput invokeCli(EwWorkParameters parameters) {
     // materialize token
     final String token = parameters.getToken().getOrNull();
     if (token == null) {
@@ -126,17 +126,6 @@ public class EwCliExecutor {
       }
 
       final EwCliOutput output = outputBuilder.taskPath(parameters.getTaskPath().get()).exitCode(result.getExitValue()).build();
-
-      // write output json to the intermediate file
-      if (parameters.getOutputFile().isPresent()) {
-        File outputFile = parameters.getOutputFile().get().getAsFile();
-        try {
-          FileUtils.write(outputFile, gson.toJson(output), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-          /* ignore */
-        }
-      }
-
       if (result.getExitValue() != 0) {
         final String message = new CliOutputPrinter().getSummaryLines(output);
 
@@ -146,6 +135,7 @@ public class EwCliExecutor {
           throw new EmulatorWtfException(message);
         }
       }
+      return output;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -293,6 +283,10 @@ public class EwCliExecutor {
         spec.args("--additional-apks", additionalApks.stream()
             .map(File::getAbsolutePath).collect(Collectors.joining(",")));
       }
+    }
+
+    if (parameters.getInstrumentationRunner().isPresent()) {
+      spec.args("--test-runner-class", parameters.getInstrumentationRunner().get());
     }
 
     if (parameters.getEnvironmentVariables().isPresent()) {

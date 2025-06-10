@@ -29,6 +29,8 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
   public abstract ListProperty<Map<String, Object>> getDevices();
 
+  public abstract Property<String> getTestRunnerClass();
+
   public abstract MapProperty<String, Object> getEnvironmentVariables();
 
   public abstract MapProperty<String, Object> getSecretEnvironmentVariables();
