@@ -18,7 +18,7 @@ public abstract class EwDeviceSetupTaskAction implements DeviceSetupTaskAction<E
     if (ewDeviceSetupInput.getCacheEnabled().get()) {
       Path filePath = directory.file("cachebust.txt").getAsFile().toPath();
       try {
-        Files.writeString(filePath, Long.toString(new SecureRandom().nextLong()));
+        Files.writeString(filePath, String.valueOf(Math.random()));
       } catch (IOException e) {
         Logging.getLogger(EwDeviceSetupTaskAction.class)
           .warn("Failed to write cache bust file", e);

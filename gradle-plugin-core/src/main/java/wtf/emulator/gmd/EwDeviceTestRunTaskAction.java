@@ -314,7 +314,17 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
       @Override
       @Nonnull
       public List<String> getAbis() {
-        return List.of("x86_64");
+        switch (apiLevel) {
+          case 23:
+          case 24:
+          case 27:
+          case 28:
+          case 29:
+          case 30:
+            return List.of("x86");
+          default:
+            return List.of("x86_64");
+        }
       }
 
       @Override

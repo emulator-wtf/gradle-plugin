@@ -5,9 +5,9 @@ import com.android.build.api.dsl.Device;
 import com.android.build.api.dsl.ManagedDevices;
 import com.android.build.api.instrumentation.manageddevice.DeviceDslRegistration;
 import com.android.build.api.variant.AndroidComponentsExtension;
+import kotlin.Suppress;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
@@ -23,7 +23,6 @@ import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.gradle.api.provider.Provider;
-import org.jetbrains.annotations.NotNull;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.EwProperties;
@@ -94,6 +93,7 @@ public class ProjectConfigurator {
         });
   }
 
+  @SuppressWarnings("EagerGradleConfiguration") // we want to eagerly configure added devices
   private void registerManagedDeviceExtension() {
     CommonExtension<?, ?, ?, ?, ?> androidCommonExtension = target.getExtensions().findByType(CommonExtension.class);
 
@@ -119,23 +119,17 @@ public class ProjectConfigurator {
     extraProperties.set(EW_DEVICES_CONTAINER_KEY, ewDevicesContainer);
 
     // When an EwManagedDevice is added to our ewDevices container, add it to allDevices
-    ewDevicesContainer.whenObjectAdded(new Action<EwManagedDevice>() {
-      @Override
-      public void execute(@NotNull EwManagedDevice ewDevice) {
-        if (managedDevices.getAllDevices().findByName(ewDevice.getName()) == null ||
-          !(managedDevices.getAllDevices().findByName(ewDevice.getName()) instanceof EwManagedDevice)) {
-          managedDevices.getAllDevices().add(ewDevice);
-        }
+    ewDevicesContainer.whenObjectAdded(ewDevice -> {
+      if (managedDevices.getAllDevices().findByName(ewDevice.getName()) == null ||
+        !(managedDevices.getAllDevices().findByName(ewDevice.getName()) instanceof EwManagedDevice)) {
+        managedDevices.getAllDevices().add(ewDevice);
       }
     });
     // When an EwManagedDevice is removed from our ewDevices container, remove it from allDevices
-    ewDevicesContainer.whenObjectRemoved(new Action<EwManagedDevice>() {
-      @Override
-      public void execute(@NotNull EwManagedDevice ewDevice) {
-        Device deviceInAll = managedDevices.getAllDevices().findByName(ewDevice.getName());
-        if (deviceInAll instanceof EwManagedDevice) { // Make sure it's the correct type
-          managedDevices.getAllDevices().remove(deviceInAll);
-        }
+    ewDevicesContainer.whenObjectRemoved(ewDevice -> {
+      Device deviceInAll = managedDevices.getAllDevices().findByName(ewDevice.getName());
+      if (deviceInAll instanceof EwManagedDevice) { // Make sure it's the correct type
+        managedDevices.getAllDevices().remove(deviceInAll);
       }
     });
 
