@@ -5,7 +5,6 @@ import com.android.build.api.dsl.Device;
 import com.android.build.api.dsl.ManagedDevices;
 import com.android.build.api.instrumentation.manageddevice.DeviceDslRegistration;
 import com.android.build.api.variant.AndroidComponentsExtension;
-import kotlin.Suppress;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import org.gradle.api.GradleException;
@@ -82,8 +81,12 @@ public class ProjectConfigurator {
   }
 
   private void registerGmdDeviceType() {
-    target.getExtensions().getByType(AndroidComponentsExtension.class)
-      .getManagedDeviceRegistry()
+    AndroidComponentsExtension<?,?,?> androidComponents = target.getExtensions().findByType(AndroidComponentsExtension.class);
+    if (androidComponents == null) {
+      target.getLogger().debug("Android components extension not found. Skipping GMD setup for project {}", target.getPath());
+      return;
+    }
+    androidComponents.getManagedDeviceRegistry()
       .registerDeviceType(EwManagedDevice.class,
         (Function1<? super DeviceDslRegistration<EwManagedDevice>, Unit>) registration -> {
           registration.setDslImplementationClass(EwManagedDeviceImpl.class);
