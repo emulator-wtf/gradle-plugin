@@ -201,7 +201,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
         File renamedResultsXml = new File(outputsDir, "TEST-results.xml");
         if (resultsXml.renameTo(renamedResultsXml)) {
           // Extract required metadata from deviceTestRunParameters
-          String deviceName = deviceTestRunParameters.getDeviceInput().getDevice().get();
+          String deviceName = deviceTestRunParameters.getTestRunData().getDeviceName();
           String flavor = deviceTestRunParameters.getTestRunData().getTestData().getFlavorName();
           String projectName = deviceTestRunParameters.getTestRunData().getProjectPath();
 
