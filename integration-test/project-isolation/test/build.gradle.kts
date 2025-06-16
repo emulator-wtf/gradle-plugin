@@ -36,7 +36,7 @@ dependencies {
 
 emulatorwtf {
   device {
-    model(DeviceModel.PIXEL_2)
-    version(27)
+    model = DeviceModel.PIXEL_2
+    version = 27
   }
 }
