@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import wtf.emulator.DeviceModel;
 import wtf.emulator.EwJson;
 import wtf.emulator.GpuMode;
 import wtf.emulator.exec.EwCliExecutor;
@@ -282,23 +283,12 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
 
       @Override
       public int getDensity() {
-        switch (deviceName) {
-          case "Pixel2":
-          case "Pixel7":
-          case "Pixel2Atd":
-          case "Pixel7Atd":
-            return 420;
-          case "Tablet10":
-          case "Tablet10Atd":
-            return 240;
-          case "NexusLowRes":
-          case "NexusLowResAtd":
-            return 160;
-          case "Monitor":
-            return 213;
-          default:
-            return 420;
+        for (DeviceModel model : DeviceModel.values()) {
+          if (model.getCliValue().equals(deviceName)) {
+            return model.getDensity();
+          }
         }
+        return 420; // Default density if not found
       }
 
       @Override
