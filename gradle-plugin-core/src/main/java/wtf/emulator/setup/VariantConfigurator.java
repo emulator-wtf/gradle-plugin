@@ -13,8 +13,8 @@ import com.android.build.gradle.api.TestVariant;
 import com.android.build.gradle.internal.attributes.VariantAttr;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition;
 import org.gradle.api.provider.Provider;
-import wtf.emulator.GradleCompat;
 
 import java.util.Optional;
 
@@ -22,12 +22,10 @@ import static com.android.build.VariantOutput.FilterType.ABI;
 
 public class VariantConfigurator {
   private final Project target;
-  private final GradleCompat compat;
   private final TaskConfigurator taskConfigurator;
 
-  public VariantConfigurator(Project target, GradleCompat compat, TaskConfigurator taskConfigurator) {
+  public VariantConfigurator(Project target, TaskConfigurator taskConfigurator) {
     this.target = target;
-    this.compat = compat;
     this.taskConfigurator = taskConfigurator;
   }
 
@@ -101,7 +99,7 @@ public class VariantConfigurator {
           it.getIncoming().artifactView(view -> {
             view.getAttributes().attribute(VariantAttr.ATTRIBUTE,
               target.getObjects().named(VariantAttr.class, variantName));
-            view.getAttributes().attribute(compat.getArtifactTypeAttribute(), "apk");
+            view.getAttributes().attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "apk");
           }).getFiles()
         )
       );

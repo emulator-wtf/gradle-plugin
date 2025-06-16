@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-  compileOnly(libs.gradle.api.v70)
+  compileOnly(libs.gradle.api.v80)
   compileOnly(libs.agp)
 
   compileOnly(libs.autovalue.annotations)
@@ -16,7 +16,6 @@ dependencies {
   annotationProcessor(libs.autovalue.gson.extension)
   annotationProcessor(libs.autovalue.gson.factory)
 
-  implementation(projects.gradleCompat)
   implementation(libs.semver4j)
   implementation(libs.gson)
   implementation(libs.commons.io)

@@ -6,7 +6,7 @@ plugins {
 dependencies {
   api(projects.gradlePluginApi)
 
-  compileOnly(libs.gradle.api.v81)
+  compileOnly(libs.gradle.api.v80)
   compileOnly(libs.kotlin.stdlib)
 
   compileOnly(libs.agp)

@@ -14,3 +14,4 @@ unreleased:
   Bump min supported AGP version to 8.1
 - |
   Bump min supported Gradle version to 8.1
+- Bump min supported Gradle version to 8.0 and JDK to 17

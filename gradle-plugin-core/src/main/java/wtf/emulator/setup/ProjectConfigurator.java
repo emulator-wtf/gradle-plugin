@@ -25,7 +25,6 @@ import org.gradle.api.provider.Provider;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.EwProperties;
-import wtf.emulator.GradleCompat;
 import wtf.emulator.attributes.EwArtifactType;
 import wtf.emulator.attributes.EwUsage;
 import wtf.emulator.gmd.EwDeviceSetupConfigureAction;
@@ -53,13 +52,11 @@ public class ProjectConfigurator {
   private final Project target;
   private final EwExtension ext;
   private final EwExtensionInternal extInternals;
-  private final GradleCompat compat;
 
-  public ProjectConfigurator(Project target, EwExtension ext, EwExtensionInternal extInternals, GradleCompat compat) {
+  public ProjectConfigurator(Project target, EwExtension ext, EwExtensionInternal extInternals) {
     this.target = target;
     this.ext = ext;
     this.extInternals = extInternals;
-    this.compat = compat;
   }
 
   public void configure() {
@@ -71,7 +68,7 @@ public class ProjectConfigurator {
     Provider<Configuration> resultsImportConfig = createResultsImportConfiguration(resultsExportConfig);
 
     TaskConfigurator taskConfigurator = new TaskConfigurator(target, ext, extInternals, toolConfig, resultsExportConfig, resultsImportConfig);
-    VariantConfigurator variantConfigurator = new VariantConfigurator(target, compat, taskConfigurator);
+    VariantConfigurator variantConfigurator = new VariantConfigurator(target, taskConfigurator);
 
     taskConfigurator.configureRootTask();
     variantConfigurator.configureVariants();
@@ -221,7 +218,7 @@ public class ProjectConfigurator {
     resultsExportConfig.setVisible(false);
 
     resultsExportConfig.attributes(attributes -> {
-      attributes.attribute(Category.CATEGORY_ATTRIBUTE, target.getObjects().named(Category.class, compat.getCategoryAttributeVerification()));
+      attributes.attribute(Category.CATEGORY_ATTRIBUTE, target.getObjects().named(Category.class, Category.VERIFICATION));
       attributes.attribute(Usage.USAGE_ATTRIBUTE, target.getObjects().named(EwUsage.class, EwUsage.EW_USAGE));
       attributes.attribute(EwArtifactType.EW_ARTIFACT_TYPE_ATTRIBUTE, target.getObjects().named(EwArtifactType.class, EwArtifactType.SUMMARY_JSON));
     });
@@ -245,7 +242,7 @@ public class ProjectConfigurator {
       config.extendsFrom(resultsExportConfig); // local loopback of artifacts
 
       config.attributes(attributes -> {
-        attributes.attribute(Category.CATEGORY_ATTRIBUTE, target.getObjects().named(Category.class, compat.getCategoryAttributeVerification()));
+        attributes.attribute(Category.CATEGORY_ATTRIBUTE, target.getObjects().named(Category.class, Category.VERIFICATION));
         attributes.attribute(Usage.USAGE_ATTRIBUTE, target.getObjects().named(EwUsage.class, EwUsage.EW_USAGE));
         attributes.attribute(EwArtifactType.EW_ARTIFACT_TYPE_ATTRIBUTE, target.getObjects().named(EwArtifactType.class, EwArtifactType.SUMMARY_JSON));
       });

@@ -16,6 +16,5 @@ dependencies {
   api(projects.gradlePluginApi)
   api(projects.kotlinExtensions)
 
-  implementation(projects.gradleCompat)
   implementation(projects.gradlePluginCore)
 }
