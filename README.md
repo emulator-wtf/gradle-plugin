@@ -127,14 +127,14 @@ emulatorwtf {
 
   // devices to test on, Defaults to Pixel7, version 30, gpu auto
   device {
-    model(DeviceModel.PIXEL_7)
-    version(30)
-    gpu(GpuMode.AUTO)
+    model = DeviceModel.PIXEL_7
+    version = 30
+    gpu = GpuMode.AUTO
   }
   device {
-    model(DeviceModel.NEXUS_LOW_RES)
-    version(21)
-    gpu(GpuMode.SOFTWARE)
+    model = DeviceModel.NEXUS_LOW_RES
+    version = 21
+    gpu = GpuMode.SOFTWARE
   }
 
   // Set the test timeout, defaults to 15 minutes
