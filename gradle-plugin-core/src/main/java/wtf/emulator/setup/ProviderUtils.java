@@ -4,7 +4,8 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
 import wtf.emulator.EwDeviceSpec;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -19,12 +20,18 @@ public class ProviderUtils {
     );
 
     var entriesProvider = ProviderUtils.reduce(
-      providers.provider(() -> Collections.<Map.Entry<String, String>>emptyList()),
+      providers.provider(() -> new ArrayList<Map.Entry<String, String>>()),
       entryProviders,
-      (acc, entry) -> Stream.concat(acc.stream(), Stream.of(entry)).toList()
+      (acc, entry) -> new ArrayList<>(Stream.concat(acc.stream(), Stream.of(entry)).toList())
     );
 
-    return entriesProvider.map(entries -> Map.ofEntries(entries.toArray(new Map.Entry[0])));
+    return entriesProvider.map(entries -> {
+      var map = new HashMap<String, String>();
+      for (var entry : entries) {
+        map.put(entry.getKey(), entry.getValue());
+      }
+      return map;
+    });
   }
 
   public static <R, T> Provider<R> reduce(Provider<R> initialValue, Iterable<Provider<T>> providers, BiFunction<R, T, R> reducer) {
