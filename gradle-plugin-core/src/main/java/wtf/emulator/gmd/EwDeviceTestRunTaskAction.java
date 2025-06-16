@@ -10,6 +10,7 @@ import org.gradle.api.file.RegularFile;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.process.ExecOperations;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +18,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import wtf.emulator.DeviceModel;
+import wtf.emulator.EwDeviceSpec;
 import wtf.emulator.EwJson;
-import wtf.emulator.GpuMode;
 import wtf.emulator.exec.EwCliExecutor;
 import wtf.emulator.exec.EwCliOutput;
 import wtf.emulator.exec.EwWorkParameters;
@@ -40,7 +41,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -98,14 +98,19 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     workParams.getClasspath().set(testRunInput.getClasspath().map(classpath -> classpath));
 
     // These defaults should come from the cli, but defaults are not exposed at the moment
-    String device = testRunInput.getDevice().getOrElse("Pixel2");
-    int apiLevel = testRunInput.getApiLevel().getOrElse(27);
+    final var model = testRunInput.getDevice().orElse(EwDeviceSpec.DEFAULT_MODEL);
+    final var version = testRunInput.getApiLevel().orElse(EwDeviceSpec.DEFAULT_VERSION);
+    final var gpu = testRunInput.getGpu().orElse(EwDeviceSpec.DEFAULT_GPU);
+    final var device = getObjectFactory().newInstance(EwDeviceSpec.class);
+    device.getModel().set(model);
+    device.getVersion().set(version);
+    device.getGpu().set(gpu);
 
     if (testData.isLibrary()) {
       workParams.getLibraryTestApk().set(testData.getTestApk());
     } else {
       List<File> testedApks = testData.getTestedApkFinder().invoke(
-        getDeviceConfigProvider(device, apiLevel)
+        getDeviceConfigProvider(model, version)
       );
       if (testedApks.size() != 1) {
         throw new IllegalStateException("Expected exactly one tested APK, but found: " + testedApks.size());
@@ -121,15 +126,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     // TODO: be a good citizen and split outputs after the test run
     workParams.getOutputsDir().set(testRunData.getOutputDirectory());
 
-    workParams.getDevices().set(
-      Collections.singletonList(
-        Map.of(
-          "model", device,
-          "version", String.valueOf(apiLevel),
-          "gpu", testRunInput.getGpu().getOrElse(GpuMode.AUTO).getCliValue()
-        )
-      )
-    );
+    workParams.getDevices().set(device.toCliMap().map(List::of));
     workParams.getInstrumentationRunner().set(testData.getInstrumentationRunner());
     workParams.getEnvironmentVariables().set(getProviderFactory().provider(testData::getInstrumentationRunnerArguments));
     // setting a ListProperty<OutputType> directly causes Gradle to barf with:
@@ -202,7 +199,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
         File renamedResultsXml = new File(outputsDir, "TEST-results.xml");
         if (resultsXml.renameTo(renamedResultsXml)) {
           // Extract required metadata from deviceTestRunParameters
-          String deviceName = deviceTestRunParameters.getDeviceInput().getDevice().get();
+          String deviceName = deviceTestRunParameters.getDeviceInput().getDevice().get().getCliValue();
           String flavor = deviceTestRunParameters.getTestRunData().getTestData().getFlavorName();
           String projectName = deviceTestRunParameters.getTestRunData().getProjectPath();
 
@@ -272,7 +269,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     return testData.getInstrumentationRunnerArguments().containsKey("androidx.benchmark.enabledRules");
   }
 
-  private static DeviceConfigProvider getDeviceConfigProvider(@Nonnull String deviceName, int apiLevel) {
+  private static DeviceConfigProvider getDeviceConfigProvider(@Nonnull Provider<DeviceModel> model, Provider<Integer> version) {
     return new DeviceConfigProvider() {
 
       @Override
@@ -283,12 +280,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
 
       @Override
       public int getDensity() {
-        for (DeviceModel model : DeviceModel.values()) {
-          if (model.getCliValue().equals(deviceName)) {
-            return model.getDensity();
-          }
-        }
-        return 420; // Default density if not found
+        return model.get().getDensity();
       }
 
       @Override
@@ -304,22 +296,15 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
       @Override
       @Nonnull
       public List<String> getAbis() {
-        switch (apiLevel) {
-          case 23:
-          case 24:
-          case 27:
-          case 28:
-          case 29:
-          case 30:
-            return List.of("x86");
-          default:
-            return List.of("x86_64");
-        }
+        return switch (version.get()) {
+          case 23, 24, 27, 28, 29, 30 -> List.of("x86");
+          default -> List.of("x86_64");
+        };
       }
 
       @Override
       public int getApiLevel() {
-        return apiLevel;
+        return version.get();
       }
 
     };

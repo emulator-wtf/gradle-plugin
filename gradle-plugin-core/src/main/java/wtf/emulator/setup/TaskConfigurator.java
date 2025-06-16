@@ -176,7 +176,9 @@ public class TaskConfigurator {
 
     task.getRecordVideo().set(ext.getRecordVideo());
 
-    task.getDevices().set(ext.getDevices().stream().map(EwDeviceSpec::toCliMap).collect(Collectors.toList()));
+    task.getDevices().set(target.getProviders().provider(() ->
+      ext.getDevices().stream().map(it -> it.toCliMap().get()).toList()
+    ));
 
     task.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(target.provider(() ->
         android.getTestOptions().getExecution().equalsIgnoreCase("ANDROIDX_TEST_ORCHESTRATOR"))));

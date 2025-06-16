@@ -40,6 +40,8 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
   private final DomainObjectSet<EwDeviceSpec> devices;
 
+  private final ObjectFactory objectFactory;
+
   @Inject
   public EwExtension(ObjectFactory objectFactory) {
     getVersion().convention("0.12.1");
@@ -52,8 +54,8 @@ public abstract class EwExtension implements EwInvokeConfiguration {
     sysPropConvention(getProxyUser(), "https.proxyUser", "http.proxyUser");
     sysPropConvention(getProxyPassword(), "https.proxyPassword", "http.proxyPassword");
 
+    this.objectFactory = objectFactory;
     this.variantCount = objectFactory.property(Integer.class).convention(0);
-
     this.devices = objectFactory.domainObjectSet(EwDeviceSpec.class);
   }
 
@@ -66,10 +68,11 @@ public abstract class EwExtension implements EwInvokeConfiguration {
     return this.devices;
   }
 
-  public void device(Action<EwDeviceSpecBuilder> action) {
-    EwDeviceSpecBuilder builder = new EwDeviceSpecBuilder();
+  @SuppressWarnings("unused")
+  public void device(Action<EwDeviceSpec> action) {
+    EwDeviceSpec builder = objectFactory.newInstance(EwDeviceSpec.class);
     action.execute(builder);
-    this.devices.add(builder.build());
+    this.devices.add(builder);
   }
 
   protected Action<EwVariantFilter> getFilter() {
