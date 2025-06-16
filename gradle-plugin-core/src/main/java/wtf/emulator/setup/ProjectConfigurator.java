@@ -25,7 +25,6 @@ import org.gradle.api.provider.Provider;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.EwProperties;
-import wtf.emulator.GradleCompat;
 import wtf.emulator.attributes.EwArtifactType;
 import wtf.emulator.attributes.EwUsage;
 import wtf.emulator.gmd.EwDeviceSetupConfigureAction;
@@ -53,13 +52,11 @@ public class ProjectConfigurator {
   private final Project target;
   private final EwExtension ext;
   private final EwExtensionInternal extInternals;
-  private final GradleCompat compat;
 
-  public ProjectConfigurator(Project target, EwExtension ext, EwExtensionInternal extInternals, GradleCompat compat) {
+  public ProjectConfigurator(Project target, EwExtension ext, EwExtensionInternal extInternals) {
     this.target = target;
     this.ext = ext;
     this.extInternals = extInternals;
-    this.compat = compat;
   }
 
   public void configure() {
@@ -71,7 +68,7 @@ public class ProjectConfigurator {
     Provider<Configuration> resultsImportConfig = createResultsImportConfiguration(resultsExportConfig);
 
     TaskConfigurator taskConfigurator = new TaskConfigurator(target, ext, extInternals, toolConfig, resultsExportConfig, resultsImportConfig);
-    VariantConfigurator variantConfigurator = new VariantConfigurator(target, compat, taskConfigurator);
+    VariantConfigurator variantConfigurator = new VariantConfigurator(target, taskConfigurator);
 
     taskConfigurator.configureRootTask();
     variantConfigurator.configureVariants();

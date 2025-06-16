@@ -15,7 +15,6 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition;
 import org.gradle.api.provider.Provider;
-import wtf.emulator.GradleCompat;
 
 import java.util.Optional;
 
@@ -23,12 +22,10 @@ import static com.android.build.VariantOutput.FilterType.ABI;
 
 public class VariantConfigurator {
   private final Project target;
-  private final GradleCompat compat;
   private final TaskConfigurator taskConfigurator;
 
-  public VariantConfigurator(Project target, GradleCompat compat, TaskConfigurator taskConfigurator) {
+  public VariantConfigurator(Project target, TaskConfigurator taskConfigurator) {
     this.target = target;
-    this.compat = compat;
     this.taskConfigurator = taskConfigurator;
   }
 

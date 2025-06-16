@@ -1,14 +1,9 @@
 package wtf.emulator;
 
 import com.vdurmont.semver4j.Semver;
-import org.gradle.api.invocation.Gradle;
 
 public class GradleCompatFactory {
   private static final Semver GRADLE_8_13 = new Semver("8.13", Semver.SemverType.LOOSE);
-
-  public static GradleCompat get(Gradle gradle) {
-    return get(gradle.getGradleVersion());
-  }
 
   public static GradleCompat get(String gradleVersion) {
     Semver version = new Semver(gradleVersion, Semver.SemverType.LOOSE);
