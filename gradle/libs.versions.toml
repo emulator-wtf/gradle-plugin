@@ -14,7 +14,7 @@ gradle-plugins-lint = { module = "com.android.lint:com.android.lint.gradle.plugi
 
 agp = "com.android.tools.build:gradle:8.1.0"
 builder-test-api = "com.android.tools.build:builder-test-api:8.1.0"
-testing-platfomr-core-proto = "com.google.testing.platform:core-proto:0.0.9-alpha03"
+testing-platform-core-proto = "com.google.testing.platform:core-proto:0.0.9-alpha03"
 
 kotlin-stdlib = "org.jetbrains.kotlin:kotlin-stdlib:1.8.10"
 

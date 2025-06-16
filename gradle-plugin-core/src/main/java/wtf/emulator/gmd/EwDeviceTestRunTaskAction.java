@@ -202,7 +202,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
         if (resultsXml.renameTo(renamedResultsXml)) {
           // Extract required metadata from deviceTestRunParameters
           String deviceName = deviceTestRunParameters.getDeviceInput().getDevice().get();
-          String flavor = deviceTestRunParameters.getTestRunData().getVariantName();
+          String flavor = deviceTestRunParameters.getTestRunData().getTestData().getFlavorName();
           String projectName = deviceTestRunParameters.getTestRunData().getProjectPath();
 
           addMetadataToResultsXml(renamedResultsXml, deviceName, flavor, projectName);
