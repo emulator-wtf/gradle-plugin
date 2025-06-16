@@ -22,6 +22,8 @@ import wtf.emulator.attributes.EwArtifactType;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -30,6 +32,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TaskConfigurator {
   private final Project target;
@@ -176,8 +179,11 @@ public class TaskConfigurator {
 
     task.getRecordVideo().set(ext.getRecordVideo());
 
-    task.getDevices().set(target.getProviders().provider(() ->
-      ext.getDevices().stream().map(it -> it.toCliMap().get()).toList()
+    var devices = ext.getDevices().stream().map(dev -> ProviderUtils.deviceToCliMap(target.getProviders(), dev)).toList();
+    task.getDevices().set(ProviderUtils.reduce(
+      target.provider(Collections::emptyList),
+      devices,
+      (acc, device) -> Stream.concat(acc.stream(), Stream.of(device)).toList()
     ));
 
     task.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(target.provider(() ->

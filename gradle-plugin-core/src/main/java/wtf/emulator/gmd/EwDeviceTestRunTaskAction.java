@@ -24,6 +24,7 @@ import wtf.emulator.exec.EwCliExecutor;
 import wtf.emulator.exec.EwCliOutput;
 import wtf.emulator.exec.EwWorkParameters;
 import wtf.emulator.gmd.utp.UtpResultGenerator;
+import wtf.emulator.setup.ProviderUtils;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -126,7 +127,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     // TODO: be a good citizen and split outputs after the test run
     workParams.getOutputsDir().set(testRunData.getOutputDirectory());
 
-    workParams.getDevices().set(device.toCliMap().map(List::of));
+    workParams.getDevices().set(ProviderUtils.deviceToCliMap(getProviderFactory(), device).map(List::of));
     workParams.getInstrumentationRunner().set(testData.getInstrumentationRunner());
     workParams.getEnvironmentVariables().set(getProviderFactory().provider(testData::getInstrumentationRunnerArguments));
     // setting a ListProperty<OutputType> directly causes Gradle to barf with:
