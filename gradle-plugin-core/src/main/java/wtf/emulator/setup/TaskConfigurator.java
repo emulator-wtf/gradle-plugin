@@ -190,6 +190,8 @@ public class TaskConfigurator {
 
     task.getAdditionalApks().set(ext.getAdditionalApks());
 
+    task.getInstrumentationRunner().set(ext.getTestRunnerClass());
+
     task.getEnvironmentVariables().set(ext.getEnvironmentVariables()
         .map((entries) -> {
           // pick defaults from test instrumentation runner args, then fill with overrides
