@@ -13,6 +13,7 @@ import com.android.build.gradle.api.TestVariant;
 import com.android.build.gradle.internal.attributes.VariantAttr;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition;
 import org.gradle.api.provider.Provider;
 import wtf.emulator.GradleCompat;
 
@@ -101,7 +102,7 @@ public class VariantConfigurator {
           it.getIncoming().artifactView(view -> {
             view.getAttributes().attribute(VariantAttr.ATTRIBUTE,
               target.getObjects().named(VariantAttr.class, variantName));
-            view.getAttributes().attribute(compat.getArtifactTypeAttribute(), "apk");
+            view.getAttributes().attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "apk");
           }).getFiles()
         )
       );

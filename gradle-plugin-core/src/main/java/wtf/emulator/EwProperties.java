@@ -14,8 +14,7 @@ public enum EwProperties {
   }
 
   public boolean getFlag(Project project, boolean defaultValue) {
-    String value = GradleCompatFactory.get(project.getGradle()).
-        getGradleProperty(project, PREFIX + "." + propName);
+    String value = project.getProviders().gradleProperty(PREFIX + "." + propName).getOrNull();
     if (value == null) {
       return defaultValue;
     }

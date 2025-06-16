@@ -6,7 +6,7 @@ plugins {
 dependencies {
   compileOnly(libs.agp)
   compileOnly(libs.develocity)
-  compileOnly(libs.gradle.api.v70)
+  compileOnly(libs.gradle.api.v80)
 
   api(libs.jsr305)
 
