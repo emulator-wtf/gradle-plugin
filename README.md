@@ -235,7 +235,7 @@ emulatorwtf {
   // Use a specific DNS server instead of the default one.
   dnsServers = ["1.1.1.1"]
   
-  // Redirects all network traffic from the emulator instance to the Gradle plugin
+ // Redirects all network traffic from the emulator instance to the Gradle plugin
   // as if you were running the emulator locally.
   // You can use this to test your app with a local server or an internal
   // environment only accessible to your local machine or CI runner.
@@ -268,16 +268,20 @@ emulatorwtf {
 
 ### Run tests with multiple device profiles
 
-By default, emulator.wtf runs tests on a Pixel2-like emulator with API 27
-(Android 8.1). If you want to run on a different version or device profile you
+By default, emulator.wtf runs tests on a Pixel7-like emulator with API 30
+(Android 11. If you want to run on a different version or device profile you
 can specify devices like so:
 
 ```groovy
 emulatorwtf {
-  devices = [
-    [model: "NexusLowRes", version: 23],
-    [model: "Pixel2", version: 27]
-  ]
+  device {
+    model = DeviceModel.NEXUS_LOW_RES
+    version = 23
+  }
+  device {
+    model = DeviceModel.PIXEL_2
+    version = 27
+  }
 }
 ```
 
