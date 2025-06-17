@@ -3,6 +3,8 @@ plugins {
   id("wtf.emulator.gradle")
 }
 
+import wtf.emulator.DeviceModel
+
 android {
   compileSdk = 34
 
@@ -29,4 +31,11 @@ dependencies {
   implementation("androidx.test:core:1.6.1")
   implementation("androidx.test.ext:junit-ktx:1.2.1")
   implementation("com.google.truth:truth:1.4.4")
+}
+
+emulatorwtf {
+  device {
+    model = DeviceModel.PIXEL_2
+    version = 27
+  }
 }

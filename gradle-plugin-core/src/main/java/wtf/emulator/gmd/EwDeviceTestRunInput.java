@@ -18,6 +18,9 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
+import wtf.emulator.DeviceModel;
+import wtf.emulator.EwDeviceSpec;
+import wtf.emulator.FlakyRepeatMode;
 import wtf.emulator.GpuMode;
 import wtf.emulator.OutputType;
 
@@ -29,7 +32,7 @@ public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
 
   @Optional
   @Input
-  public abstract Property<String> getDevice();
+  public abstract Property<DeviceModel> getDevice();
 
   @Optional
   @Input
@@ -137,7 +140,7 @@ public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
 
   @Optional
   @Input
-  public abstract Property<String> getFlakyTestRepeatMode();
+  public abstract Property<FlakyRepeatMode> getFlakyTestRepeatMode();
 
   @Optional
   @Input

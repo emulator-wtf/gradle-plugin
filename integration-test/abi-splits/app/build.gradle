@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'wtf.emulator.gradle'
 
+import wtf.emulator.DeviceModel
+
 android {
   compileSdk 33
 
@@ -47,5 +49,8 @@ dependencies {
 }
 
 emulatorwtf {
-  devices = [[model: 'Pixel2', version: 29]]
+  device {
+    model = DeviceModel.PIXEL_2
+    version = 29
+  }
 }

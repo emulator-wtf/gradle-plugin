@@ -1,5 +1,3 @@
-import org.gradle.api.internal.tasks.DefaultTaskDependency
-
 plugins {
   alias(libs.plugins.android.application)
   id("wtf.emulator.gradle")
