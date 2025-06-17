@@ -167,13 +167,14 @@ public class ProjectConfigurator {
       return;
     }
 
-    Runnable adder = () ->
-      target.getConfigurations().named("androidTestImplementation", config ->
-        config.getDependencies().add(target.getDependencies().create(BuildConfig.EW_RUNTIME_COORDS)));
+    target.getPluginManager().withPlugin("com.android.application", plugin -> addRuntimeDependency("androidTestImplementation"));
+    target.getPluginManager().withPlugin("com.android.library", plugin -> addRuntimeDependency("androidTestImplementation"));
+    target.getPluginManager().withPlugin("com.android.test", plugin -> addRuntimeDependency("implementation"));
+  }
 
-    target.getPluginManager().withPlugin("com.android.application", plugin -> adder.run());
-    target.getPluginManager().withPlugin("com.android.library", plugin -> adder.run());
-    target.getPluginManager().withPlugin("com.android.test", plugin -> adder.run());
+  private void addRuntimeDependency(String configurationName) {
+    target.getConfigurations().named(configurationName, config ->
+      config.getDependencies().add(target.getDependencies().create(BuildConfig.EW_RUNTIME_COORDS)));
   }
 
   private void configureRepository() {
