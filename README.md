@@ -194,9 +194,9 @@ emulatorwtf {
   // attempts will be executed in parallel
   numFlakyTestAttempts = 3
 
-  // Whether to reattempt full shards (all) or only failed tests (failed_only)
-  // in case of test failures. Defaults to failed_only.
-  flakyTestRepeatMode = failed_only
+  // Whether to reattempt full shards (ALL) or only failed tests (FAILED_ONLY)
+  // in case of test failures. Defaults to FAILED_ONLY.
+  flakyTestRepeatMode = FlakyRepeatMode.FAILED_ONLY
 
   // Directories to pull from device after test is over, will be stored in
   // baseOutputDir/${variant}:

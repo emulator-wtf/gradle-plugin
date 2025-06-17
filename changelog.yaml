@@ -15,3 +15,25 @@ unreleased:
 - |
   Bump min supported Gradle version to 8.1
 - Bump min supported Gradle version to 8.0 and JDK to 17
+- |
+  Breaking: specifying devices has changed. Instead of `devices` you can now specify devices to run tests on with
+  repeated `device {}` blocks. Example:
+  ```groovy
+  emulatorwtf {
+      device {
+          model = DeviceModel.PIXEL_2
+          version = 29
+      }
+      device {
+          model = DeviceModel.NEXUS_LOW_RES
+          version = 21
+      }
+  }
+  ```
+- |
+  Breaking: `flakyTestRepeatMode` argument now takes a `FlakyRepeatMode` enum value instead of a string. Example:
+  ```groovy
+  emulatorwtf {
+      flakyTestRepeatMode = FlakyRepeatMode.ALL
+  }
+  ```
