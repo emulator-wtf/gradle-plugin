@@ -347,7 +347,7 @@ public class EwCliExecutor {
     }
 
     if (parameters.getFlakyTestRepeatMode().isPresent()) {
-      spec.args("--flaky-test-repeat-mode", parameters.getFlakyTestRepeatMode().get());
+      spec.args("--flaky-test-repeat-mode", parameters.getFlakyTestRepeatMode().get().getCliValue());
     }
 
     if (parameters.getAsync().getOrElse(false)) {

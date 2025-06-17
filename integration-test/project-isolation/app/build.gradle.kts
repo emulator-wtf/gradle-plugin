@@ -4,6 +4,7 @@ plugins {
 }
 
 import wtf.emulator.TestReporter
+import wtf.emulator.DeviceModel
 
 android {
   compileSdk = 34
@@ -41,4 +42,8 @@ dependencies {
 
 emulatorwtf {
   testReporters = listOf(TestReporter.GRADLE_TEST_REPORTING_API)
+  device {
+    model = DeviceModel.PIXEL_2
+    version = 27
+  }
 }

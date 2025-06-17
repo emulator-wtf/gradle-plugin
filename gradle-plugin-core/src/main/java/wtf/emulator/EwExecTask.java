@@ -154,7 +154,7 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
-  public abstract Property<String> getFlakyTestRepeatMode();
+  public abstract Property<FlakyRepeatMode> getFlakyTestRepeatMode();
 
   @Optional
   @Input
