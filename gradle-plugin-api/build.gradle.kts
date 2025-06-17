@@ -28,5 +28,16 @@ dependencies {
 
 buildConfig {
   packageName("wtf.emulator")
-  buildConfigField("String", "VERSION", "\"${providers.gradleProperty("VERSION_NAME").orNull ?: project.version}\"")
+
+  // version of the Gradle plugin
+  buildConfigField("VERSION", providers.gradleProperty("VERSION_NAME").orElse(project.version.toString()))
+
+  // Maven coordinates for cli without version
+  buildConfigField("EW_CLI_MODULE", libs.emulatorwtf.cli.map { it.module.toString() })
+
+  // Cli version to use by default
+  buildConfigField("EW_CLI_VERSION", libs.emulatorwtf.cli.map { it.version!! })
+
+  // Full maven coordinates for runtime, including version
+  buildConfigField("EW_RUNTIME_COORDS", libs.emulatorwtf.runtime.map { it.toString() })
 }

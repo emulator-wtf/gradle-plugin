@@ -41,5 +41,8 @@ autovalue-gson-runtime = { module = "com.ryanharter.auto.value:auto-value-gson-r
 autovalue-gson-extension = { module = "com.ryanharter.auto.value:auto-value-gson-extension", version.ref = "autovalue-gson" }
 autovalue-gson-factory = { module = "com.ryanharter.auto.value:auto-value-gson-factory", version.ref = "autovalue-gson" }
 
+emulatorwtf-cli = "wtf.emulator:ew-cli:0.12.1"
+emulatorwtf-runtime = "wtf.emulator:test-runtime-android:0.2.1"
+
 [bundles]
 test = ["junit", "truth"]

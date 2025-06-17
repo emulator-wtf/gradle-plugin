@@ -3,7 +3,8 @@ package wtf.emulator;
 import org.gradle.api.Project;
 
 public enum EwProperties {
-  ADD_REPOSITORY("addrepository");
+  ADD_REPOSITORY("addrepository"),
+  ADD_RUNTIME_DEPENDENCY("addruntimedependency");
 
   private static final String PREFIX = "wtf.emulator";
 
