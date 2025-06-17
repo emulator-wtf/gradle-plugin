@@ -296,6 +296,120 @@ emulatorwtf {
 }
 ```
 
+### Use Gradle-managed devices
+
+The plugin supports configuring your devices via [Gradle-managed devices](https://developer.android.com/studio/test/gradle-managed-devices).
+
+1) Enable custom devices in `gradle.properties`: 
+    ```properties
+    android.experimental.testOptions.managedDevices.customDevice=true
+   ```
+2) Configure the device(s) in your module level build.gradle file:
+
+    <details open>
+    <summary>Kotlin DSL</summary>
+
+    ```kotlin
+    import wtf.emulator.ewDevices
+    import wtf.emulator.DeviceModel
+    
+    android {
+      testOptions {
+        managedDevices { 
+          ewDevices {
+            register("ewPixel7api33") { 
+              device = DeviceModel.PIXEL_7
+              apiLevel = 33
+            }
+          }
+        }
+      }
+    }
+    ```
+    </details>
+   
+    <details>
+    <summary>Groovy DSL</summary>
+   
+    ```groovy
+    import wtf.emulator.gmd.EwManagedDevice
+    import wtf.emulator.DeviceModel
+    
+    android {
+      testOptions {
+        managedDevices {
+          allDevices {
+            register("ewPixel7api33", EwManagedDevice) {
+              device = DeviceModel.PIXEL_7
+              apiLevel = 33
+            }
+          }
+        }
+      }
+    }
+    ```
+   </details>
+3) Optional: configure relevant `emulatorwtf {}` options in your module level `build.gradle(.kts)` file as described above in previous examples.
+
+To use these devices to run your tests, run the following Gradle task: `{deviceName}{BuildVariant}AndroidTest`. For example:
+```bash
+./gradlew ewPixel7api33DebugAndroidTest
+```
+
+#### Creating baseling profiles with Gradle-managed devices
+
+You can set up baselines profiles in the [same way you would do with local emulators](https://developer.android.com/topic/performance/baselineprofiles/create-baselineprofile) and configure the device(s) that you want to run on via GMD definitions shown in the example above.
+
+Your final configuration could look like this:
+
+<details open>
+<summary>Kotlin DSL</summary>
+
+```kotlin
+import wtf.emulator.ewDevices
+import wtf.emulator.DeviceModel
+
+android {
+  testOptions.managedDevices.ewDevices {
+    register("ewPixel7api33") {
+      device = DeviceModel.PIXEL_7
+      apiLevel = 33
+    }
+  }
+}
+
+baselineProfile {
+  managedDevices += "ewPixel7api33"
+  useConnectedDevices = false
+}
+```
+
+</details>
+
+<details>
+<summary>Groovy DSL</summary>
+
+```groovy
+import wtf.emulator.ewDevices
+import wtf.emulator.DeviceModel
+
+android {
+    testOptions.managedDevices.allDevices {
+        register("ewPixel7api33", EwManagedDevice) {
+            device = DeviceModel.PIXEL_7
+            apiLevel = 33
+        }
+    }
+}
+
+baselineProfile {
+  managedDevices += "ewPixel7api33"
+  useConnectedDevices = false
+}
+```
+
+</details>
+
 ## Compatibility
 
 The plugin is compatible with any working combination of these ranges:
