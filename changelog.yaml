@@ -6,12 +6,13 @@
 # (Markdown is supported and encouraged)
 
 unreleased:
+- "Breaking: minimum supported Android Gradle Plugin version is now 8.1"
+- "Breaking: minimum supported Gradle version is now 8.0"
+- "Breaking: emulator.wtf Gradle plugin only works on JDK 17 and later"
+- "Added support for Gradle-managed devices"
+- "Added support for generating baseline profiles via the `baselineprofile` plugin when using Gradle-managed devices"
 - |
-  Add support for Gradle-managed devices
-- |
-  Add support for generating baseline profiles via the `baselineprofile` plugin
-- |
-  Bump min supported AGP version to 8.1
-- |
-  Bump min supported Gradle version to 8.1
-- Bump min supported Gradle version to 8.0 and JDK to 17
+  When applied to Android projects the emulator.wtf Gradle plugin now automatically adds the
+  [`wtf.emulator:test-runtime-android`](https://github.com/emulator-wtf/test-runtime-android) dependency to the
+  `androidTestImplementation` configuration to enable per-test video captures. You can disable this by adding
+  `wtf.emulator.addruntimedependency=false` to your `gradle.properties` file.
