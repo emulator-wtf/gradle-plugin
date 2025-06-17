@@ -24,7 +24,6 @@ android {
 }
 
 dependencies {
-  implementation("wtf.emulator:test-runtime-android:0.2.0")
   implementation("androidx.test:rules:1.6.1")
   implementation("androidx.test:runner:1.6.2")
   implementation("androidx.test:core:1.6.1")
