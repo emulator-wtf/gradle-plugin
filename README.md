@@ -300,7 +300,7 @@ emulatorwtf {
 
 The plugin supports configuring your devices via [Gradle-managed devices](https://developer.android.com/studio/test/gradle-managed-devices).
 
-1) Enable custom devices in `gradle.properties`: 
+1) Enable custom devices in `gradle.properties` when using AGP version 8.2 or lower:
     ```properties
     android.experimental.testOptions.managedDevices.customDevice=true
     ```
