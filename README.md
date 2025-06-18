@@ -314,16 +314,16 @@ The plugin supports configuring your devices via [Gradle-managed devices](https:
     import wtf.emulator.DeviceModel
     
     android {
-      testOptions {
-        managedDevices { 
-          ewDevices {
-            register("ewPixel7api33") { 
-              device = DeviceModel.PIXEL_7
-              apiLevel = 33
+        testOptions {
+            managedDevices { 
+                ewDevices {
+                    register("ewPixel7api33") { 
+                        device = DeviceModel.PIXEL_7
+                        apiLevel = 33
+                    }
+                }
             }
-          }
         }
-      }
     }
     ```
     </details>
@@ -336,16 +336,16 @@ The plugin supports configuring your devices via [Gradle-managed devices](https:
     import wtf.emulator.DeviceModel
     
     android {
-      testOptions {
-        managedDevices {
-          allDevices {
-            register("ewPixel7api33", EwManagedDevice) {
-              device = DeviceModel.PIXEL_7
-              apiLevel = 33
+        testOptions {
+            managedDevices {
+                allDevices {
+                    register("ewPixel7api33", EwManagedDevice) {
+                        device = DeviceModel.PIXEL_7
+                        apiLevel = 33
+                    }
+                }
             }
-          }
         }
-      }
     }
     ```
    </details>
@@ -370,17 +370,17 @@ import wtf.emulator.ewDevices
 import wtf.emulator.DeviceModel
 
 android {
-  testOptions.managedDevices.ewDevices {
-    register("ewPixel7api33") {
-      device = DeviceModel.PIXEL_7
-      apiLevel = 33
+    testOptions.managedDevices.ewDevices {
+        register("ewPixel7api33") {
+            device = DeviceModel.PIXEL_7
+            apiLevel = 33
+        }
     }
-  }
 }
 
 baselineProfile {
-  managedDevices += "ewPixel7api33"
-  useConnectedDevices = false
+    managedDevices += "ewPixel7api33"
+    useConnectedDevices = false
 }
 ```
 
@@ -403,8 +403,8 @@ android {
 }
 
 baselineProfile {
-  managedDevices += "ewPixel7api33"
-  useConnectedDevices = false
+    managedDevices += "ewPixel7api33"
+    useConnectedDevices = false
 }
 ```
 
