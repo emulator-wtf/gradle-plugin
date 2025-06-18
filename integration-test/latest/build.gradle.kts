@@ -1,10 +1,11 @@
-import org.gradle.api.internal.tasks.DefaultTaskDependency
-
 plugins {
   alias(libs.plugins.android.application)
   id("wtf.emulator.gradle")
   id("org.jetbrains.kotlinx.kover") version "0.9.1"
 }
+
+import wtf.emulator.ewDevices
+import wtf.emulator.DeviceModel
 
 android {
   compileSdk = 33
@@ -25,10 +26,16 @@ android {
   }
 
   namespace = "wtf.emulator.sample"
+
+  testOptions.managedDevices.ewDevices {
+    register("ewPixel7api33") {
+      device = DeviceModel.PIXEL_7
+      apiLevel = 33
+    }
+  }
 }
 
 dependencies {
-  androidTestImplementation("wtf.emulator:test-runtime-android:0.2.1")
   androidTestImplementation("androidx.test:rules:1.6.1")
   androidTestImplementation("androidx.test:runner:1.6.2")
   androidTestImplementation("androidx.test:core:1.6.1")

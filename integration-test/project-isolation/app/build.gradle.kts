@@ -3,7 +3,9 @@ plugins {
   id("wtf.emulator.gradle")
 }
 
+import wtf.emulator.ewDevices
 import wtf.emulator.TestReporter
+import wtf.emulator.DeviceModel
 
 android {
   compileSdk = 34
@@ -24,12 +26,18 @@ android {
   }
 
   namespace = "wtf.emulator.sample"
+
+  testOptions.managedDevices.ewDevices {
+    register("ewPixel7api33") {
+      device = DeviceModel.PIXEL_7
+      apiLevel = 33
+    }
+  }
 }
 
 dependencies {
   implementation(project(":library"))
 
-  androidTestImplementation("wtf.emulator:test-runtime-android:0.2.0")
   androidTestImplementation("androidx.test:rules:1.6.1")
   androidTestImplementation("androidx.test:runner:1.6.2")
   androidTestImplementation("androidx.test:core:1.6.1")
@@ -41,4 +49,8 @@ dependencies {
 
 emulatorwtf {
   testReporters = listOf(TestReporter.GRADLE_TEST_REPORTING_API)
+  device {
+    model = DeviceModel.PIXEL_2
+    version = 27
+  }
 }

@@ -63,7 +63,7 @@ jobs:
       - uses: ./.github/actions/run-integration-tests
         name: "Run integration tests against oldest supported Gradle/AGP"
         with:
-          jdk-version: '11'
+          jdk-version: '17'
           test-project: 'oldest'
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
