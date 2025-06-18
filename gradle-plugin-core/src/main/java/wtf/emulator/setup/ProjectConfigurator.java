@@ -22,6 +22,7 @@ import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.gradle.api.provider.Provider;
+import wtf.emulator.BuildConfig;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.EwProperties;
@@ -62,6 +63,7 @@ public class ProjectConfigurator {
   public void configure() {
     setupExtensionDefaults();
     configureRepository();
+    configureRuntimeDependency();
 
     Provider<Configuration> toolConfig = createToolConfiguration();
     Configuration resultsExportConfig = createResultsExportConfiguration();
@@ -160,6 +162,21 @@ public class ProjectConfigurator {
     ext.getRepositoryCheckEnabled().convention(true);
   }
 
+  private void configureRuntimeDependency() {
+    if (!EwProperties.ADD_RUNTIME_DEPENDENCY.getFlag(target, true)) {
+      return;
+    }
+
+    target.getPluginManager().withPlugin("com.android.application", plugin -> addRuntimeDependency("androidTestImplementation"));
+    target.getPluginManager().withPlugin("com.android.library", plugin -> addRuntimeDependency("androidTestImplementation"));
+    target.getPluginManager().withPlugin("com.android.test", plugin -> addRuntimeDependency("implementation"));
+  }
+
+  private void addRuntimeDependency(String configurationName) {
+    target.getConfigurations().named(configurationName, config ->
+      config.getDependencies().add(target.getDependencies().create(BuildConfig.EW_RUNTIME_COORDS)));
+  }
+
   private void configureRepository() {
     if (!EwProperties.ADD_REPOSITORY.getFlag(target, true)) {
       return;
@@ -204,7 +221,7 @@ public class ProjectConfigurator {
       config.setVisible(false);
       config.setCanBeConsumed(false);
       config.setCanBeResolved(true);
-      target.getDependencies().add(TOOL_CONFIGURATION, ext.getVersion().map(version -> "wtf.emulator:ew-cli:" + version));
+      target.getDependencies().add(TOOL_CONFIGURATION, ext.getVersion().map(version -> BuildConfig.EW_CLI_MODULE + ":" + version));
     });
     return toolConfig;
   }
