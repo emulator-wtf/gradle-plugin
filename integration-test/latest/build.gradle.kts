@@ -4,6 +4,9 @@ plugins {
   id("org.jetbrains.kotlinx.kover") version "0.9.1"
 }
 
+import wtf.emulator.ewDevices
+import wtf.emulator.DeviceModel
+
 android {
   compileSdk = 33
 
@@ -23,6 +26,13 @@ android {
   }
 
   namespace = "wtf.emulator.sample"
+
+  testOptions.managedDevices.ewDevices {
+    register("ewPixel7api33") {
+      device = DeviceModel.PIXEL_7
+      apiLevel = 33
+    }
+  }
 }
 
 dependencies {

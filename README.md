@@ -390,7 +390,7 @@ baselineProfile {
 <summary>Groovy DSL</summary>
 
 ```groovy
-import wtf.emulator.ewDevices
+import wtf.emulator.gmd.EwManagedDevice
 import wtf.emulator.DeviceModel
 
 android {
