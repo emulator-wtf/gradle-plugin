@@ -303,7 +303,7 @@ The plugin supports configuring your devices via [Gradle-managed devices](https:
 1) Enable custom devices in `gradle.properties`: 
     ```properties
     android.experimental.testOptions.managedDevices.customDevice=true
-   ```
+    ```
 2) Configure the device(s) in your module level build.gradle file:
 
     <details open>
@@ -348,7 +348,7 @@ The plugin supports configuring your devices via [Gradle-managed devices](https:
         }
     }
     ```
-   </details>
+    </details>
 3) Optional: configure relevant `emulatorwtf {}` options in your module level `build.gradle(.kts)` file as described above in previous examples.
 
 To use these devices to run your tests, run the following Gradle task: `{deviceName}{BuildVariant}AndroidTest`. For example:
