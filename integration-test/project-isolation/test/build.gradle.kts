@@ -3,6 +3,7 @@ plugins {
   id("wtf.emulator.gradle")
 }
 
+import wtf.emulator.ewDevices
 import wtf.emulator.DeviceModel
 
 android {
@@ -23,6 +24,13 @@ android {
   }
 
   namespace = "wtf.emulator.sample.test"
+
+  testOptions.managedDevices.ewDevices {
+    register("ewPixel7api33") {
+      device = DeviceModel.PIXEL_7
+      apiLevel = 33
+    }
+  }
 }
 
 dependencies {
