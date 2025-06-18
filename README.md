@@ -417,7 +417,7 @@ The plugin is compatible with any working combination of these ranges:
 | Component             | Oldest | Newest         |
 |-----------------------|--------|----------------|
 | JDK                   | 17     | 24             |
-| Gradle                | 8.0    | 8.14.2         |
+| Gradle                | 8.0    | 9.0.0-rc-1     |
 | Android Gradle Plugin | 8.1.0  | 8.12.0-alpha05 |
 
 NOTE: only the latest of any prerelease versions (`alpha`, `beta`, `rc`) is supported.
