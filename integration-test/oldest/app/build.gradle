@@ -54,7 +54,7 @@ tasks.register('validateBaselineProfile') { t ->
   group = 'verification'
   description = 'Fails if baseline profile files are missing or empty'
   def profilesDir = layout.projectDirectory.dir('src/release/generated/baselineProfiles')
-
+  dependsOn(tasks.named("generateBaselineProfile"))
   // make the dir an input so Gradle knows the task is cache-safe
   inputs.dir profilesDir
 
@@ -68,11 +68,3 @@ tasks.register('validateBaselineProfile') { t ->
     println '✅ Baseline profiles look good'
   }
 }
-
-
-tasks.configureEach { task ->
-  if (task.name.equals('generateBaselineProfile')) {
-    task.finalizedBy 'validateBaselineProfile'
-  }
-}
-
