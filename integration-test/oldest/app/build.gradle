@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'wtf.emulator.gradle'
+apply plugin: 'androidx.baselineprofile'
 
 import wtf.emulator.gmd.EwManagedDevice
 import wtf.emulator.DeviceModel
 
 android {
-  compileSdkVersion 27
+  compileSdkVersion 35
 
   defaultConfig {
     applicationId 'wtf.emulator.sample'
@@ -39,10 +40,39 @@ android {
 
 dependencies {
   implementation(project(":library"))
+  implementation 'androidx.profileinstaller:profileinstaller:1.4.1'
 
   androidTestImplementation 'androidx.test:rules:1.5.0'
   androidTestImplementation 'androidx.test:runner:1.5.2'
   androidTestImplementation 'androidx.test:core:1.5.0'
   androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
   androidTestImplementation 'com.google.truth:truth:1.1.3'
+  baselineProfile project(':baselineprofile')
 }
+
+tasks.register('validateBaselineProfile') { t ->
+  group = 'verification'
+  description = 'Fails if baseline profile files are missing or empty'
+  def profilesDir = layout.projectDirectory.dir('src/release/generated/baselineProfiles')
+
+  // make the dir an input so Gradle knows the task is cache-safe
+  inputs.dir profilesDir
+
+  doLast {
+    def dir = profilesDir.asFile
+    ['baseline-prof.txt', 'startup-prof.txt'].each { n ->
+      def f = new File(dir, n)
+      if (!f.exists())  throw new GradleException("❌ $n was not generated")
+      if (f.length() == 0L) throw new GradleException("❌ $n is empty")
+    }
+    println '✅ Baseline profiles look good'
+  }
+}
+
+
+tasks.configureEach { task ->
+  if (task.name.equals('generateBaselineProfile')) {
+    task.finalizedBy 'validateBaselineProfile'
+  }
+}
+
