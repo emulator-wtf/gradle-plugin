@@ -12,4 +12,5 @@
 /integration-test/*/.idea
 /integration-test/*/*/build
 /integration-test/*/build
+/integration-test/*/app/src/*/generated/
 local.properties
