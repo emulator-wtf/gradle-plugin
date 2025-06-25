@@ -12,6 +12,10 @@ inputs:
   gh-token:
     description: 'GitHub token'
     required: true
+  test-tasks:
+    description: 'The Gradle tasks to execute for running the tests.'
+    required: false
+    default: ':app:testWithEmulatorWtf'
 runs:
   using: composite
   steps:
@@ -36,4 +40,4 @@ runs:
     env:
       EW_API_TOKEN: ${{ inputs.gh-token }}
     working-directory: integration-test/${{ inputs.test-project }}
-    run: ./gradlew :testWithEmulatorWtf ewPixel7api33DebugAndroidTest :app:validateBaselineProfile
+    run: ./gradlew ${{ inputs.test-tasks }}
