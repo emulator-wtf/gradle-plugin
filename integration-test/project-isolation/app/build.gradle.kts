@@ -1,11 +1,13 @@
-plugins {
-  alias(libs.plugins.android.application)
-  id("wtf.emulator.gradle")
-}
-
 import wtf.emulator.ewDevices
 import wtf.emulator.TestReporter
 import wtf.emulator.DeviceModel
+
+plugins {
+  alias(libs.plugins.android.application)
+  id("wtf.emulator.gradle")
+  id("wtf.emulator.test.integration-test-conventions")
+  alias(libs.plugins.baselineprofile)
+}
 
 android {
   compileSdk = 34
@@ -37,6 +39,7 @@ android {
 
 dependencies {
   implementation(project(":library"))
+  implementation(libs.androidx.profileinstaller)
 
   androidTestImplementation("androidx.test:rules:1.6.1")
   androidTestImplementation("androidx.test:runner:1.6.2")
@@ -45,6 +48,7 @@ dependencies {
   androidTestImplementation("com.google.truth:truth:1.4.4")
 
   testImplementation("junit:junit:4.13.2")
+  "baselineProfile"(project(":baselineprofile"))
 }
 
 emulatorwtf {

@@ -1,0 +1,61 @@
+import wtf.emulator.gmd.EwManagedDevice
+import wtf.emulator.DeviceModel
+
+plugins {
+  id 'com.android.test'
+  id 'androidx.baselineprofile'
+  id 'wtf.emulator.gradle'
+}
+
+android {
+  namespace 'wtf.emulator.baselineprofile'
+  compileSdk 36
+
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+  }
+
+  defaultConfig {
+    minSdk 28
+    targetSdk 36
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  targetProjectPath = ":app"
+
+  // This code creates the gradle managed device used to generate baseline profiles.
+  // To use GMD please invoke generation through the command line:
+  // ./gradlew :app:generateBaselineProfile
+  testOptions.managedDevices.allDevices {
+    register("ewPixel7api33", EwManagedDevice) {
+      device = DeviceModel.PIXEL_7
+      apiLevel = 33
+    }
+  }
+}
+
+// This is the configuration block for the Baseline Profile plugin.
+// You can specify to run the generators on a managed devices or connected devices.
+baselineProfile {
+  managedDevices += "ewPixel7api33"
+  useConnectedDevices = false
+}
+
+dependencies {
+  implementation 'androidx.test.ext:junit:1.2.1'
+  implementation 'androidx.test.espresso:espresso-core:3.6.1'
+  implementation 'androidx.test.uiautomator:uiautomator:2.3.0'
+  implementation 'androidx.benchmark:benchmark-macro-junit4:1.3.4'
+}
+
+androidComponents {
+  onVariants(selector().all()) { v ->
+    def artifactsLoader = v.artifacts.getBuiltArtifactsLoader()
+    v.instrumentationRunnerArguments.put(
+      "targetAppId",
+      v.testedApks.map { artifactsLoader.load(it)?.applicationId }
+    )
+  }
+}

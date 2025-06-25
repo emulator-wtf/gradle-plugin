@@ -16,3 +16,6 @@ pluginManagement {
 }
 
 include ':app', ':library', ':test', ':baselineprofile'
+includeBuild("../test-conventions-plugin")
+
+rootProject.name = "oldest"

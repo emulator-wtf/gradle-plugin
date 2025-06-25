@@ -12,6 +12,7 @@ buildscript {
 
 plugins {
   id "wtf.emulator.gradle"
+  id("wtf.emulator.test.integration-test-conventions")
 }
 
 allprojects {
