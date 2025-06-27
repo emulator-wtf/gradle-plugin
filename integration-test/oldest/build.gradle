@@ -12,7 +12,7 @@ buildscript {
 
 plugins {
   id "wtf.emulator.gradle"
-  id("wtf.emulator.test.integration-test-conventions")
+  id("wtf.emulator.test.integration-test-conventions") apply false
 }
 
 allprojects {

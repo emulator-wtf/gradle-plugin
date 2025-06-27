@@ -37,7 +37,6 @@ jobs:
         with:
           jdk-version: '21'
           test-project: 'project-isolation'
-          test-tasks: ':app:testWithEmulatorWtf :library:testWithEmulatorWtf :test:testWithEmulatorWtf :app:ewPixel7api33DebugAndroidTest :library:ewPixel7api33DebugAndroidTest :test:ewPixel7api33DebugAndroidTest :app:validateBaselineProfile'
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
   test-latest:
@@ -52,7 +51,6 @@ jobs:
         with:
           jdk-version: '24'
           test-project: 'latest'
-          test-tasks: ':app:testWithEmulatorWtf :app:ewPixel7api33DebugAndroidTest :app:validateBaselineProfile'
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
   test-oldest:
@@ -67,7 +65,6 @@ jobs:
         with:
           jdk-version: '17'
           test-project: 'oldest'
-          test-tasks: ':app:testWithEmulatorWtf :library:testWithEmulatorWtf :test:testWithEmulatorWtf :app:ewPixel7api33DebugAndroidTest :library:ewPixel7api33DebugAndroidTest :test:ewPixel7api33DebugAndroidTest :app:validateBaselineProfile'
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
   test-abi-splits:
@@ -82,5 +79,4 @@ jobs:
         with:
           jdk-version: '20'
           test-project: 'abi-splits'
-          test-tasks: ':app:testWithEmulatorWtf :test:testWithEmulatorWtf :app:ewPixel7api33DebugAndroidTest :test:ewPixel7api33DebugAndroidTest :app:validateBaselineProfile'
           gh-token: ${{ secrets.GITHUB_TOKEN }}

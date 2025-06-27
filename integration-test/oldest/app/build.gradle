@@ -1,10 +1,10 @@
+import wtf.emulator.gmd.EwManagedDevice
+import wtf.emulator.DeviceModel
+
 apply plugin: 'com.android.application'
 apply plugin: 'wtf.emulator.gradle'
 apply plugin: 'androidx.baselineprofile'
 apply plugin: 'wtf.emulator.test.integration-test-conventions'
-
-import wtf.emulator.gmd.EwManagedDevice
-import wtf.emulator.DeviceModel
 
 android {
   compileSdkVersion 35

@@ -1,4 +1,5 @@
 pluginManagement {
+  includeBuild '../test-conventions-plugin'
   repositories {
     maven {
       url (new File(new File(rootDir.parentFile.parentFile, "build"), "maven-repo").toURI())
@@ -24,4 +25,3 @@ dependencyResolutionManagement {
 
 include ':app', ':test'
 include ':baselineprofile'
-includeBuild '../test-conventions-plugin'

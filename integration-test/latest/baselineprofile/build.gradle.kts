@@ -59,3 +59,10 @@ androidComponents {
     )
   }
 }
+
+emulatorwtf {
+  variantFilter {
+    setEnabled(false)
+  }
+}
+

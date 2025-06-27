@@ -1,4 +1,6 @@
 pluginManagement {
+  includeBuild("../test-conventions-plugin")
+
   repositories {
     maven {
       url(new File(new File(rootDir.parentFile.parentFile, "build"), "maven-repo").toURI())
@@ -16,6 +18,5 @@ pluginManagement {
 }
 
 include ':app', ':library', ':test', ':baselineprofile'
-includeBuild("../test-conventions-plugin")
 
 rootProject.name = "oldest"
