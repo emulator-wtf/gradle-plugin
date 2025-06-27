@@ -33,10 +33,11 @@ jobs:
       fail-fast: false
       matrix:
         test-project: [ 'latest', 'project-isolation', 'oldest', 'abi-splits' ]
-        config-cache: [ true, false ]
+        config-cache: [ 'true', 'false' ]
         include:
           - test-project: 'project-isolation'
             jdk-version: '21'
+            config-cache: 'true'
           - test-project: 'latest'
             jdk-version: '24'
           - test-project: 'oldest'

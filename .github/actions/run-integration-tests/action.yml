@@ -42,7 +42,7 @@ runs:
     working-directory: integration-test/${{ inputs.test-project }}
     run: |
       CONFIG_CACHE_ARG="--no-configuration-cache"
-      if [ "${{ inputs.configuration-cache }}" == "true" ]; then
+      if [ "${{ inputs.config-cache }}" == "true" ]; then
         CONFIG_CACHE_ARG="--configuration-cache"
       fi
       ./gradlew :testWithEmulatorWtf ewPixel7api33DebugAndroidTest :app:validateBaselineProfile $CONFIG_CACHE_ARG
