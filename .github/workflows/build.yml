@@ -37,13 +37,15 @@ jobs:
         include:
           - test-project: 'project-isolation'
             jdk-version: '21'
-            config-cache: 'true'
           - test-project: 'latest'
             jdk-version: '24'
           - test-project: 'oldest'
             jdk-version: '17'
           - test-project: 'abi-splits'
             jdk-version: '20'
+        exclude:
+          - test-project: 'project-isolation'
+            config-cache: 'false'
 
     env:
       EW_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
