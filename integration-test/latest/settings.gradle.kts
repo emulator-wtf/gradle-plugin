@@ -9,6 +9,8 @@ pluginManagement {
   plugins {
     id("wtf.emulator.gradle") version "+"
   }
+
+  includeBuild("../test-conventions-plugin")
 }
 
 dependencyResolutionManagement {
@@ -23,6 +25,9 @@ dependencyResolutionManagement {
     mavenCentral()
   }
 }
+
+include(":app")
+include(":baselineprofile")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "latest"

@@ -1,4 +1,5 @@
 pluginManagement {
+  includeBuild '../test-conventions-plugin'
   repositories {
     maven {
       url (new File(new File(rootDir.parentFile.parentFile, "build"), "maven-repo").toURI())
@@ -7,6 +8,7 @@ pluginManagement {
 
   plugins {
     id "wtf.emulator.gradle" version "+"
+      id 'androidx.baselineprofile' version '1.2.4'
   }
 }
 
@@ -22,3 +24,4 @@ dependencyResolutionManagement {
 }
 
 include ':app', ':test'
+include ':baselineprofile'

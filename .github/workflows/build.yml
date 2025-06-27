@@ -4,7 +4,8 @@ on:
     branches:
       - main
   pull_request:
-
+env:
+  JAVA_OPTS: '-Dorg.gradle.jvmargs="-Xmx4g"'
 jobs:
   build:
     runs-on: ubuntu-latest
