@@ -32,6 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        test-project: [ 'latest', 'project-isolation', 'oldest', 'abi-splits' ]
         config-cache: [ true, false ]
         include:
           - test-project: 'project-isolation'
