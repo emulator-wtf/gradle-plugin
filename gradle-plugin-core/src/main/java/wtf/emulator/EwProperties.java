@@ -3,7 +3,8 @@ package wtf.emulator;
 import org.gradle.api.Project;
 
 public enum EwProperties {
-  ADD_REPOSITORY("addrepository");
+  ADD_REPOSITORY("addrepository"),
+  ADD_RUNTIME_DEPENDENCY("addruntimedependency");
 
   private static final String PREFIX = "wtf.emulator";
 
@@ -14,8 +15,7 @@ public enum EwProperties {
   }
 
   public boolean getFlag(Project project, boolean defaultValue) {
-    String value = GradleCompatFactory.get(project.getGradle()).
-        getGradleProperty(project, PREFIX + "." + propName);
+    String value = project.getProviders().gradleProperty(PREFIX + "." + propName).getOrNull();
     if (value == null) {
       return defaultValue;
     }

@@ -125,11 +125,17 @@ emulatorwtf {
   //       check for test failures
   ignoreFailures = false
 
-  // devices to test on, Defaults to [[model: 'Pixel2', version: 27]]
-  devices = [
-    [model: 'NexusLowRes', version: 30, atd: true],
-    [model: 'Pixel2', version: 23]
-  ]
+  // devices to test on, Defaults to Pixel7, version 30, gpu auto
+  device {
+    model = DeviceModel.PIXEL_7
+    version = 30
+    gpu = GpuMode.AUTO
+  }
+  device {
+    model = DeviceModel.NEXUS_LOW_RES
+    version = 21
+    gpu = GpuMode.SOFTWARE
+  }
 
   // Set the test timeout, defaults to 15 minutes
   timeout = Duration.ofHours(1)
@@ -188,9 +194,9 @@ emulatorwtf {
   // attempts will be executed in parallel
   numFlakyTestAttempts = 3
 
-  // Whether to reattempt full shards (all) or only failed tests (failed_only)
-  // in case of test failures. Defaults to failed_only.
-  flakyTestRepeatMode = failed_only
+  // Whether to reattempt full shards (ALL) or only failed tests (FAILED_ONLY)
+  // in case of test failures. Defaults to FAILED_ONLY.
+  flakyTestRepeatMode = FlakyRepeatMode.FAILED_ONLY
 
   // Directories to pull from device after test is over, will be stored in
   // baseOutputDir/${variant}:
@@ -229,7 +235,7 @@ emulatorwtf {
   // Use a specific DNS server instead of the default one.
   dnsServers = ["1.1.1.1"]
   
-  // Redirects all network traffic from the emulator instance to the Gradle plugin
+ // Redirects all network traffic from the emulator instance to the Gradle plugin
   // as if you were running the emulator locally.
   // You can use this to test your app with a local server or an internal
   // environment only accessible to your local machine or CI runner.
@@ -262,16 +268,20 @@ emulatorwtf {
 
 ### Run tests with multiple device profiles
 
-By default, emulator.wtf runs tests on a Pixel2-like emulator with API 27
-(Android 8.1). If you want to run on a different version or device profile you
+By default, emulator.wtf runs tests on a Pixel7-like emulator with API 30
+(Android 11. If you want to run on a different version or device profile you
 can specify devices like so:
 
 ```groovy
 emulatorwtf {
-  devices = [
-    [model: "NexusLowRes", version: 23],
-    [model: "Pixel2", version: 27]
-  ]
+  device {
+    model = DeviceModel.NEXUS_LOW_RES
+    version = 23
+  }
+  device {
+    model = DeviceModel.PIXEL_2
+    version = 27
+  }
 }
 ```
 
@@ -286,14 +296,128 @@ emulatorwtf {
 }
 ```
 
+### Use Gradle-managed devices
+
+The plugin supports configuring your devices via [Gradle-managed devices](https://developer.android.com/studio/test/gradle-managed-devices).
+
+1) Enable custom devices in `gradle.properties` when using AGP version 8.2 or lower:
+    ```properties
+    android.experimental.testOptions.managedDevices.customDevice=true
+    ```
+2) Configure the device(s) in your module level build.gradle file:
+
+    <details open>
+    <summary>Kotlin DSL</summary>
+
+    ```kotlin
+    import wtf.emulator.ewDevices
+    import wtf.emulator.DeviceModel
+    
+    android {
+        testOptions {
+            managedDevices { 
+                ewDevices {
+                    register("ewPixel7api33") { 
+                        device = DeviceModel.PIXEL_7
+                        apiLevel = 33
+                    }
+                }
+            }
+        }
+    }
+    ```
+    </details>
+   
+    <details>
+    <summary>Groovy DSL</summary>
+   
+    ```groovy
+    import wtf.emulator.gmd.EwManagedDevice
+    import wtf.emulator.DeviceModel
+    
+    android {
+        testOptions {
+            managedDevices {
+                allDevices {
+                    register("ewPixel7api33", EwManagedDevice) {
+                        device = DeviceModel.PIXEL_7
+                        apiLevel = 33
+                    }
+                }
+            }
+        }
+    }
+    ```
+    </details>
+3) Optional: configure relevant `emulatorwtf {}` options in your module level `build.gradle(.kts)` file as described above in previous examples.
+
+To use these devices to run your tests, run the following Gradle task: `{deviceName}{BuildVariant}AndroidTest`. For example:
+```bash
+./gradlew ewPixel7api33DebugAndroidTest
+```
+
+#### Creating baseling profiles with Gradle-managed devices
+
+You can set up baselines profiles in the [same way you would do with local emulators](https://developer.android.com/topic/performance/baselineprofiles/create-baselineprofile) and configure the device(s) that you want to run on via GMD definitions shown in the example above.
+
+Your final configuration could look like this:
+
+<details open>
+<summary>Kotlin DSL</summary>
+
+```kotlin
+import wtf.emulator.ewDevices
+import wtf.emulator.DeviceModel
+
+android {
+    testOptions.managedDevices.ewDevices {
+        register("ewPixel7api33") {
+            device = DeviceModel.PIXEL_7
+            apiLevel = 33
+        }
+    }
+}
+
+baselineProfile {
+    managedDevices += "ewPixel7api33"
+    useConnectedDevices = false
+}
+```
+
+</details>
+
+<details>
+<summary>Groovy DSL</summary>
+
+```groovy
+import wtf.emulator.gmd.EwManagedDevice
+import wtf.emulator.DeviceModel
+
+android {
+    testOptions.managedDevices.allDevices {
+        register("ewPixel7api33", EwManagedDevice) {
+            device = DeviceModel.PIXEL_7
+            apiLevel = 33
+        }
+    }
+}
+
+baselineProfile {
+    managedDevices += "ewPixel7api33"
+    useConnectedDevices = false
+}
+```
+
+</details>
+
 ## Compatibility
 
 The plugin is compatible with any working combination of these ranges:
 
 | Component             | Oldest | Newest         |
 |-----------------------|--------|----------------|
-| JDK                   | 11     | 24             |
-| Gradle                | 7.0.2  | 9.0.0-rc-1     |
-| Android Gradle Plugin | 7.0.0  | 8.12.0-alpha06 |
+| JDK                   | 17     | 24             |
+| Gradle                | 8.0    | 9.0.0-rc-1     |
+| Android Gradle Plugin | 8.1.0  | 8.12.0-alpha06 |
 
 NOTE: only the latest of any prerelease versions (`alpha`, `beta`, `rc`) is supported.

@@ -30,3 +30,5 @@ rootProject.name = "project-isolation"
 include(":app")
 include(":library")
 include(":test")
+include(":baselineprofile")
+includeBuild("../test-conventions-plugin")
