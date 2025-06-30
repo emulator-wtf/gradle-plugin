@@ -1,6 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'wtf.emulator.gradle'
 
+import wtf.emulator.gmd.EwManagedDevice
+import wtf.emulator.DeviceModel
+
 android {
   compileSdkVersion 27
 
@@ -22,10 +25,18 @@ android {
     sourceCompatibility 1.8
     targetCompatibility 1.8
   }
+
+  namespace 'wtf.emulator.sample.library'
+
+  testOptions.managedDevices.allDevices {
+    register("ewPixel7api33", EwManagedDevice) {
+      device = DeviceModel.PIXEL_7
+      apiLevel = 33
+    }
+  }
 }
 
 dependencies {
-  androidTestImplementation 'wtf.emulator:test-runtime-android:0.2.0'
   androidTestImplementation 'androidx.test:rules:1.5.0'
   androidTestImplementation 'androidx.test:runner:1.5.2'
   androidTestImplementation 'androidx.test:core:1.5.0'
