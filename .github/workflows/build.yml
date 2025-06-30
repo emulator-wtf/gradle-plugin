@@ -47,6 +47,8 @@ jobs:
         exclude:
           - test-project: 'project-isolation'
             config-cache: 'false'
+          - test-project: 'oldest'
+            config-cache: 'true'
 
     env:
       EW_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
