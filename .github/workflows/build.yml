@@ -27,7 +27,7 @@ jobs:
           path: build/maven-repo/
 
   test:
-    name: "Integration test: ${{ matrix.test-project }} (config-cache: ${{ matrix.config-cache }})"
+    name: "${{ matrix.test-project }} (config-cache: ${{ matrix.config-cache }})"
     runs-on: ubuntu-latest
     needs: build
     strategy:
