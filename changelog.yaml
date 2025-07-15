@@ -5,4 +5,6 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased: []
+unreleased:
+- "Improved: better upload performance when testing large apk files containing native libraries."
+- "Improved: bumped default `ew-cli` version to 0.12.5."
