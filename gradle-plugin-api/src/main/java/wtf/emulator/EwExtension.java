@@ -39,7 +39,7 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
   @Inject
   public EwExtension(ObjectFactory objectFactory) {
-    getVersion().convention("0.12.1");
+    getVersion().convention("0.12.5");
     getSideEffects().convention(false);
     getOutputs().convention(Collections.emptyList());
 
