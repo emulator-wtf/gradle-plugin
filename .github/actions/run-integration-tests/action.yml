@@ -15,6 +15,9 @@ runs:
   - uses: jdx/mise-action@v2
     with:
       working_directory: integration-test/${{ inputs.test-project }}
+  - name: Set JAVA_HOME
+    shell: bash
+    run: echo "JAVA_HOME=$(mise hook-env -f | grep 'export JAVA_HOME' | cut -d'=' -f2)" >> $GITHUB_ENV
   - name: Fetch maven repo
     uses: actions/download-artifact@v4
     with:
