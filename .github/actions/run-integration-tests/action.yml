@@ -30,6 +30,7 @@ runs:
       EW_API_TOKEN: ${{ inputs.gh-token }}
     working-directory: integration-test/${{ inputs.test-project }}
     run: |
-      java -version
-      which java
+      echo "Using java: $(java -version)"
+      echo "Java location: $(which java)"
+      echo "JAVA_HOME: $JAVA_HOME"
       ./gradlew :testWithEmulatorWtf
