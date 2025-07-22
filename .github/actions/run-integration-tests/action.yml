@@ -29,4 +29,7 @@ runs:
     env:
       EW_API_TOKEN: ${{ inputs.gh-token }}
     working-directory: integration-test/${{ inputs.test-project }}
-    run: ./gradlew :testWithEmulatorWtf
+    run: |
+      java -version
+      which java
+      ./gradlew :testWithEmulatorWtf
