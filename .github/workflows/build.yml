@@ -13,8 +13,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup JDK
         uses: jdx/mise-action@v2
-        with:
-          install_args: 'java@zulu-11.80.21' # needed for Gradle toolchains
+      # needed for building the plugin itself while targeting JDK 11
+      - name: Setup JDK11
+        run: mise install java@zulu-11.80.21
+      # so Gradle toolchains can find mise JDKs
       - name: symlink asdf
         run: |
           mkdir -p $HOME/.asdf/installs/
