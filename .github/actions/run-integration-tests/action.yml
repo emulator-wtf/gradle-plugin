@@ -16,6 +16,7 @@ runs:
     with:
       working_directory: integration-test/${{ inputs.test-project }}
   - name: Set JAVA_HOME
+    working-directory: integration-test/${{ inputs.test-project }}
     shell: bash
     run: echo "JAVA_HOME=$(mise hook-env -f | grep 'export JAVA_HOME' | cut -d'=' -f2)" >> $GITHUB_ENV
   - name: Fetch maven repo
