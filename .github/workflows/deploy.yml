@@ -12,10 +12,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Setup JDK
-      uses: actions/setup-java@v4
+      uses: jdx/mise-action@v2
       with:
-        distribution: 'zulu'
-        java-version: '17'
+        install_args: 'java@zulu-11.80.21' # needed for Gradle toolchains
     - name: Validate Gradle wrapper
       uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
     - name: Setup Gradle Cache

@@ -12,11 +12,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup JDK
-        uses: actions/setup-java@v4
+        uses: jdx/mise-action@v2
         with:
-          distribution: 'zulu'
-          java-version: '17'
-          cache: gradle
+          install_args: 'java@zulu-11.80.21' # needed for Gradle toolchains
+      - name: symlink asdf
+        run: |
+          mkdir -p $HOME/.asdf/installs/
+          ln -s $HOME/.local/share/mise/installs/java $HOME/.asdf/installs/
       - name: Build plugin
         run: ./gradlew lint assemble publishAllPublicationsToIntreeRepository -PRELEASE_SIGNING_ENABLED=false
       - name: Store maven repo as an artifact
@@ -35,7 +37,6 @@ jobs:
       - uses: ./.github/actions/run-integration-tests
         name: "Run integration tests against latest Gradle/AGP w/ project-isolation and config cache"
         with:
-          jdk-version: '21'
           test-project: 'project-isolation'
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -49,7 +50,6 @@ jobs:
       - uses: ./.github/actions/run-integration-tests
         name: "Run integration tests against latest Gradle/AGP"
         with:
-          jdk-version: '24'
           test-project: 'latest'
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -63,7 +63,6 @@ jobs:
       - uses: ./.github/actions/run-integration-tests
         name: "Run integration tests against oldest supported Gradle/AGP"
         with:
-          jdk-version: '11'
           test-project: 'oldest'
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -77,6 +76,5 @@ jobs:
       - uses: ./.github/actions/run-integration-tests
         name: "Run integration tests against various ABI splits"
         with:
-          jdk-version: '20'
           test-project: 'abi-splits'
           gh-token: ${{ secrets.GITHUB_TOKEN }}
