@@ -290,10 +290,10 @@ emulatorwtf {
 
 The plugin is compatible with any working combination of these ranges:
 
-| Component             | Oldest | Newest         |
-|-----------------------|--------|----------------|
-| JDK                   | 11     | 24             |
-| Gradle                | 7.0.2  | 9.0.0          |
-| Android Gradle Plugin | 7.0.0  | 8.13.0-alpha03 |
+| Component             | Oldest | Newest        |
+|-----------------------|--------|---------------|
+| JDK                   | 11     | 24            |
+| Gradle                | 7.0.2  | 9.1.0-rc-1    |
+| Android Gradle Plugin | 7.0.0  | 9.0.0-alpha01 |
 
 NOTE: only the latest of any prerelease versions (`alpha`, `beta`, `rc`) is supported.
