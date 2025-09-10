@@ -29,7 +29,7 @@ jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
 commons-io = "commons-io:commons-io:2.20.0"
 
 junit = "junit:junit:4.13.2"
-truth = "com.google.truth:truth:1.4.4"
+truth = "com.google.truth:truth:1.4.5"
 
 autovalue-annotations = { module = "com.google.auto.value:auto-value-annotations", version.ref = "autovalue" }
 autovalue-compiler = { module = "com.google.auto.value:auto-value", version.ref = "autovalue" }
