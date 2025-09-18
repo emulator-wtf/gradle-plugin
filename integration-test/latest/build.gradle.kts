@@ -3,7 +3,7 @@ import org.gradle.api.internal.tasks.DefaultTaskDependency
 plugins {
   alias(libs.plugins.android.application)
   id("wtf.emulator.gradle")
-  id("org.jetbrains.kotlinx.kover") version "0.9.1"
+  id("org.jetbrains.kotlinx.kover") version "0.9.2"
 }
 
 android {
