@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 /*
  * Copyright 2022 The Android Open Source Project
  *
@@ -26,9 +28,9 @@ java {
   targetCompatibility = JavaVersion.VERSION_17
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-  with(kotlinOptions) {
-    jvmTarget = JavaVersion.VERSION_17.toString()
+kotlin {
+  compilerOptions {
+    jvmTarget.set(JvmTarget.JVM_17)
   }
 }
 

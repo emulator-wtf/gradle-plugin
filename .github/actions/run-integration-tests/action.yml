@@ -1,10 +1,6 @@
 name: Run integration tests
 description: Run Gradle integration tests
 inputs:
-  jdk-version:
-    description: 'JDK version to use'
-    required: true
-    default: '21'
   test-project:
     description: 'Test project to run, from the integration-test folder'
     required: true
@@ -20,12 +16,13 @@ runs:
   using: composite
   steps:
   - uses: actions/checkout@v4
-  - name: Setup JDK
-    uses: actions/setup-java@v4
+  - uses: jdx/mise-action@v2
     with:
-      distribution: 'zulu'
-      java-version: ${{ inputs.jdk-version }}
-      cache: gradle
+      working_directory: integration-test/${{ inputs.test-project }}
+  - name: Set JAVA_HOME
+    working-directory: integration-test/${{ inputs.test-project }}
+    shell: bash
+    run: echo "JAVA_HOME=$(mise hook-env -f | grep 'export JAVA_HOME' | cut -d'=' -f2)" >> $GITHUB_ENV
   - name: Fetch maven repo
     uses: actions/download-artifact@v4
     with:
@@ -46,4 +43,3 @@ runs:
         CONFIG_CACHE_ARG="--configuration-cache"
       fi
       ./gradlew :testWithEmulatorWtf ewPixel7api33DebugAndroidTest :app:validateBaselineProfile $CONFIG_CACHE_ARG
-
