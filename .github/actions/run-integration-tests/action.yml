@@ -18,7 +18,7 @@ runs:
     run: echo "JAVA_HOME=$(mise hook-env -f | grep 'export JAVA_HOME' | cut -d'=' -f2)" >> $GITHUB_ENV
   - uses: emulator-wtf/configure-credentials@v1
     with:
-      oidc-configuration-id: {{ vars.EW_OIDC_ID }}
+      oidc-configuration-id: ${{ vars.EW_OIDC_ID }}
   - name: Fetch maven repo
     uses: actions/download-artifact@v4
     with:
