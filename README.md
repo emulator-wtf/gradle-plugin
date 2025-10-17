@@ -127,7 +127,7 @@ emulatorwtf {
 
   // devices to test on, Defaults to [[model: 'Pixel2', version: 27]]
   devices = [
-    [model: 'NexusLowRes', version: 30, atd: true],
+    [model: 'NexusLowResAtd', version: 30],
     [model: 'Pixel2', version: 23]
   ]
 
