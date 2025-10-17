@@ -229,6 +229,11 @@ emulatorwtf {
   // Use a specific DNS server instead of the default one.
   dnsServers = ["1.1.1.1"]
   
+  // Hard-code specific hostname-ip combinations.
+  dnsOverrides = [
+    DnsOverride.create("example.com", "127.0.0.1")
+  ]
+  
   // Redirects all network traffic from the emulator instance to the Gradle plugin
   // as if you were running the emulator locally.
   // You can use this to test your app with a local server or an internal
