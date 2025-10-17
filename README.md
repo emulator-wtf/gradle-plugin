@@ -97,8 +97,8 @@ The `emulatorwtf` plugin DSL supports the following configuration options:
 
 ```groovy
 emulatorwtf {
-  // CLI version to use, defaults to 0.12.5
-  version = '0.12.5'
+  // CLI version to use, defaults to 0.12.6
+  version = '0.12.6'
 
   // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
   // instead of this or passing this value in via a project property

@@ -7,3 +7,4 @@
 
 unreleased:
 - "New: the plugin now supports hardcoding DNS resolves via the `dnsOverrides` property"
+- "New: bumped default ew-cli version to 0.12.6"
