@@ -5,4 +5,5 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased: []
+unreleased:
+- "New: bumped default ew-cli version to 0.12.6"
