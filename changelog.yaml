@@ -5,4 +5,5 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased: []
+unreleased:
+- "New: the plugin now supports hardcoding DNS resolves via the `dnsOverrides` property"
