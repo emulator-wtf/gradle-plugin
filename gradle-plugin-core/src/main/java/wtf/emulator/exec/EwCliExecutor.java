@@ -3,6 +3,7 @@ package wtf.emulator.exec;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.TeeOutputStream;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecResult;
 import org.gradle.process.JavaExecSpec;
@@ -12,6 +13,7 @@ import wtf.emulator.BuildConfig;
 import wtf.emulator.EmulatorWtfException;
 import wtf.emulator.EwJson;
 import wtf.emulator.OutputType;
+import wtf.emulator.TestTargetsSpec;
 import wtf.emulator.data.AgpOutputMetadata;
 import wtf.emulator.data.AgpOutputMetadataVersion;
 import wtf.emulator.data.CliOutputAsync;
@@ -23,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -355,7 +358,7 @@ public class EwCliExecutor {
     }
 
     if (parameters.getTestTargets().isPresent()) {
-      spec.args("--test-targets", parameters.getTestTargets().get());
+      spec.args("--test-targets", toCliString(parameters.getTestTargets().get()));
     }
 
     if (parameters.getDnsServers().isPresent()) {
@@ -399,6 +402,61 @@ public class EwCliExecutor {
 
   private static String toCliString(Duration duration) {
     return duration.getSeconds() + "s";
+  }
+
+  private static String toCliString(TestTargetsSpec targetsSpec) {
+    StringBuilder sb = new StringBuilder();
+    appendCliStringTarget(sb, "package", targetsSpec.getPackages());
+    appendCliStringTarget(sb, "notPackage", targetsSpec.getExcludePackages());
+    appendCliStringTarget(sb, "class", targetsSpec.getClasses(), targetsSpec.getMethods());
+    appendCliStringTarget(sb, "notClass", targetsSpec.getExcludeClasses(), targetsSpec.getExcludeMethods());
+    appendCliStringTarget(sb, "annotation", targetsSpec.getAnnotations());
+    appendCliStringTarget(sb, "notAnnotation", targetsSpec.getExcludeAnnotations());
+    appendCliStringTarget(sb, "filter", targetsSpec.getFilters());
+
+    if (targetsSpec.getSize().isPresent()) {
+      if (!sb.isEmpty()) {
+        sb.append(";");
+      }
+      sb.append("size ").append(targetsSpec.getSize().get().getCliValue());
+    }
+
+    if (targetsSpec.getRegex().isPresent()) {
+      if (!sb.isEmpty()) {
+        sb.append(";");
+      }
+      sb.append("regex ").append(targetsSpec.getRegex().get());
+    }
+
+    return sb.toString();
+  }
+
+  private static void appendCliStringTarget(StringBuilder out, String operatorName, ListProperty<?>... targets) {
+    int sz = 0;
+    for (ListProperty<?> target : targets) {
+      if (target.isPresent()) {
+        sz += target.get().size();
+      }
+    }
+    if (sz == 0) {
+      return;
+    }
+
+    List<String> all = new ArrayList<>(sz);
+    for (ListProperty<?> target : targets) {
+      if (target.isPresent()) {
+        for (Object item : target.get()) {
+          all.add(item.toString());
+        }
+      }
+    }
+
+    if (!out.isEmpty()) {
+      out.append(";");
+    }
+
+    out.append(operatorName).append(" ");
+    out.append(all.stream().map(Object::toString).collect(Collectors.joining(",")));
   }
 
   private static File pickBestApk(File apkDirectory) {

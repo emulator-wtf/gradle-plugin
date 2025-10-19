@@ -166,9 +166,11 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     workParams.getNumFlakyTestAttempts().set(testRunInput.getNumFlakyTestAttempts());
     workParams.getFlakyTestRepeatMode().set(testRunInput.getFlakyTestRepeatMode());
     workParams.getDisplayName().set(testRunInput.getDisplayName().orElse(testRunData.getTestRunId()));
+    workParams.getDnsOverrides().set(testRunInput.getDnsOverrides().map(list -> list));
     workParams.getDnsServers().set(testRunInput.getDnsServers().map(list -> list));
     workParams.getEgressTunnel().set(testRunInput.getEgressTunnel());
     workParams.getEgressLocalhostForwardIp().set(testRunInput.getEgressLocalhostForwardIp());
+    workParams.getRelays().set(testRunInput.getRelays().map(list -> list));
     workParams.getScmUrl().set(testRunInput.getScmUrl());
     workParams.getScmCommitHash().set(testRunInput.getScmCommitHash());
     workParams.getScmRefName().set(testRunInput.getScmRefName());

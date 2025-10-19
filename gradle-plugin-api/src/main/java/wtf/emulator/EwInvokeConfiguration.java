@@ -208,14 +208,8 @@ public interface EwInvokeConfiguration {
    * Run only a subset of matching test targets, these will be forwarded to {@code AndroidJUnitRunner}.
    * See the full list of configuration options
    * <a href="https://developer.android.com/reference/androidx/test/runner/AndroidJUnitRunner#typical-usage">here</a>.
-   * Some examples:
-   * run all tests in a class: {@code class com.example.Foo}
-   * run a single test called bar: {@code class com.example.Foo#bar}
-   * run all tests in a package: {@code package com.example}
-   * run all tests annotated with {@code @MediumTest}: {@code size medium}
-   * run all tests in a package annotated with {@code @MediumTest}: {@code size medium package com.example}
    */
-  Property<String> getTestTargets();
+  Property<TestTargetsSpec> getTestTargets();
 
   /**
    * Explicitly set the proxy host to use for communicating with emulator.wtf backend.
