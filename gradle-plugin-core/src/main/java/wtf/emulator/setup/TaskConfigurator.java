@@ -240,6 +240,8 @@ public class TaskConfigurator {
     task.getScmPrUrl().set(ext.getScmPrUrl());
 
     task.getDnsServers().set(ext.getDnsServers());
+    task.getDnsOverrides().set(ext.getDnsOverrides());
+    task.getRelays().set(ext.getRelays());
     task.getEgressTunnel().set(ext.getEgressTunnel());
     task.getEgressLocalhostForwardIp().set(ext.getEgressLocalhostForwardIp());
 

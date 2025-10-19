@@ -359,9 +359,18 @@ public class EwCliExecutor {
     }
 
     if (parameters.getDnsServers().isPresent()) {
-      parameters.getDnsServers().get().stream().limit(4).forEach(addr -> {
-        spec.args("--dns-server", addr);
+      parameters.getDnsServers().get().stream().limit(4).forEach(addr -> spec.args("--dns-server", addr));
+    }
+
+    if (parameters.getDnsOverrides().isPresent()) {
+      parameters.getDnsOverrides().get().forEach(override -> {
+        String overrideStr = override.hostname() + "=" + override.ip();
+        spec.args("--dns-override", overrideStr);
       });
+    }
+
+    if (parameters.getRelays().isPresent()) {
+      parameters.getRelays().get().forEach(relay -> spec.args("--relay", relay));
     }
 
     if (parameters.getEgressTunnel().isPresent()) {

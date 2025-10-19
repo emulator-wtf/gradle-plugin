@@ -5,8 +5,8 @@ inputs:
     description: 'Test project to run, from the integration-test folder'
     required: true
     default: 'latest'
-  gh-token:
-    description: 'GitHub token'
+  oidc-configuration-id:
+    description: 'OIDC configuration ID for emulator.wtf'
     required: true
   config-cache:
     description: 'Enable Gradle configuration cache'
@@ -23,6 +23,9 @@ runs:
     working-directory: integration-test/${{ inputs.test-project }}
     shell: bash
     run: echo "JAVA_HOME=$(mise hook-env -f | grep 'export JAVA_HOME' | cut -d'=' -f2)" >> $GITHUB_ENV
+  - uses: emulator-wtf/configure-credentials@v1
+    with:
+      oidc-configuration-id: ${{ inputs.oidc-configuration-id }}
   - name: Fetch maven repo
     uses: actions/download-artifact@v4
     with:
@@ -34,8 +37,6 @@ runs:
     working-directory: /usr/local/lib/android/sdk
   - name: Run latest tests
     shell: bash
-    env:
-      EW_API_TOKEN: ${{ inputs.gh-token }}
     working-directory: integration-test/${{ inputs.test-project }}
     run: |
       CONFIG_CACHE_ARG="--no-configuration-cache"

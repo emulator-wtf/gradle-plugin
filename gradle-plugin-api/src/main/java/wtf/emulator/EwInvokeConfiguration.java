@@ -144,6 +144,18 @@ public interface EwInvokeConfiguration {
   Property<Boolean> getEgressTunnel();
 
   /**
+   * Override DNS resolution of specific hostnames to provided IP addresses, a mechanism similar to the
+   * /etc/hosts file on UNIX operating systems.
+   */
+  ListProperty<DnsOverride> getDnsOverrides();
+
+  /**
+   * Limit which relay servers to use for egress tunnel and adb connection.
+   * NOTE: has performance implications, use only when necessary.
+   */
+  ListProperty<String> getRelays();
+
+  /**
    * Makes the host running Gradle available to the emulator instance under the specified IP address when
    * using the egress tunnel.
    * This is useful for testing local servers.

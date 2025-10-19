@@ -44,7 +44,7 @@ app project (usually under `app/build.gradle`):
 
 ```groovy
 plugins {
-  id "wtf.emulator.gradle" version "0.19.1"
+  id "wtf.emulator.gradle" version "0.19.4"
 }
 ```
 
@@ -62,7 +62,7 @@ buildscript {
   
   dependencies {
     // ... other deps here, like com.android.tools.build:gradle
-    classpath "wtf.emulator:gradle-plugin:0.19.1"
+    classpath "wtf.emulator:gradle-plugin:0.19.4"
   }
 }
 ```
@@ -97,8 +97,8 @@ The `emulatorwtf` plugin DSL supports the following configuration options:
 
 ```groovy
 emulatorwtf {
-  // CLI version to use, defaults to 0.12.5
-  version = '0.12.5'
+  // CLI version to use, defaults to 0.12.6
+  version = '0.12.6'
 
   // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
   // instead of this or passing this value in via a project property
@@ -235,11 +235,16 @@ emulatorwtf {
   // Use a specific DNS server instead of the default one.
   dnsServers = ["1.1.1.1"]
   
- // Redirects all network traffic from the emulator instance to the Gradle plugin
+  // Redirects all network traffic from the emulator instance to the Gradle plugin
   // as if you were running the emulator locally.
   // You can use this to test your app with a local server or an internal
   // environment only accessible to your local machine or CI runner.
   egressTunnel = false
+
+  // Hard-code specific hostname-ip combinations.
+  dnsOverrides = [
+    DnsOverride.create("example.com", "127.0.0.1")
+  ]
 
   // Makes the machine the Gradle build is running on visible to the emulator under the given ipv4 address,
   // only works together with the egressTunnel option

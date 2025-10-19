@@ -150,7 +150,7 @@ public class CliOutputPrinterTest {
                     .result(TestCaseResult.FAILURE)
                     .jobUuid("job-uuid")
                     .deviceSpec(
-                        DeviceSpec.builder().model("Monitor").api(35).gpuMode(GpuMode.auto).build()
+                        DeviceSpec.builder().model("Monitor").api(35).gpuMode(GpuMode.AUTO).build()
                     )
                     .build()
             )
@@ -181,7 +181,7 @@ public class CliOutputPrinterTest {
                     .result(TestCaseResult.FAILURE)
                     .jobUuid("job-uuid")
                     .deviceSpec(
-                        DeviceSpec.builder().model("Monitor").api(35).gpuMode(GpuMode.auto).build()
+                        DeviceSpec.builder().model("Monitor").api(35).gpuMode(GpuMode.AUTO).build()
                     )
                     .build()
             )

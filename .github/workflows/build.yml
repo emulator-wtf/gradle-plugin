@@ -1,4 +1,7 @@
 name: Build and test
+permissions:
+  contents: read
+  id-token: write
 on:
   push:
     branches:
@@ -52,14 +55,11 @@ jobs:
             config-cache: 'false'
           - test-project: 'oldest'
             config-cache: 'true'
-
-    env:
-      EW_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/run-integration-tests
         name: "Run integration tests for ${{ matrix.test-project }} (config-cache: ${{ matrix.config-cache }})"
         with:
           test-project: ${{ matrix.test-project }}
-          gh-token: ${{ secrets.GITHUB_TOKEN }}
           config-cache: ${{ matrix.config-cache }}
+          oidc-configuration-id: ${{ vars.EW_OIDC_ID }}

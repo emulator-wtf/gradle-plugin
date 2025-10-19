@@ -166,6 +166,14 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract ListProperty<DnsOverride> getDnsOverrides();
+
+  @Optional
+  @Input
+  public abstract ListProperty<String> getRelays();
+
+  @Optional
+  @Input
   public abstract Property<Boolean> getEgressTunnel();
 
   @Optional
@@ -263,6 +271,8 @@ public abstract class EwExecTask extends DefaultTask {
     p.getFlakyTestRepeatMode().set(getFlakyTestRepeatMode());
     p.getDisplayName().set(getDisplayName());
     p.getDnsServers().set(getDnsServers());
+    p.getDnsOverrides().set(getDnsOverrides());
+    p.getRelays().set(getRelays());
     p.getEgressTunnel().set(getEgressTunnel());
     p.getEgressLocalhostForwardIp().set(getEgressLocalhostForwardIp());
     p.getScmUrl().set(getScmUrl());
