@@ -2,6 +2,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import wtf.emulator.ewDevices
 import wtf.emulator.DeviceModel
 
+import wtf.emulator.TestTargetMethod;
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.baselineprofile)
@@ -39,6 +41,12 @@ android {
       device = DeviceModel.PIXEL_7
       apiLevel = 33
     }
+  }
+}
+
+emulatorwtf {
+  targets {
+    testMethod("MinimalTests", "otherTest")
   }
 }
 

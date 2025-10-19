@@ -100,7 +100,7 @@ public class EwCliExecutor {
       ByteArrayOutputStream errorOut = new ByteArrayOutputStream();
 
       ExecResult result = execOperations.javaexec(spec -> {
-        configureCliExec(spec, parameters, token);
+        configureCliExec(log, spec, parameters, token);
         if (parameters.getPrintOutput().getOrElse(false)) {
           // redirect forked proc stderr to stdout
           spec.setErrorOutput(System.out);
@@ -191,7 +191,7 @@ public class EwCliExecutor {
     spec.args("--json");
   }
 
-  protected static void configureCliExec(JavaExecSpec spec, EwWorkParameters parameters, String token) {
+  protected static void configureCliExec(Logger log, JavaExecSpec spec, EwWorkParameters parameters, String token) {
     // use env var for passing token so it doesn't get logged out with --info
     spec.environment("EW_API_TOKEN", token);
 
@@ -358,7 +358,11 @@ public class EwCliExecutor {
     }
 
     if (parameters.getTestTargets().isPresent()) {
-      spec.args("--test-targets", toCliString(parameters.getTestTargets().get()));
+      final var string = toCliString(parameters.getTestTargets().get());
+      // even if targets is set the contents might be empty
+      if (!string.isEmpty()) {
+        spec.args("--test-targets", string);
+      }
     }
 
     if (parameters.getDnsServers().isPresent()) {

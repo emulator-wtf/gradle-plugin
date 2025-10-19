@@ -77,7 +77,9 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
   @SuppressWarnings("unused")
   public void targets(Action<TestTargetsSpec> action) {
-    action.execute(getTestTargets().getOrElse(objectFactory.newInstance(TestTargetsSpec.class)));
+    final var obj = objectFactory.newInstance(TestTargetsSpec.class);
+    action.execute(obj);
+    getTestTargets().set(obj);
   }
 
   protected Action<EwVariantFilter> getFilter() {
