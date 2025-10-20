@@ -224,7 +224,7 @@ emulatorwtf {
   // Read more at https://developer.android.com/reference/androidx/test/runner/AndroidJUnitRunner#typical-usage
   // default: all tests will be run
   targets {
-    includeClass("foo.bar.Baz")
+    testClass("foo.bar.Baz")
   }
 
   // Do not generate the test task for some specific variants
