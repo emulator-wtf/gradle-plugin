@@ -460,7 +460,7 @@ public class EwCliExecutor {
     }
 
     out.append(operatorName).append(" ");
-    out.append(all.stream().map(Object::toString).collect(Collectors.joining(",")));
+    out.append(String.join(",", all));
   }
 
   private static File pickBestApk(File apkDirectory) {
