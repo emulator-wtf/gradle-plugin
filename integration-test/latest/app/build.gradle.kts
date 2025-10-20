@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import wtf.emulator.ewDevices
 import wtf.emulator.DeviceModel
 
-import wtf.emulator.TestTargetMethod;
 
 plugins {
   alias(libs.plugins.android.application)
