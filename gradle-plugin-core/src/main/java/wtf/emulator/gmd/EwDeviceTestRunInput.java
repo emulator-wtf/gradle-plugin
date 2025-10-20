@@ -19,10 +19,12 @@ import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
 import wtf.emulator.DeviceModel;
+import wtf.emulator.DnsOverride;
 import wtf.emulator.EwDeviceSpec;
 import wtf.emulator.FlakyRepeatMode;
 import wtf.emulator.GpuMode;
 import wtf.emulator.OutputType;
+import wtf.emulator.TestTargetsSpec;
 
 import java.io.File;
 import java.time.Duration;
@@ -148,6 +150,10 @@ public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
 
   @Optional
   @Input
+  public abstract ListProperty<DnsOverride> getDnsOverrides();
+
+  @Optional
+  @Input
   public abstract ListProperty<String> getDnsServers();
 
   @Optional
@@ -157,6 +163,10 @@ public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
   @Optional
   @Input
   public abstract Property<String> getEgressLocalhostForwardIp();
+
+  @Optional
+  @Input
+  public abstract ListProperty<String> getRelays();
 
   @Optional
   @Input
@@ -191,7 +201,7 @@ public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
 
   @Optional
   @Input
-  public abstract Property<String> getTestTargets();
+  public abstract Property<TestTargetsSpec> getTestTargets();
 
   @Optional
   @Input

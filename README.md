@@ -223,7 +223,9 @@ emulatorwtf {
   // Filter to specific test targets to run, these will be forwarded to the 'am instrument ...' command
   // Read more at https://developer.android.com/reference/androidx/test/runner/AndroidJUnitRunner#typical-usage
   // default: all tests will be run
-  testTargets = "class foo.bar.Baz"
+  targets {
+    testClass("foo.bar.Baz")
+  }
 
   // Do not generate the test task for some specific variants
   variantFilter {

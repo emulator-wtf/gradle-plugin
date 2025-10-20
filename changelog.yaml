@@ -6,13 +6,23 @@
 # (Markdown is supported and encouraged)
 
 unreleased:
-- "New: Added support for Gradle-managed devices"
-- "New: Added support for generating baseline profiles via the `baselineprofile` plugin when using Gradle-managed devices"
-- "Breaking: minimum supported Android Gradle Plugin version is now 8.1"
-- "Breaking: minimum supported Gradle version is now 8.0"
-- "Breaking: emulator.wtf Gradle plugin only works on JDK 17 and later"
-- "Breaking: specifying devices has changed. Instead of `devices` you can now specify devices to run tests on with repeated `device {}` blocks"
-- "Breaking: `flakyTestRepeatMode` argument now takes a `FlakyRepeatMode` enum value instead of a string"
+- "New: Added support for Gradle-managed devices."
+- "New: Added support for generating baseline profiles via the `baselineprofile` plugin when using Gradle-managed devices."
+- "Breaking: minimum supported Android Gradle Plugin version is now 8.1."
+- "Breaking: minimum supported Gradle version is now 8.0."
+- "Breaking: emulator.wtf Gradle plugin only works on JDK 17 and later."
+- "Breaking: specifying devices has changed. Instead of `devices` you can now specify devices to run tests on with repeated `device {}` blocks."
+- "Breaking: `flakyTestRepeatMode` argument now takes a `FlakyRepeatMode` enum value instead of a string."
+- |
+  Breaking: targeting tests uses now a `targets {}` block.
+  Example usage to target a specific class:
+  ```
+  emulatorwtf {
+    targets {
+      testClass("com.example.MyTestClass")
+    }
+  }
+  ```
 - |
   When applied to Android projects the emulator.wtf Gradle plugin now automatically adds the
   [`wtf.emulator:test-runtime-android`](https://github.com/emulator-wtf/test-runtime-android) dependency to the

@@ -75,6 +75,13 @@ public abstract class EwExtension implements EwInvokeConfiguration {
     this.devices.add(builder);
   }
 
+  @SuppressWarnings("unused")
+  public void targets(Action<TestTargetsSpec> action) {
+    final var obj = objectFactory.newInstance(TestTargetsSpec.class);
+    action.execute(obj);
+    getTestTargets().set(obj);
+  }
+
   protected Action<EwVariantFilter> getFilter() {
     return this.filter;
   }

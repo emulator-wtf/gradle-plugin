@@ -127,6 +127,9 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getDisplayName().set(ext.getDisplayName());
     deviceTestRunInput.getDisplayName().disallowChanges();
 
+    deviceTestRunInput.getDnsOverrides().set(ext.getDnsOverrides());
+    deviceTestRunInput.getDnsOverrides().disallowChanges();
+
     deviceTestRunInput.getDnsServers().set(ext.getDnsServers());
     deviceTestRunInput.getDnsServers().disallowChanges();
 
@@ -135,6 +138,9 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
 
     deviceTestRunInput.getEgressLocalhostForwardIp().set(ext.getEgressLocalhostForwardIp());
     deviceTestRunInput.getEgressLocalhostForwardIp().disallowChanges();
+
+    deviceTestRunInput.getRelays().set(ext.getRelays());
+    deviceTestRunInput.getRelays().disallowChanges();
 
     deviceTestRunInput.getScmUrl().set(ext.getScmUrl());
     deviceTestRunInput.getScmUrl().disallowChanges();

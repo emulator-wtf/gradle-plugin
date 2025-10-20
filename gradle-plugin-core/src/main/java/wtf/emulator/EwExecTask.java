@@ -216,7 +216,7 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
-  public abstract Property<String> getTestTargets();
+  public abstract Property<TestTargetsSpec> getTestTargets();
 
   @Optional
   @Input
