@@ -24,7 +24,8 @@ unreleased:
   }
   ```
 - |
-  When applied to Android projects the emulator.wtf Gradle plugin now automatically adds the
+  Breaking: when applied to Android projects the emulator.wtf Gradle plugin now automatically adds the
   [`wtf.emulator:test-runtime-android`](https://github.com/emulator-wtf/test-runtime-android) dependency to the
   `androidTestImplementation` configuration to enable per-test video captures. You can disable this by adding
   `wtf.emulator.addruntimedependency=false` to your `gradle.properties` file.
+- "Maintenance: ew-cli version bumped to 1.0.0-rc01"
