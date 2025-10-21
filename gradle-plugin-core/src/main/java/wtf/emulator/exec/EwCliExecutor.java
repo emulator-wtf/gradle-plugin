@@ -249,8 +249,12 @@ public class EwCliExecutor {
       spec.args("--outputs", outputs);
     }
 
-    if (parameters.getRecordVideo().isPresent() && parameters.getRecordVideo().get()) {
-      spec.args("--record-video");
+    if (parameters.getRecordVideo().isPresent()) {
+      if (parameters.getRecordVideo().get()) {
+        spec.args("--record-video");
+      } else {
+        spec.args("--no-record-video");
+      }
     }
 
     if (parameters.getTimeout().isPresent()) {
@@ -335,14 +339,24 @@ public class EwCliExecutor {
       spec.args("--side-effects");
     }
 
-    if (parameters.getFileCacheEnabled().isPresent() && !parameters.getFileCacheEnabled().get()) {
-      spec.args("--no-file-cache");
-    } else if (parameters.getFileCacheTtl().isPresent()) {
+    if (parameters.getFileCacheEnabled().isPresent()) {
+      if (parameters.getFileCacheEnabled().get()) {
+        spec.args("--file-cache");
+      } else {
+        spec.args("--no-file-cache");
+      }
+    }
+
+    if (parameters.getFileCacheTtl().isPresent()) {
       spec.args("--file-cache-ttl", toCliString(parameters.getFileCacheTtl().get()));
     }
 
-    if (parameters.getTestCacheEnabled().isPresent() && !parameters.getTestCacheEnabled().get()) {
-      spec.args("--no-test-cache");
+    if (parameters.getTestCacheEnabled().isPresent()) {
+      if (parameters.getTestCacheEnabled().get()) {
+        spec.args("--test-cache");
+      } else {
+        spec.args("--no-test-cache");
+      }
     }
 
     if (parameters.getNumFlakyTestAttempts().isPresent()) {
