@@ -345,7 +345,9 @@ public class EwCliExecutor {
       } else {
         spec.args("--no-file-cache");
       }
-    } else if (parameters.getFileCacheTtl().isPresent()) {
+    }
+
+    if (parameters.getFileCacheTtl().isPresent()) {
       spec.args("--file-cache-ttl", toCliString(parameters.getFileCacheTtl().get()));
     }
 
