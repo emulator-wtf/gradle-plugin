@@ -42,6 +42,45 @@ public class EwCliExecutor {
     this.execOperations = execOperations;
   }
 
+  public void connectivityCheck(EwConnectivityCheckWorkParameters parameters) {
+    // materialize token
+    final String token = parameters.getToken().getOrNull();
+    if (token == null) {
+      throw new IllegalArgumentException("Missing token for emulator.wtf.\n" +
+        "Did you forget to set token in the emulatorwtf {} block or EW_API_TOKEN env var?");
+    }
+
+    try {
+      ByteArrayOutputStream jsonOut = new ByteArrayOutputStream();
+      ByteArrayOutputStream errorOut = new ByteArrayOutputStream();
+
+      ExecResult result = execOperations.javaexec(spec -> {
+        configureConnectivityCheck(spec, parameters, token);
+        if (parameters.getPrintOutput().getOrElse(false)) {
+          // redirect forked proc stderr to stdout
+          spec.setErrorOutput(System.out);
+        } else {
+          spec.setErrorOutput(new TeeOutputStream(errorOut, new Slf4jInfoOutputStream(log)));
+        }
+        spec.setStandardOutput(jsonOut);
+
+        spec.setIgnoreExitValue(true);
+      });
+
+      if (!parameters.getPrintOutput().getOrElse(false) && result.getExitValue() != 0) {
+        // always print output even if it wasn't requested in case of an error
+        System.out.println(errorOut);
+      }
+
+      if (result.getExitValue() != 0) {
+        throw new EmulatorWtfException("Connectivity check failed with exit code " + result.getExitValue());
+      }
+
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public void collectRunResults(EwCollectResultsWorkParameters parameters) {
     try {
       ByteArrayOutputStream jsonOut = new ByteArrayOutputStream();
@@ -144,6 +183,59 @@ public class EwCliExecutor {
     }
   }
 
+  protected static void configureConnectivityCheck(JavaExecSpec spec, EwConnectivityCheckWorkParameters parameters, String token) {
+    // use env var for passing token so it doesn't get logged out with --info
+    spec.environment("EW_API_TOKEN", token);
+
+    spec.classpath(parameters.getClasspath().get());
+
+    spec.args("connectivity-check");
+
+    if (parameters.getVerbose().getOrElse(true)) {
+      spec.args("--verbose");
+    }
+
+    if (parameters.getDebug().getOrElse(false)) {
+      spec.args("--debug");
+    }
+
+    if (parameters.getDnsServers().isPresent()) {
+      parameters.getDnsServers().get().stream().limit(4).forEach(addr -> spec.args("--dns-server", addr));
+    }
+
+    if (parameters.getDnsOverrides().isPresent()) {
+      parameters.getDnsOverrides().get().forEach(override -> {
+        String overrideStr = override.hostname() + "=" + override.ip();
+        spec.args("--dns-override", overrideStr);
+      });
+    }
+
+    if (parameters.getRelays().isPresent()) {
+      parameters.getRelays().get().forEach(relay -> spec.args("--relay", relay));
+    }
+
+    if (parameters.getEgressTunnel().isPresent()) {
+      spec.args("--egress-tunnel");
+    }
+
+    if (parameters.getEgressLocalhostForwardIp().isPresent()) {
+      spec.args("--egress-localhost-forward-ip", parameters.getEgressLocalhostForwardIp().get());
+    }
+
+    if (parameters.getProxyHost().isPresent()) {
+      spec.args("--proxy-host", parameters.getProxyHost().get());
+    }
+    if (parameters.getProxyPort().isPresent()) {
+      spec.args("--proxy-port", parameters.getProxyPort().get().toString());
+    }
+    if (parameters.getProxyUser().isPresent()) {
+      spec.args("--proxy-user", parameters.getProxyUser().get());
+    }
+    if (parameters.getProxyPassword().isPresent()) {
+      spec.args("--proxy-password", parameters.getProxyPassword().get());
+    }
+  }
+
   protected static void configureCollectExec(JavaExecSpec spec, EwCollectResultsWorkParameters parameters) {
     // materialize token
     if (!parameters.getRunToken().isPresent()) {
@@ -158,6 +250,10 @@ public class EwCliExecutor {
     spec.classpath(parameters.getClasspath().get());
 
     spec.args("--collect-results");
+
+    if (parameters.getDebug().getOrElse(false)) {
+      spec.args("--debug");
+    }
 
     spec.args("--run-uuid", parameters.getRunUuid());
 
@@ -199,6 +295,10 @@ public class EwCliExecutor {
 
     if (parameters.getWorkingDir().isPresent()) {
       spec.workingDir(parameters.getWorkingDir().get());
+    }
+
+    if (parameters.getDebug().getOrElse(false)) {
+      spec.args("--debug");
     }
 
     spec.args("--ew-integration", "gradle-plugin " + BuildConfig.VERSION);

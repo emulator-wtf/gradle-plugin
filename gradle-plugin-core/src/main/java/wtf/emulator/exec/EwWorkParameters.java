@@ -37,5 +37,7 @@ public interface EwWorkParameters extends EwInvokeConfiguration, WorkParameters 
 
   RegularFileProperty getOutputFile();
 
+  Property<Boolean> getDebug();
+
   Property<String> getTaskPath();
 }

@@ -216,6 +216,10 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract Property<Boolean> getDebug();
+
+  @Optional
+  @Input
   public abstract Property<TestTargetsSpec> getTestTargets();
 
   @Optional
@@ -283,6 +287,7 @@ public abstract class EwExecTask extends DefaultTask {
     p.getIgnoreFailures().set(getIgnoreFailures());
     p.getAsync().set(getAsync());
     p.getPrintOutput().set(getPrintOutput());
+    p.getDebug().set(getDebug());
     p.getTestTargets().set(getTestTargets());
     p.getProxyHost().set(getProxyHost());
     p.getProxyPort().set(getProxyPort());

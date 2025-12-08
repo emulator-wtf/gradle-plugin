@@ -75,6 +75,10 @@ public class ProjectConfigurator {
     taskConfigurator.configureRootTask();
     variantConfigurator.configureVariants();
 
+    if (EwProperties.CONNECTIVITY_CHECK.getFlag(target, true)) {
+      taskConfigurator.configureConnectivityCheckTask();
+    }
+
     registerGmdDeviceType();
     registerManagedDeviceExtension();
   }
