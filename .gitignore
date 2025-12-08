@@ -14,3 +14,4 @@
 /integration-test/*/build
 /integration-test/*/app/src/*/generated/
 local.properties
+.kotlin
