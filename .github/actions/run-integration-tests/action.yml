@@ -8,6 +8,10 @@ inputs:
   oidc-configuration-id:
     description: 'OIDC configuration ID for emulator.wtf'
     required: true
+  config-cache:
+    description: 'Enable Gradle configuration cache'
+    required: false
+    default: 'false'
 runs:
   using: composite
   steps:
@@ -35,7 +39,8 @@ runs:
     shell: bash
     working-directory: integration-test/${{ inputs.test-project }}
     run: |
-      echo "Using java: $(java -version)"
-      echo "Java location: $(which java)"
-      echo "JAVA_HOME: $JAVA_HOME"
-      ./gradlew :testWithEmulatorWtf
+      CONFIG_CACHE_ARG="--no-configuration-cache"
+      if [ "${{ inputs.config-cache }}" == "true" ]; then
+        CONFIG_CACHE_ARG="--configuration-cache"
+      fi
+      ./gradlew :testWithEmulatorWtf ewPixel7api33DebugAndroidTest :app:validateBaselineProfile $CONFIG_CACHE_ARG

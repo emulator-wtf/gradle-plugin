@@ -3,6 +3,7 @@ package wtf.emulator.exec;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.TeeOutputStream;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecResult;
 import org.gradle.process.JavaExecSpec;
@@ -12,6 +13,7 @@ import wtf.emulator.BuildConfig;
 import wtf.emulator.EmulatorWtfException;
 import wtf.emulator.EwJson;
 import wtf.emulator.OutputType;
+import wtf.emulator.TestTargetsSpec;
 import wtf.emulator.data.AgpOutputMetadata;
 import wtf.emulator.data.AgpOutputMetadataVersion;
 import wtf.emulator.data.CliOutputAsync;
@@ -23,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,7 +87,7 @@ public class EwCliExecutor {
     }
   }
 
-  public void invokeCli(EwWorkParameters parameters) {
+  public EwCliOutput invokeCli(EwWorkParameters parameters) {
     // materialize token
     final String token = parameters.getToken().getOrNull();
     if (token == null) {
@@ -97,7 +100,7 @@ public class EwCliExecutor {
       ByteArrayOutputStream errorOut = new ByteArrayOutputStream();
 
       ExecResult result = execOperations.javaexec(spec -> {
-        configureCliExec(spec, parameters, token);
+        configureCliExec(log, spec, parameters, token);
         if (parameters.getPrintOutput().getOrElse(false)) {
           // redirect forked proc stderr to stdout
           spec.setErrorOutput(System.out);
@@ -126,17 +129,6 @@ public class EwCliExecutor {
       }
 
       final EwCliOutput output = outputBuilder.taskPath(parameters.getTaskPath().get()).exitCode(result.getExitValue()).build();
-
-      // write output json to the intermediate file
-      if (parameters.getOutputFile().isPresent()) {
-        File outputFile = parameters.getOutputFile().get().getAsFile();
-        try {
-          FileUtils.write(outputFile, gson.toJson(output), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-          /* ignore */
-        }
-      }
-
       if (result.getExitValue() != 0) {
         final String message = new CliOutputPrinter().getSummaryLines(output);
 
@@ -146,6 +138,7 @@ public class EwCliExecutor {
           throw new EmulatorWtfException(message);
         }
       }
+      return output;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -198,7 +191,7 @@ public class EwCliExecutor {
     spec.args("--json");
   }
 
-  protected static void configureCliExec(JavaExecSpec spec, EwWorkParameters parameters, String token) {
+  protected static void configureCliExec(Logger log, JavaExecSpec spec, EwWorkParameters parameters, String token) {
     // use env var for passing token so it doesn't get logged out with --info
     spec.environment("EW_API_TOKEN", token);
 
@@ -256,8 +249,12 @@ public class EwCliExecutor {
       spec.args("--outputs", outputs);
     }
 
-    if (parameters.getRecordVideo().isPresent() && parameters.getRecordVideo().get()) {
-      spec.args("--record-video");
+    if (parameters.getRecordVideo().isPresent()) {
+      if (parameters.getRecordVideo().get()) {
+        spec.args("--record-video");
+      } else {
+        spec.args("--no-record-video");
+      }
     }
 
     if (parameters.getTimeout().isPresent()) {
@@ -293,6 +290,10 @@ public class EwCliExecutor {
         spec.args("--additional-apks", additionalApks.stream()
             .map(File::getAbsolutePath).collect(Collectors.joining(",")));
       }
+    }
+
+    if (parameters.getInstrumentationRunner().isPresent()) {
+      spec.args("--test-runner-class", parameters.getInstrumentationRunner().get());
     }
 
     if (parameters.getEnvironmentVariables().isPresent()) {
@@ -338,14 +339,24 @@ public class EwCliExecutor {
       spec.args("--side-effects");
     }
 
-    if (parameters.getFileCacheEnabled().isPresent() && !parameters.getFileCacheEnabled().get()) {
-      spec.args("--no-file-cache");
-    } else if (parameters.getFileCacheTtl().isPresent()) {
+    if (parameters.getFileCacheEnabled().isPresent()) {
+      if (parameters.getFileCacheEnabled().get()) {
+        spec.args("--file-cache");
+      } else {
+        spec.args("--no-file-cache");
+      }
+    }
+
+    if (parameters.getFileCacheTtl().isPresent()) {
       spec.args("--file-cache-ttl", toCliString(parameters.getFileCacheTtl().get()));
     }
 
-    if (parameters.getTestCacheEnabled().isPresent() && !parameters.getTestCacheEnabled().get()) {
-      spec.args("--no-test-cache");
+    if (parameters.getTestCacheEnabled().isPresent()) {
+      if (parameters.getTestCacheEnabled().get()) {
+        spec.args("--test-cache");
+      } else {
+        spec.args("--no-test-cache");
+      }
     }
 
     if (parameters.getNumFlakyTestAttempts().isPresent()) {
@@ -353,7 +364,7 @@ public class EwCliExecutor {
     }
 
     if (parameters.getFlakyTestRepeatMode().isPresent()) {
-      spec.args("--flaky-test-repeat-mode", parameters.getFlakyTestRepeatMode().get());
+      spec.args("--flaky-test-repeat-mode", parameters.getFlakyTestRepeatMode().get().getCliValue());
     }
 
     if (parameters.getAsync().getOrElse(false)) {
@@ -361,7 +372,11 @@ public class EwCliExecutor {
     }
 
     if (parameters.getTestTargets().isPresent()) {
-      spec.args("--test-targets", parameters.getTestTargets().get());
+      final var string = toCliString(parameters.getTestTargets().get());
+      // even if targets is set the contents might be empty
+      if (!string.isEmpty()) {
+        spec.args("--test-targets", string);
+      }
     }
 
     if (parameters.getDnsServers().isPresent()) {
@@ -405,6 +420,61 @@ public class EwCliExecutor {
 
   private static String toCliString(Duration duration) {
     return duration.getSeconds() + "s";
+  }
+
+  private static String toCliString(TestTargetsSpec targetsSpec) {
+    StringBuilder sb = new StringBuilder();
+    appendCliStringTarget(sb, "package", targetsSpec.getPackages());
+    appendCliStringTarget(sb, "notPackage", targetsSpec.getExcludePackages());
+    appendCliStringTarget(sb, "class", targetsSpec.getClasses(), targetsSpec.getMethods());
+    appendCliStringTarget(sb, "notClass", targetsSpec.getExcludeClasses(), targetsSpec.getExcludeMethods());
+    appendCliStringTarget(sb, "annotation", targetsSpec.getAnnotations());
+    appendCliStringTarget(sb, "notAnnotation", targetsSpec.getExcludeAnnotations());
+    appendCliStringTarget(sb, "filter", targetsSpec.getFilters());
+
+    if (targetsSpec.getSize().isPresent()) {
+      if (!sb.isEmpty()) {
+        sb.append(";");
+      }
+      sb.append("size ").append(targetsSpec.getSize().get().getCliValue());
+    }
+
+    if (targetsSpec.getRegex().isPresent()) {
+      if (!sb.isEmpty()) {
+        sb.append(";");
+      }
+      sb.append("regex ").append(targetsSpec.getRegex().get());
+    }
+
+    return sb.toString();
+  }
+
+  private static void appendCliStringTarget(StringBuilder out, String operatorName, ListProperty<?>... targets) {
+    int sz = 0;
+    for (ListProperty<?> target : targets) {
+      if (target.isPresent()) {
+        sz += target.get().size();
+      }
+    }
+    if (sz == 0) {
+      return;
+    }
+
+    List<String> all = new ArrayList<>(sz);
+    for (ListProperty<?> target : targets) {
+      if (target.isPresent()) {
+        for (Object item : target.get()) {
+          all.add(item.toString());
+        }
+      }
+    }
+
+    if (!out.isEmpty()) {
+      out.append(";");
+    }
+
+    out.append(operatorName).append(" ");
+    out.append(String.join(",", all));
   }
 
   private static File pickBestApk(File apkDirectory) {

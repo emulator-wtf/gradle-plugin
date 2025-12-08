@@ -6,17 +6,21 @@ lint = "8.13.0-alpha03"
 [plugins]
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.7.0" }
 lint = { id = "com.android.lint", version.ref = "lint" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.20" }
 
 [libraries]
 gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.34.0"
 gradle-plugins-lint = { module = "com.android.lint:com.android.lint.gradle.plugin ", version.ref = "lint" }
 
-agp = "com.android.tools.build:gradle:7.0.0"
+agp = "com.android.tools.build:gradle:8.1.0"
+builder-test-api = "com.android.tools.build:builder-test-api:8.1.0"
+testing-platform-core-proto = "com.google.testing.platform:core-proto:0.0.9-alpha03"
+
+kotlin-stdlib = "org.jetbrains.kotlin:kotlin-stdlib:1.8.10"
 
 develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.2.2"
 
-gradle-api-v70 = "dev.gradleplugins:gradle-api:7.0"
-gradle-api-v74 = "dev.gradleplugins:gradle-api:7.4"
+gradle-api-v80 = "dev.gradleplugins:gradle-api:8.0"
 
 lint-gradle = "androidx.lint:lint-gradle:1.0.0-alpha05"
 
@@ -36,6 +40,9 @@ autovalue-compiler = { module = "com.google.auto.value:auto-value", version.ref 
 autovalue-gson-runtime = { module = "com.ryanharter.auto.value:auto-value-gson-runtime", version.ref = "autovalue-gson" }
 autovalue-gson-extension = { module = "com.ryanharter.auto.value:auto-value-gson-extension", version.ref = "autovalue-gson" }
 autovalue-gson-factory = { module = "com.ryanharter.auto.value:auto-value-gson-factory", version.ref = "autovalue-gson" }
+
+emulatorwtf-cli = "wtf.emulator:ew-cli:1.0.0-rc01"
+emulatorwtf-runtime = "wtf.emulator:test-runtime-android:0.2.1"
 
 [bundles]
 test = ["junit", "truth"]

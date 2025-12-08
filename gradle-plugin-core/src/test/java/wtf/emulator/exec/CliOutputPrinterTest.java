@@ -4,7 +4,7 @@ import org.junit.Test;
 import wtf.emulator.data.CliOutputAsync;
 import wtf.emulator.data.CliOutputSync;
 import wtf.emulator.data.DeviceSpec;
-import wtf.emulator.data.GpuMode;
+import wtf.emulator.GpuMode;
 import wtf.emulator.data.RunResult;
 import wtf.emulator.data.RunResultsSummary;
 import wtf.emulator.data.TestCaseResult;
@@ -150,7 +150,7 @@ public class CliOutputPrinterTest {
                     .result(TestCaseResult.FAILURE)
                     .jobUuid("job-uuid")
                     .deviceSpec(
-                        DeviceSpec.builder().model("Monitor").api(35).gpuMode(GpuMode.auto).build()
+                        DeviceSpec.builder().model("Monitor").api(35).gpuMode(GpuMode.AUTO).build()
                     )
                     .build()
             )
@@ -181,7 +181,7 @@ public class CliOutputPrinterTest {
                     .result(TestCaseResult.FAILURE)
                     .jobUuid("job-uuid")
                     .deviceSpec(
-                        DeviceSpec.builder().model("Monitor").api(35).gpuMode(GpuMode.auto).build()
+                        DeviceSpec.builder().model("Monitor").api(35).gpuMode(GpuMode.AUTO).build()
                     )
                     .build()
             )

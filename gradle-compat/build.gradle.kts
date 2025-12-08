@@ -3,12 +3,11 @@ plugins {
 }
 
 dependencies {
-  compileOnly(libs.gradle.api.v70)
+  compileOnly(libs.gradle.api.v80)
 
   api(projects.gradleCompatApi)
 
-  implementation(projects.gradleCompat70)
-  implementation(projects.gradleCompat74)
+  implementation(projects.gradleCompat80)
   implementation(projects.gradleCompat813)
 
   implementation(libs.semver4j)

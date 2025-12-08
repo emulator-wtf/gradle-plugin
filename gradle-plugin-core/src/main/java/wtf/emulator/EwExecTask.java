@@ -98,6 +98,10 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract Property<String> getInstrumentationRunner();
+
+  @Optional
+  @Input
   public abstract MapProperty<String, String> getEnvironmentVariables();
 
   @Optional
@@ -150,7 +154,7 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
-  public abstract Property<String> getFlakyTestRepeatMode();
+  public abstract Property<FlakyRepeatMode> getFlakyTestRepeatMode();
 
   @Optional
   @Input
@@ -212,7 +216,7 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
-  public abstract Property<String> getTestTargets();
+  public abstract Property<TestTargetsSpec> getTestTargets();
 
   @Optional
   @Input
@@ -250,6 +254,7 @@ public abstract class EwExecTask extends DefaultTask {
     p.getClearPackageData().set(getClearPackageData());
     p.getWithCoverage().set(getWithCoverage());
     p.getAdditionalApks().set(getAdditionalApks());
+    p.getInstrumentationRunner().set(getInstrumentationRunner());
     p.getEnvironmentVariables().set(getEnvironmentVariables());
     p.getSecretEnvironmentVariables().set(getSecretEnvironmentVariables());
     p.getNumUniformShards().set(getNumUniformShards());
