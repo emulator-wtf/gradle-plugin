@@ -30,7 +30,7 @@ gson = "com.google.code.gson:gson:2.13.2"
 
 jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
 
-commons-io = "commons-io:commons-io:2.20.0"
+commons-io = "commons-io:commons-io:2.21.0"
 
 junit = "junit:junit:4.13.2"
 truth = "com.google.truth:truth:1.4.5"
