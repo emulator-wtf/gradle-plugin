@@ -9,11 +9,13 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
 import wtf.emulator.DevelocityReporter;
+import wtf.emulator.EwConnectivityCheckTask;
 import wtf.emulator.EwDeviceSpec;
 import wtf.emulator.EwExecSummaryTask;
 import wtf.emulator.EwExecTask;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
+import wtf.emulator.EwProperties;
 import wtf.emulator.EwReportTask;
 import wtf.emulator.EwVariantFilter;
 import wtf.emulator.PrintMode;
@@ -43,6 +45,7 @@ public class TaskConfigurator {
   private final Provider<Configuration> resultsImportConfig;
 
   private static final String ROOT_TASK_NAME = "testWithEmulatorWtf";
+  private static final String CONNECTIVITY_CHECK_TASK_NAME = "emulatorWtfConnectivityCheck";
 
   public TaskConfigurator(Project target, EwExtension ext, EwExtensionInternal extInternals, Provider<Configuration> toolConfig, Configuration resultsExportConfig, Provider<Configuration> resultsImportConfig) {
     this.target = target;
@@ -76,12 +79,43 @@ public class TaskConfigurator {
       task.getOutputsDir().set(ext.getBaseOutputDir().dir(task.getName()));
       task.getOutputTypes().set(ext.getOutputs());
       task.getPrintOutput().set(ext.getPrintOutput());
+      task.getDebug().set(EwProperties.DEBUG.getFlagProvider(target, false));
       task.getProxyHost().set(ext.getProxyHost());
       task.getProxyPort().set(ext.getProxyPort());
       task.getProxyUser().set(ext.getProxyUser());
       task.getProxyPassword().set(ext.getProxyPassword());
 
       // root task is never up-to-date
+      task.getOutputs().upToDateWhen(it -> false);
+    });
+  }
+
+  public void configureConnectivityCheckTask() {
+    target.getTasks().register(CONNECTIVITY_CHECK_TASK_NAME, EwConnectivityCheckTask.class, task -> {
+      task.setDescription("Check connectivity to emulator.wtf service");
+      task.setGroup("Verification");
+
+      task.getClasspath().set(toolConfig);
+
+      task.getToken().set(ext.getToken().orElse(target.provider(() ->
+          System.getenv("EW_API_TOKEN"))));
+
+      task.getProxyHost().set(ext.getProxyHost());
+      task.getProxyPort().set(ext.getProxyPort());
+      task.getProxyUser().set(ext.getProxyUser());
+      task.getProxyPassword().set(ext.getProxyPassword());
+
+      task.getDnsServers().set(ext.getDnsServers());
+      task.getDnsOverrides().set(ext.getDnsOverrides());
+      task.getRelays().set(ext.getRelays());
+      task.getEgressTunnel().set(ext.getEgressTunnel());
+      task.getEgressLocalhostForwardIp().set(ext.getEgressLocalhostForwardIp());
+
+      task.getVerbose().set(true);
+      task.getDebug().set(EwProperties.DEBUG.getFlagProvider(target, false));
+      task.getPrintOutput().set(true);
+
+      // connectivity check is never up-to-date
       task.getOutputs().upToDateWhen(it -> false);
     });
   }
@@ -246,6 +280,7 @@ public class TaskConfigurator {
     task.getEgressLocalhostForwardIp().set(ext.getEgressLocalhostForwardIp());
 
     task.getPrintOutput().set(ext.getPrintOutput());
+    task.getDebug().set(EwProperties.DEBUG.getFlagProvider(target, false));
 
     task.getDisplayName().set(ext.getDisplayName().orElse(extInternals.getVariantCount().map((count) -> {
       String name = target.getPath();

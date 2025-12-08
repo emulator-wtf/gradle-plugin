@@ -65,6 +65,10 @@ public abstract class EwExecSummaryTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract Property<Boolean> getDebug();
+
+  @Optional
+  @Input
   public abstract Property<String> getProxyHost();
 
   @Optional
@@ -175,6 +179,7 @@ public abstract class EwExecSummaryTask extends DefaultTask {
     p.getOutputFile().set(summaryOut);
     p.getOutputs().set(getOutputTypes());
     p.getPrintOutput().set(getPrintOutput());
+    p.getDebug().set(getDebug());
     p.getProxyHost().set(getProxyHost());
     p.getProxyPort().set(getProxyPort());
     p.getProxyUser().set(getProxyUser());
