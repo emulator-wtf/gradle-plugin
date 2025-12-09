@@ -1,7 +1,7 @@
 [versions]
 agp = "9.0.0-alpha01"
 emulatorwtf = "+"
-kotlin = "2.2.0"
+kotlin = "2.2.21"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 rules = "1.6.1"
