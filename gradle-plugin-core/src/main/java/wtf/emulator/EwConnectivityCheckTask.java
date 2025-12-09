@@ -42,6 +42,10 @@ public abstract class EwConnectivityCheckTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract ListProperty<String> getNonProxyHosts();
+
+  @Optional
+  @Input
   public abstract ListProperty<String> getDnsServers();
 
   @Optional
@@ -88,6 +92,7 @@ public abstract class EwConnectivityCheckTask extends DefaultTask {
     p.getProxyPort().set(getProxyPort());
     p.getProxyUser().set(getProxyUser());
     p.getProxyPassword().set(getProxyPassword());
+    p.getNonProxyHosts().set(getNonProxyHosts());
     p.getDnsServers().set(getDnsServers());
     p.getDnsOverrides().set(getDnsOverrides());
     p.getEgressTunnel().set(getEgressTunnel());

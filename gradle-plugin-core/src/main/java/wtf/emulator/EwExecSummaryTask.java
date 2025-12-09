@@ -83,6 +83,10 @@ public abstract class EwExecSummaryTask extends DefaultTask {
   @Input
   public abstract Property<String> getProxyPassword();
 
+  @Optional
+  @Input
+  public abstract ListProperty<String> getNonProxyHosts();
+
   @Inject
   public abstract WorkerExecutor getWorkerExecutor();
 
@@ -184,6 +188,7 @@ public abstract class EwExecSummaryTask extends DefaultTask {
     p.getProxyPort().set(getProxyPort());
     p.getProxyUser().set(getProxyUser());
     p.getProxyPassword().set(getProxyPassword());
+    p.getNonProxyHosts().set(getNonProxyHosts());
     p.getRunUuid().set(async.runUuid());
     p.getRunToken().set(async.runToken());
     p.getDisplayName().set(displayName);

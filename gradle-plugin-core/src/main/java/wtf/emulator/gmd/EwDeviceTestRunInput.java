@@ -219,6 +219,10 @@ public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
   @Input
   public abstract Property<String> getProxyPassword();
 
+  @Optional
+  @Input
+  public abstract ListProperty<String> getNonProxyHosts();
+
   @Input
   public abstract SetProperty<File> getClasspath();
 

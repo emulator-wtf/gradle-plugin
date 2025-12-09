@@ -84,6 +84,7 @@ public class TaskConfigurator {
       task.getProxyPort().set(ext.getProxyPort());
       task.getProxyUser().set(ext.getProxyUser());
       task.getProxyPassword().set(ext.getProxyPassword());
+      task.getNonProxyHosts().set(ext.getNonProxyHosts());
 
       // root task is never up-to-date
       task.getOutputs().upToDateWhen(it -> false);
@@ -104,6 +105,7 @@ public class TaskConfigurator {
       task.getProxyPort().set(ext.getProxyPort());
       task.getProxyUser().set(ext.getProxyUser());
       task.getProxyPassword().set(ext.getProxyPassword());
+      task.getNonProxyHosts().set(ext.getNonProxyHosts());
 
       task.getDnsServers().set(ext.getDnsServers());
       task.getDnsOverrides().set(ext.getDnsOverrides());
@@ -305,6 +307,7 @@ public class TaskConfigurator {
     task.getProxyPort().set(ext.getProxyPort());
     task.getProxyUser().set(ext.getProxyUser());
     task.getProxyPassword().set(ext.getProxyPassword());
+    task.getNonProxyHosts().set(ext.getNonProxyHosts());
 
     additionalConfigure.accept(task);
   }

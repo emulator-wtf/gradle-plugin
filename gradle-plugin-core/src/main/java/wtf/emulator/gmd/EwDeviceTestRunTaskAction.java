@@ -183,6 +183,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     workParams.getProxyPort().set(testRunInput.getProxyPort());
     workParams.getProxyUser().set(testRunInput.getProxyUser());
     workParams.getProxyPassword().set(testRunInput.getProxyPassword());
+    workParams.getNonProxyHosts().set(testRunInput.getNonProxyHosts().map(list -> list));
 
     RegularFile outputFile = testRunInput.getIntermediatesOutputs().get().file(testRunData.getVariantName() + ".json");
     workParams.getOutputFile().set(outputFile);
