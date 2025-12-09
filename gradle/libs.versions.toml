@@ -12,8 +12,8 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.20" }
 gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.35.0"
 gradle-plugins-lint = { module = "com.android.lint:com.android.lint.gradle.plugin ", version.ref = "lint" }
 
-agp = "com.android.tools.build:gradle:8.1.0"
-builder-test-api = "com.android.tools.build:builder-test-api:8.1.0"
+agp = "com.android.tools.build:gradle:8.13.1"
+builder-test-api = "com.android.tools.build:builder-test-api:8.13.1"
 testing-platform-core-proto = "com.google.testing.platform:core-proto:0.0.9-alpha04"
 
 kotlin-stdlib = "org.jetbrains.kotlin:kotlin-stdlib:1.8.10"
