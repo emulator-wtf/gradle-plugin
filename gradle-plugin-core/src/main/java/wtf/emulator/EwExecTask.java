@@ -238,6 +238,10 @@ public abstract class EwExecTask extends DefaultTask {
   @Input
   public abstract Property<String> getProxyPassword();
 
+  @Optional
+  @Input
+  public abstract ListProperty<String> getNonProxyHosts();
+
   @TaskAction
   public void runTests() {
     WorkQueue workQueue = getWorkerExecutor().noIsolation();
@@ -293,6 +297,7 @@ public abstract class EwExecTask extends DefaultTask {
     p.getProxyPort().set(getProxyPort());
     p.getProxyUser().set(getProxyUser());
     p.getProxyPassword().set(getProxyPassword());
+    p.getNonProxyHosts().set(getNonProxyHosts());
     p.getOutputFile().set(getOutputFile());
     p.getTaskPath().set(getPath());
   }

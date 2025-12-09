@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import wtf.emulator.BuildConfig;
 import wtf.emulator.EmulatorWtfException;
 import wtf.emulator.EwJson;
+import wtf.emulator.EwProxyConfiguration;
 import wtf.emulator.OutputType;
 import wtf.emulator.TestTargetsSpec;
 import wtf.emulator.data.AgpOutputMetadata;
@@ -222,18 +223,7 @@ public class EwCliExecutor {
       spec.args("--egress-localhost-forward-ip", parameters.getEgressLocalhostForwardIp().get());
     }
 
-    if (parameters.getProxyHost().isPresent()) {
-      spec.args("--proxy-host", parameters.getProxyHost().get());
-    }
-    if (parameters.getProxyPort().isPresent()) {
-      spec.args("--proxy-port", parameters.getProxyPort().get().toString());
-    }
-    if (parameters.getProxyUser().isPresent()) {
-      spec.args("--proxy-user", parameters.getProxyUser().get());
-    }
-    if (parameters.getProxyPassword().isPresent()) {
-      spec.args("--proxy-password", parameters.getProxyPassword().get());
-    }
+    configureProxyParameters(spec, parameters);
   }
 
   protected static void configureCollectExec(JavaExecSpec spec, EwCollectResultsWorkParameters parameters) {
@@ -271,18 +261,7 @@ public class EwCliExecutor {
       spec.args("--outputs", outputs);
     }
 
-    if (parameters.getProxyHost().isPresent()) {
-      spec.args("--proxy-host", parameters.getProxyHost().get());
-    }
-    if (parameters.getProxyPort().isPresent()) {
-      spec.args("--proxy-port", parameters.getProxyPort().get().toString());
-    }
-    if (parameters.getProxyUser().isPresent()) {
-      spec.args("--proxy-user", parameters.getProxyUser().get());
-    }
-    if (parameters.getProxyPassword().isPresent()) {
-      spec.args("--proxy-password", parameters.getProxyPassword().get());
-    }
+    configureProxyParameters(spec, parameters);
 
     spec.args("--json");
   }
@@ -502,6 +481,12 @@ public class EwCliExecutor {
       spec.args("--egress-localhost-forward-ip", parameters.getEgressLocalhostForwardIp().get());
     }
 
+    configureProxyParameters(spec, parameters);
+
+    spec.args("--json");
+  }
+
+  private static void configureProxyParameters(JavaExecSpec spec, EwProxyConfiguration parameters) {
     if (parameters.getProxyHost().isPresent()) {
       spec.args("--proxy-host", parameters.getProxyHost().get());
     }
@@ -515,7 +500,10 @@ public class EwCliExecutor {
       spec.args("--proxy-password", parameters.getProxyPassword().get());
     }
 
-    spec.args("--json");
+    if (parameters.getNonProxyHosts().isPresent()) {
+      String noProxyValue = parameters.getNonProxyHosts().get().stream().collect(Collectors.joining(","));
+      spec.environment("no_proxy", noProxyValue);
+    }
   }
 
   private static String toCliString(Duration duration) {

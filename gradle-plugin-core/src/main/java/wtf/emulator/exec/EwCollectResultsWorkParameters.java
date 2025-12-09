@@ -6,11 +6,12 @@ import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
 import org.gradle.workers.WorkParameters;
+import wtf.emulator.EwProxyConfiguration;
 import wtf.emulator.OutputType;
 
 import java.io.File;
 
-public interface EwCollectResultsWorkParameters extends WorkParameters  {
+public interface EwCollectResultsWorkParameters extends WorkParameters, EwProxyConfiguration {
   SetProperty<File> getClasspath();
 
   DirectoryProperty getOutputsDir();
@@ -22,14 +23,6 @@ public interface EwCollectResultsWorkParameters extends WorkParameters  {
   Property<Boolean> getDebug();
 
   Property<Boolean> getPrintOutput();
-
-  Property<String> getProxyHost();
-
-  Property<Integer> getProxyPort();
-
-  Property<String> getProxyUser();
-
-  Property<String> getProxyPassword();
 
   Property<String> getRunUuid();
 

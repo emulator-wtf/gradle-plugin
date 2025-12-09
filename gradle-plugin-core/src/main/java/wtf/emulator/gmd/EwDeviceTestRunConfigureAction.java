@@ -178,6 +178,9 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getProxyPassword().set(ext.getProxyPassword());
     deviceTestRunInput.getProxyPassword().disallowChanges();
 
+    deviceTestRunInput.getNonProxyHosts().set(ext.getNonProxyHosts());
+    deviceTestRunInput.getNonProxyHosts().disallowChanges();
+
     deviceTestRunInput.getClasspath().set(getProject().getConfigurations().named(ProjectConfigurator.TOOL_CONFIGURATION));
     deviceTestRunInput.getClasspath().disallowChanges();
 

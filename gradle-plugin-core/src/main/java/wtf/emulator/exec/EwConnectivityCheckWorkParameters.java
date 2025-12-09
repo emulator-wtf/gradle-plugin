@@ -5,21 +5,14 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
 import org.gradle.workers.WorkParameters;
 import wtf.emulator.DnsOverride;
+import wtf.emulator.EwProxyConfiguration;
 
 import java.io.File;
 
-public interface EwConnectivityCheckWorkParameters extends WorkParameters {
+public interface EwConnectivityCheckWorkParameters extends WorkParameters, EwProxyConfiguration {
   SetProperty<File> getClasspath();
 
   Property<String> getToken();
-
-  Property<String> getProxyHost();
-
-  Property<Integer> getProxyPort();
-
-  Property<String> getProxyUser();
-
-  Property<String> getProxyPassword();
 
   ListProperty<String> getDnsServers();
 

@@ -6,7 +6,7 @@ import org.gradle.api.provider.Property;
 
 import java.time.Duration;
 
-public interface EwInvokeConfiguration {
+public interface EwInvokeConfiguration extends EwProxyConfiguration {
   /**
    * Specify the list of various output types (e.g. {@link OutputType#LOGCAT}, {@link OutputType#MERGED_RESULTS_XML}, etc)
    * to download after the test has finished.
@@ -210,28 +210,4 @@ public interface EwInvokeConfiguration {
    * <a href="https://developer.android.com/reference/androidx/test/runner/AndroidJUnitRunner#typical-usage">here</a>.
    */
   Property<TestTargetsSpec> getTestTargets();
-
-  /**
-   * Explicitly set the proxy host to use for communicating with emulator.wtf backend.
-   * By default the Java system properties are used for discovering proxy settings.
-   */
-  Property<String> getProxyHost();
-
-  /**
-   * Explicitly set the proxy port to use for communicating with emulator.wtf backend.
-   * By default the Java system properties are used for discovering proxy settings.
-   */
-  Property<Integer> getProxyPort();
-
-  /**
-   * Explicitly set the proxy username to use for communicating with emulator.wtf backend.
-   * By default the Java system properties are used for discovering proxy settings.
-   */
-  Property<String> getProxyUser();
-
-  /**
-   * Explicitly set the proxy password to use for communicating with emulator.wtf backend.
-   * By default the Java system properties are used for discovering proxy settings.
-   */
-  Property<String> getProxyPassword();
 }
