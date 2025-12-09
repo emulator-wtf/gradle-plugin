@@ -501,8 +501,10 @@ public class EwCliExecutor {
     }
 
     if (parameters.getNonProxyHosts().isPresent()) {
-      String noProxyValue = parameters.getNonProxyHosts().get().stream().collect(Collectors.joining(","));
-      spec.environment("no_proxy", noProxyValue);
+      String noProxyValue = String.join(",", parameters.getNonProxyHosts().get());
+      if (!noProxyValue.isBlank()) {
+        spec.environment("no_proxy", noProxyValue);
+      }
     }
   }
 
