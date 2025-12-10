@@ -18,7 +18,7 @@ testing-platform-core-proto = "com.google.testing.platform:core-proto:0.0.9-alph
 
 kotlin-stdlib = "org.jetbrains.kotlin:kotlin-stdlib:1.8.10"
 
-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.2.2"
+develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.3"
 
 gradle-api-v80 = "dev.gradleplugins:gradle-api:8.0"
 
