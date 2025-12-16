@@ -5,4 +5,5 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased: []
+unreleased:
+- "Fixed: crash (java.lang.NullPointerException: Null gpuMode) when parsing test results for a failed test run"
