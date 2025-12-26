@@ -12,9 +12,7 @@ dependencies {
   compileOnly(libs.agp)
   compileOnly(libs.builder.test.api)
   compileOnly(libs.autovalue.annotations)
-
-  // TODO(madis) shade this instead of including directly
-  implementation(libs.testing.platform.core.proto)
+  compileOnly(libs.testing.platform.core.proto)
 
   api(libs.jsr305)
 
