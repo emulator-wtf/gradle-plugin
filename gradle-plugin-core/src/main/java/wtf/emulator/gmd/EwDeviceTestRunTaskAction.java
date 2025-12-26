@@ -5,7 +5,6 @@ import com.android.build.api.instrumentation.manageddevice.DeviceTestRunParamete
 import com.android.build.api.instrumentation.manageddevice.DeviceTestRunTaskAction;
 import com.android.build.api.instrumentation.manageddevice.TestRunData;
 import com.android.builder.testing.api.DeviceConfigProvider;
-import com.google.testing.platform.proto.api.core.TestSuiteResultProto;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
@@ -25,6 +24,7 @@ import wtf.emulator.exec.EwCliOutput;
 import wtf.emulator.exec.EwWorkParameters;
 import wtf.emulator.gmd.utp.UtpResultGenerator;
 import wtf.emulator.setup.ProviderUtils;
+import wtf.emulator.utp.TestSuiteResult;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -74,7 +74,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
         (path, basicFileAttributes) ->
           basicFileAttributes.isRegularFile() && path.toString().endsWith(".txt"))) {
         List<Path> txtFiles = files.collect(Collectors.toList());
-        TestSuiteResultProto.TestSuiteResult testSuiteResult = UtpResultGenerator.generateUtpResults(txtFiles);
+        TestSuiteResult testSuiteResult = UtpResultGenerator.generateUtpResults(txtFiles);
         File utpResultsFile = new File(outputsDir, "test-result.pb");
         try (FileOutputStream fos = new FileOutputStream(utpResultsFile)) {
           testSuiteResult.writeTo(fos);

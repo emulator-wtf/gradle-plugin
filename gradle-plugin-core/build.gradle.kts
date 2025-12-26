@@ -12,7 +12,7 @@ dependencies {
   compileOnly(libs.agp)
   compileOnly(libs.builder.test.api)
   compileOnly(libs.autovalue.annotations)
-  compileOnly(libs.testing.platform.core.proto)
+  compileOnly(libs.protobuf.java)
 
   api(libs.jsr305)
 
@@ -21,6 +21,7 @@ dependencies {
   annotationProcessor(libs.autovalue.gson.factory)
 
   implementation(projects.gradleCompat)
+  implementation(projects.gradlePluginProtos)
   implementation(projects.develocityReporter)
 
   implementation(libs.semver4j)
