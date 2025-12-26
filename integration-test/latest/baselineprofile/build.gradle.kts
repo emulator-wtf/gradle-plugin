@@ -4,7 +4,7 @@ import wtf.emulator.DeviceModel
 plugins {
   alias(libs.plugins.android.test)
   alias(libs.plugins.baselineprofile)
-//  alias(libs.plugins.emulatorwtf)
+  alias(libs.plugins.emulatorwtf)
 }
 
 android {
@@ -28,18 +28,18 @@ android {
   // This code creates the gradle managed device used to generate baseline profiles.
   // To use GMD please invoke generation through the command line:
   // ./gradlew :app:generateBaselineProfile
-//  testOptions.managedDevices.ewDevices {
-//    register("ewPixel7api33") {
-//      device = DeviceModel.PIXEL_7
-//      apiLevel = 33
-//    }
-//  }
+  testOptions.managedDevices.ewDevices {
+    register("ewPixel7api33") {
+      device = DeviceModel.PIXEL_7
+      apiLevel = 33
+    }
+  }
 }
 
 // This is the configuration block for the Baseline Profile plugin.
 // You can specify to run the generators on a managed devices or connected devices.
 baselineProfile {
-//  managedDevices += "ewPixel7api33"
+  managedDevices += "ewPixel7api33"
   useConnectedDevices = false
 }
 
@@ -60,9 +60,9 @@ androidComponents {
   }
 }
 
-//emulatorwtf {
-//  variantFilter {
-//    setEnabled(false)
-//  }
-//}
+emulatorwtf {
+  variantFilter {
+    setEnabled(false)
+  }
+}
 
