@@ -32,6 +32,7 @@ include(":gradle-compat-8-13")
 include(":gradle-plugin")
 include(":gradle-plugin-api")
 include(":gradle-plugin-core")
+include(":gradle-plugin-protos")
 
 include(":kotlin-extensions")
 
