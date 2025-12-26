@@ -6,8 +6,9 @@ import wtf.emulator.DeviceModel
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.baselineprofile)
-//  alias(libs.plugins.integration.test.conventions)
-//  alias(libs.plugins.emulatorwtf)
+  alias(libs.plugins.integration.test.conventions)
+  alias(libs.plugins.emulatorwtf)
+  alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -34,19 +35,19 @@ android {
 
   namespace = "wtf.emulator.sample"
 
-//  testOptions.managedDevices.ewDevices {
-//    register("ewPixel7api33") {
-//      device = DeviceModel.PIXEL_7
-//      apiLevel = 33
-//    }
-//  }
+  testOptions.managedDevices.ewDevices {
+    register("ewPixel7api33") {
+      device = DeviceModel.PIXEL_7
+      apiLevel = 33
+    }
+  }
 }
 
-//emulatorwtf {
-//  targets {
-//    testMethod("MinimalTests", "otherTest")
-//  }
-//}
+emulatorwtf {
+  targets {
+    testMethod("MinimalTests", "otherTest")
+  }
+}
 
 dependencies {
   androidTestImplementation(libs.androidx.rules)
