@@ -30,4 +30,4 @@ include(":app")
 include(":baselineprofile")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-rootProject.name = "latest"
+rootProject.name = "agp9-olddsl"

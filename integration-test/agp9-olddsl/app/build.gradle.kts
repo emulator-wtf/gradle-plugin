@@ -42,12 +42,6 @@ android {
   }
 }
 
-emulatorwtf {
-  targets {
-    testMethod("MinimalTests", "otherTest")
-  }
-}
-
 dependencies {
   androidTestImplementation(libs.androidx.rules)
   androidTestImplementation(libs.androidx.runner)
