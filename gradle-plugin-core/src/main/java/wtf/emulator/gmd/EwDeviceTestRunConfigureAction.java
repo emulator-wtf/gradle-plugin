@@ -1,19 +1,12 @@
 package wtf.emulator.gmd;
 
 import com.android.build.api.instrumentation.manageddevice.DeviceTestRunConfigureAction;
-import com.android.build.gradle.AppExtension;
-import com.android.build.gradle.BaseExtension;
-import com.android.build.gradle.LibraryExtension;
-import com.android.build.gradle.TestExtension;
 import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.plugins.ExtensionContainer;
-import org.gradle.api.plugins.PluginContainer;
 import org.jetbrains.annotations.NotNull;
 import wtf.emulator.EwExtension;
 import wtf.emulator.setup.ProjectConfigurator;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.File;
 import java.util.HashMap;
@@ -68,15 +61,7 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getRecordVideo().set(ext.getRecordVideo());
     deviceTestRunInput.getRecordVideo().disallowChanges();
 
-    BaseExtension androidExtension = getAndroidExtension(getProject());
-    deviceTestRunInput.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(getProject().provider(() -> {
-      if (androidExtension != null) {
-        // TODO(tauno): not sure that's the right call here to fall back to the android extension
-        return androidExtension.getTestOptions().getExecution().equalsIgnoreCase("ANDROIDX_TEST_ORCHESTRATOR");
-      } else {
-        return false;
-      }
-    })));
+    deviceTestRunInput.getUseOrchestrator().set(ext.getUseOrchestrator());
     deviceTestRunInput.getUseOrchestrator().disallowChanges();
 
     deviceTestRunInput.getClearPackageData().set(ext.getClearPackageData());
@@ -189,19 +174,5 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getIntermediatesOutputs().disallowChanges();
 
     return deviceTestRunInput;
-  }
-
-  @Nullable
-  private BaseExtension getAndroidExtension(Project project) {
-    PluginContainer plugins = project.getPlugins();
-    ExtensionContainer extensions = project.getExtensions();
-    if (plugins.hasPlugin("com.android.application")) {
-      return extensions.getByType(AppExtension.class);
-    } else if (plugins.hasPlugin("com.android.library")) {
-      return extensions.getByType(LibraryExtension.class);
-    } else if (plugins.hasPlugin("com.android.test")) {
-      return extensions.getByType(TestExtension.class);
-    }
-    return null;
   }
 }

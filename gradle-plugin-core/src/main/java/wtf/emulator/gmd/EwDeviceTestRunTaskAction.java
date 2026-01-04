@@ -135,7 +135,12 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     workParams.getOutputs().set(testRunInput.getOutputTypes().map(list -> list));
     workParams.getSecretEnvironmentVariables().set(testRunInput.getSecretEnvironmentVariables().map(map -> map));
     workParams.getRecordVideo().set(testRunInput.getRecordVideo());
-    workParams.getUseOrchestrator().set(testRunInput.getUseOrchestrator());
+
+    // infer orchestrator from additional apks if not set
+    // TODO(madis) fix once there's a better API? https://issuetracker.google.com/issues/471349547
+    var orchestratorApkCount = testRunData.getHelperApks().stream().filter(it -> it.getAbsolutePath().contains("orchestrator")).count();
+    workParams.getUseOrchestrator().set(testRunInput.getUseOrchestrator().orElse(orchestratorApkCount > 0));
+
     workParams.getClearPackageData().set(testRunInput.getClearPackageData());
     workParams.getWithCoverage().set(testRunInput.getWithCoverage().map(
       withCoverage -> withCoverage || testData.isTestCoverageEnabled()
