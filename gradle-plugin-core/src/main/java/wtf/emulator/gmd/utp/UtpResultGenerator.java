@@ -1,12 +1,12 @@
 package wtf.emulator.gmd.utp;
 
-import com.google.testing.platform.proto.api.core.LabelProto;
-import com.google.testing.platform.proto.api.core.PathProto;
-import com.google.testing.platform.proto.api.core.TestArtifactProto;
-import com.google.testing.platform.proto.api.core.TestResultProto;
-import com.google.testing.platform.proto.api.core.TestSuiteResultProto;
+import wtf.emulator.utp.Artifact;
+import wtf.emulator.utp.ArtifactType;
+import wtf.emulator.utp.Label;
+import wtf.emulator.utp.Path;
+import wtf.emulator.utp.TestResult;
+import wtf.emulator.utp.TestSuiteResult;
 
-import java.nio.file.Path;
 import java.util.List;
 
 public class UtpResultGenerator {
@@ -16,9 +16,9 @@ public class UtpResultGenerator {
   // TODO: This is a minimal implementation to generate UTP results that would satisfy the data that the baselineprofile plugin expects.
   //  See: benchmark/baseline-profile-gradle-plugin/src/main/kotlin/androidx/baselineprofile/gradle/producer/tasks/CollectBaselineProfileTask.kt
   //  This should be extended to include the full test run details (test cases, statuses, logcat, etc)
-  public static TestSuiteResultProto.TestSuiteResult generateUtpResults(List<Path> benchmarkFiles) {
-    TestSuiteResultProto.TestSuiteResult.Builder testSuiteResultBuilder = TestSuiteResultProto.TestSuiteResult.newBuilder();
-    TestResultProto.TestResult.Builder testResultBuilder = TestResultProto.TestResult.newBuilder();
+  public static TestSuiteResult generateUtpResults(List<java.nio.file.Path> benchmarkFiles) {
+    TestSuiteResult.Builder testSuiteResultBuilder = TestSuiteResult.newBuilder();
+    TestResult.Builder testResultBuilder = TestResult.newBuilder();
 
     benchmarkFiles.forEach(path -> testResultBuilder.addOutputArtifact(createOutputArtifact(PROFILE_LABEL, path.toAbsolutePath().toString())));
 
@@ -26,20 +26,20 @@ public class UtpResultGenerator {
     return testSuiteResultBuilder.build();
   }
 
-  private static TestArtifactProto.Artifact createOutputArtifact(String labelText, String filePath) {
-    LabelProto.Label label = LabelProto.Label.newBuilder()
+  private static Artifact createOutputArtifact(String labelText, String filePath) {
+    Label label = Label.newBuilder()
       .setLabel(labelText)
       .setNamespace("android")
       .build();
 
-    PathProto.Path sourcePath = PathProto.Path.newBuilder()
+    Path sourcePath = Path.newBuilder()
       .setPath(filePath)
       .build();
 
-    TestArtifactProto.Artifact.Builder artifactBuilder = TestArtifactProto.Artifact.newBuilder()
+    Artifact.Builder artifactBuilder = Artifact.newBuilder()
       .setLabel(label)
       .setSourcePath(sourcePath)
-      .setType(TestArtifactProto.ArtifactType.TEST_DATA);
+      .setType(ArtifactType.TEST_DATA);
 
     return artifactBuilder.build();
   }

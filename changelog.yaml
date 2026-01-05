@@ -6,4 +6,5 @@
 # (Markdown is supported and encouraged)
 
 unreleased:
-- "Fixed: crash (java.lang.NullPointerException: Null gpuMode) when parsing test results for a failed test run"
+- "Fixed: crash (java.lang.NullPointerException: Null gpuMode) when parsing test results for a failed test run."
+- "Maintenance: the plugin now supports Android Gradle Plugin 9.0 and later when using `android.newDsl=false`. Support for `newDsl=true` is in the works and coming at a later date."

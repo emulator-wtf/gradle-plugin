@@ -43,13 +43,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test-project: [ 'latest', 'project-isolation', 'oldest', 'abi-splits' ]
+        test-project: [ 'latest', 'project-isolation', 'oldest', 'abi-splits', 'agp9-olddsl' ]
         config-cache: [ 'true', 'false' ]
         include:
           - test-project: 'project-isolation'
           - test-project: 'latest'
           - test-project: 'oldest'
           - test-project: 'abi-splits'
+          - test-project: 'agp9-olddsl'
         exclude:
           - test-project: 'project-isolation'
             config-cache: 'false'
