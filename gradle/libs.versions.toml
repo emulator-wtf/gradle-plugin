@@ -8,7 +8,7 @@ protobuf = "3.25.5" # agp is on protobuf 3.x
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.7" }
 lint = { id = "com.android.lint", version.ref = "lint" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.20" }
-protobuf = { id = "com.google.protobuf", version = "0.9.4" }
+protobuf = { id = "com.google.protobuf", version = "0.9.6" }
 
 [libraries]
 gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.35.0"
