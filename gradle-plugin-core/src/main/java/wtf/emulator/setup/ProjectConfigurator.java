@@ -68,6 +68,8 @@ public class ProjectConfigurator {
     configureRepository();
     configureRuntimeDependency();
 
+    peekOrchestratorSetting(target);
+
     Provider<Configuration> toolConfig = createToolConfiguration();
     Configuration resultsExportConfig = createResultsExportConfiguration();
     Provider<Configuration> resultsImportConfig = createResultsImportConfiguration(resultsExportConfig);
@@ -82,7 +84,6 @@ public class ProjectConfigurator {
       taskConfigurator.configureConnectivityCheckTask();
     }
 
-    peekOrchestratorSetting(target);
 
     registerGmdDeviceType();
     registerManagedDeviceExtension();
@@ -301,7 +302,7 @@ public class ProjectConfigurator {
   // TODO(madis) fix once there's a better API? https://issuetracker.google.com/issues/471349547
   private void peekOrchestratorSetting(Project target) {
     final var dslFinalizer = (Function1<CommonExtension<?, ?, ?, ?, ?>, Unit>) (it) -> {
-      extInternals.getUseOrchestratorAndroidDsl().set("ANDROIDX_TEST_ORCHESTRATOR".equals(it.getTestOptions().getExecution()));
+      extInternals.getUseOrchestratorAndroidDsl().set("ANDROIDX_TEST_ORCHESTRATOR".equalsIgnoreCase(it.getTestOptions().getExecution()));
       return Unit.INSTANCE;
     };
 
