@@ -39,7 +39,7 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
 
     // Get the emulatorwtf extension and grab the relevant properties from there
     EwExtension ext = getProject().getExtensions().getByType(EwExtension.class);
-    EwExtensionInternal extInternal = getProject().getExtensions().getByType(EwExtensionInternal.class);
+    EwExtensionInternal extInternal = new EwExtensionInternal(ext);
 
     deviceTestRunInput.getToken().set(ext.getToken().orElse(getProject().provider(() ->
       System.getenv("EW_API_TOKEN"))));
