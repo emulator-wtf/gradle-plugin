@@ -5,6 +5,7 @@ import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;
 import org.jetbrains.annotations.NotNull;
 import wtf.emulator.EwExtension;
+import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.setup.ProjectConfigurator;
 
 import javax.inject.Inject;
@@ -38,6 +39,7 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
 
     // Get the emulatorwtf extension and grab the relevant properties from there
     EwExtension ext = getProject().getExtensions().getByType(EwExtension.class);
+    EwExtensionInternal extInternal = getProject().getExtensions().getByType(EwExtensionInternal.class);
 
     deviceTestRunInput.getToken().set(ext.getToken().orElse(getProject().provider(() ->
       System.getenv("EW_API_TOKEN"))));
@@ -61,7 +63,7 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getRecordVideo().set(ext.getRecordVideo());
     deviceTestRunInput.getRecordVideo().disallowChanges();
 
-    deviceTestRunInput.getUseOrchestrator().set(ext.getUseOrchestrator());
+    deviceTestRunInput.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(extInternal.getUseOrchestratorAndroidDsl()));
     deviceTestRunInput.getUseOrchestrator().disallowChanges();
 
     deviceTestRunInput.getClearPackageData().set(ext.getClearPackageData());
