@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.SecureRandom;
 
 public abstract class EwDeviceSetupTaskAction implements DeviceSetupTaskAction<EwDeviceSetupInput> {
 

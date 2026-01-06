@@ -17,4 +17,11 @@ public class EwExtensionInternal {
   public Property<Integer> getVariantCount() {
     return extension.getVariantCount();
   }
+
+  /**
+   * Whether the user has configured to use orchestrator in the `android.testOptions {}` block.
+   */
+  public Property<Boolean> getUseOrchestratorAndroidDsl() {
+    return extension.getUseOrchestratorAndroidDsl();
+  }
 }
