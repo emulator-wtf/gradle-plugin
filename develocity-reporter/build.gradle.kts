@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-  compileOnly(libs.agp)
+  compileOnly(libs.agp.api.v81)
   compileOnly(libs.develocity)
   compileOnly(libs.gradle.api.v80)
 

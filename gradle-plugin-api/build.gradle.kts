@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
   compileOnly(libs.gradle.api.v80)
-  compileOnly(libs.agp)
+  compileOnly(libs.agp.impl.v81)
 
   compileOnly(libs.autovalue.annotations)
 
