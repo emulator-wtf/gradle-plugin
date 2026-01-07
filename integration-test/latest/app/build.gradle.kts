@@ -8,7 +8,6 @@ plugins {
   alias(libs.plugins.baselineprofile)
   alias(libs.plugins.integration.test.conventions)
   alias(libs.plugins.emulatorwtf)
-  alias(libs.plugins.kotlin.android)
 }
 
 android {
