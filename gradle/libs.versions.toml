@@ -14,12 +14,12 @@ protobuf = { id = "com.google.protobuf", version = "0.9.6" }
 gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.35.0"
 gradle-plugins-lint = { module = "com.android.lint:com.android.lint.gradle.plugin ", version.ref = "lint" }
 
-agp-api-v81 = "com.android.tools.build:gradle-api:8.1.0"
-agp-impl-v81 = "com.android.tools.build:gradle:8.1.0"
+agp-api-v81 = "com.android.tools.build:gradle-api:8.13.2"
+agp-impl-v81 = "com.android.tools.build:gradle:8.13.2"
 
-agp-api-v85 = "com.android.tools.build:gradle-api:8.5.0"
+agp-api-v85 = "com.android.tools.build:gradle-api:8.13.2"
 
-builder-test-api = "com.android.tools.build:builder-test-api:8.1.0"
+builder-test-api = "com.android.tools.build:builder-test-api:8.13.2"
 
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
 protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
