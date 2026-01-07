@@ -33,6 +33,7 @@ class JavaConvention : Plugin<Project> {
 
       with(extensions.getByType(Lint::class.java)) {
         baseline = target.file("src/lint/baseline.xml")
+        disable += setOf("GradleDependency", "NewerVersionAvailable", "SimilarGradleDependency")
       }
 
       // in-tree and mavenlocal publishing
