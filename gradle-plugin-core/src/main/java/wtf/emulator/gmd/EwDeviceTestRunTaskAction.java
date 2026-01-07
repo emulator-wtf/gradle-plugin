@@ -108,7 +108,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     device.getGpu().set(gpu);
 
     if (testData.isLibrary()) {
-      workParams.getLibraryTestApk().set(testData.getTestApk());
+      workParams.getLibraryTestApk().set(testData.getTestApk().getAbsolutePath());
     } else {
       List<File> testedApks = testData.getTestedApkFinder().invoke(
         getDeviceConfigProvider(model, version)
@@ -116,8 +116,8 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
       if (testedApks.size() != 1) {
         throw new IllegalStateException("Expected exactly one tested APK, but found: " + testedApks.size());
       }
-      workParams.getApks().set(Collections.singleton(testedApks.get(0)));
-      workParams.getTestApk().set(testData.getTestApk());
+      workParams.getAppApk().set(testedApks.get(0).getAbsolutePath());
+      workParams.getTestApk().set(testData.getTestApk().getAbsolutePath());
     }
 
     // We have a single output dir, whereas GMD expects separate output dirs for:

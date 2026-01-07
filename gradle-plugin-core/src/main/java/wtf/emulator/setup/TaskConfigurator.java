@@ -1,8 +1,6 @@
 package wtf.emulator.setup;
 
-import com.android.build.gradle.BaseExtension;
-import com.android.build.gradle.api.BaseVariant;
-import org.gradle.api.Action;
+import com.android.build.api.variant.Variant;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
@@ -10,21 +8,18 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
 import wtf.emulator.DevelocityReporter;
 import wtf.emulator.EwConnectivityCheckTask;
-import wtf.emulator.EwDeviceSpec;
 import wtf.emulator.EwExecSummaryTask;
 import wtf.emulator.EwExecTask;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.EwProperties;
 import wtf.emulator.EwReportTask;
-import wtf.emulator.EwVariantFilter;
 import wtf.emulator.PrintMode;
 import wtf.emulator.TestReporter;
 import wtf.emulator.attributes.EwArtifactType;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,7 +28,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TaskConfigurator {
@@ -122,20 +116,10 @@ public class TaskConfigurator {
     });
   }
 
-  public <T extends BaseVariant> void configureEwTask(
-      BaseExtension android,
-      T variant,
-      Consumer<EwExecTask> additionalConfigure
+  public <VariantType extends Variant> void configureEwTask(
+    VariantType variant,
+    Consumer<EwExecTask> additionalConfigure
   ) {
-    Action<EwVariantFilter> filter = extInternals.getFilter();
-    if (filter != null) {
-      EwVariantFilter filterSpec = new EwVariantFilter(variant);
-      filter.execute(filterSpec);
-      if (!filterSpec.isEnabled()) {
-        return;
-      }
-    }
-
     // bump the variant count
     extInternals.getVariantCount().set(extInternals.getVariantCount().get() + 1);
 
@@ -145,15 +129,11 @@ public class TaskConfigurator {
 
     // register the work task
     String taskName = "test" + capitalize(variant.getName()) + "WithEmulatorWtf";
-
     final TaskProvider<? extends EwExecTask> execTask;
-
     Provider<Directory> outputDirectory = ext.getBaseOutputDir().dir(taskName);
+
     execTask = target.getTasks().register(taskName, EwExecTask.class, task ->
-        configureTask(android, variant.getName(), variant.getBuildType().isTestCoverageEnabled(),
-          variant.getMergedFlavor().getTestInstrumentationRunnerArguments(), additionalConfigure, outputFile,
-          outputDirectory,
-          task)
+      configureTask(variant.getName(), additionalConfigure, outputFile, outputDirectory, task)
     );
 
     if (ext.getTestReporters().isPresent() && !ext.getAsync().getOrElse(false)) {
@@ -181,10 +161,7 @@ public class TaskConfigurator {
   }
 
   private void configureTask(
-      BaseExtension android,
       String variantName,
-      boolean testCoverageEnabled,
-      Map<String, String> instrumentationRunnerArguments,
       Consumer<EwExecTask> additionalConfigure,
       File outputFile,
       Provider<Directory> outputDirectory,
@@ -222,24 +199,15 @@ public class TaskConfigurator {
       (acc, device) -> Stream.concat(acc.stream(), Stream.of(device)).toList()
     ));
 
-    task.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(target.provider(() ->
-        android.getTestOptions().getExecution().equalsIgnoreCase("ANDROIDX_TEST_ORCHESTRATOR"))));
+    task.getUseOrchestrator().set(ext.getUseOrchestrator());
 
     task.getClearPackageData().set(ext.getClearPackageData());
 
-    task.getWithCoverage().set(ext.getWithCoverage().orElse(target.provider(() -> testCoverageEnabled)));
+    task.getWithCoverage().set(ext.getWithCoverage());
 
     task.getAdditionalApks().set(ext.getAdditionalApks());
 
     task.getInstrumentationRunner().set(ext.getTestRunnerClass());
-
-    task.getEnvironmentVariables().set(ext.getEnvironmentVariables()
-        .map((entries) -> {
-          // pick defaults from test instrumentation runner args, then fill with overrides
-          final Map<String, String> out = new HashMap<>(instrumentationRunnerArguments);
-          entries.forEach((key, value) -> out.put(key, Objects.toString(value)));
-          return out;
-        }));
 
     task.getSecretEnvironmentVariables().set(ext.getSecretEnvironmentVariables()
       .map((entries) -> {

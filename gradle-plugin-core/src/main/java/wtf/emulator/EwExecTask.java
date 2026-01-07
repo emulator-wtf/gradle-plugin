@@ -1,5 +1,6 @@
 package wtf.emulator;
 
+import com.android.build.api.variant.BuiltArtifactsLoader;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
@@ -12,7 +13,6 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
@@ -30,6 +30,9 @@ import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Map;
 
+import static wtf.emulator.exec.EwWorkParameterUtils.configureApk;
+import static wtf.emulator.exec.EwWorkParameterUtils.configureApkFromFileCollection;
+
 @CacheableTask
 public abstract class EwExecTask extends DefaultTask {
   @Classpath
@@ -39,20 +42,29 @@ public abstract class EwExecTask extends DefaultTask {
   @Input
   public abstract Property<String> getToken();
 
+  @Internal
+  public abstract Property<BuiltArtifactsLoader> getBuiltArtifactsLoader();
+
   @Optional
   @InputFiles
-  @PathSensitive(PathSensitivity.NONE)
-  public abstract Property<FileCollection> getApks();
+  @PathSensitive(PathSensitivity.RELATIVE)
+  public abstract Property<FileCollection> getAppApks();
 
   @Optional
-  @InputFile
-  @PathSensitive(PathSensitivity.NONE)
-  public abstract RegularFileProperty getTestApk();
+  @InputFiles
+  @PathSensitive(PathSensitivity.RELATIVE)
+  public abstract DirectoryProperty getAppApksFolder();
+
+  // test apks
+  @Optional
+  @InputFiles
+  @PathSensitive(PathSensitivity.RELATIVE)
+  public abstract DirectoryProperty getTestApksFolder();
 
   @Optional
-  @InputFile
-  @PathSensitive(PathSensitivity.NONE)
-  public abstract RegularFileProperty getLibraryTestApk();
+  @InputFiles
+  @PathSensitive(PathSensitivity.RELATIVE)
+  public abstract DirectoryProperty getLibraryTestApksFolder();
 
   @Optional
   @OutputDirectory
@@ -249,11 +261,19 @@ public abstract class EwExecTask extends DefaultTask {
   }
 
   protected void fillWorkParameters(EwWorkParameters p) {
+    final var loader = getBuiltArtifactsLoader().get();
+
     p.getClasspath().set(getClasspath().get().getFiles());
     p.getToken().set(getToken());
-    p.getApks().set(getApks());
-    p.getTestApk().set(getTestApk());
-    p.getLibraryTestApk().set(getLibraryTestApk());
+
+    if (getAppApks().isPresent()) {
+      configureApkFromFileCollection(loader, getAppApks(), p.getAppApk());
+    } else {
+      configureApk(loader, getAppApksFolder(), p.getAppApk());
+    }
+    configureApk(loader, getTestApksFolder(), p.getTestApk());
+    configureApk(loader, getLibraryTestApksFolder(), p.getLibraryTestApk());
+
     p.getOutputsDir().set(getOutputsDir());
     p.getOutputs().set(getOutputTypes());
     p.getRecordVideo().set(getRecordVideo());
@@ -302,3 +322,4 @@ public abstract class EwExecTask extends DefaultTask {
     p.getTaskPath().set(getPath());
   }
 }
+

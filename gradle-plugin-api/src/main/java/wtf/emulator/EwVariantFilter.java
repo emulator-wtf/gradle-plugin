@@ -1,17 +1,17 @@
 package wtf.emulator;
 
-import com.android.build.gradle.api.BaseVariant;
+import com.android.build.api.variant.Variant;
 
 public class EwVariantFilter {
-  private final BaseVariant variant;
+  private final Variant variant;
   private boolean enabled = true;
 
-  public EwVariantFilter(BaseVariant variant) {
+  public EwVariantFilter(Variant variant) {
     this.variant = variant;
   }
 
   @SuppressWarnings("unused")
-  public BaseVariant getVariant() {
+  public Variant getVariant() {
     return variant;
   }
 
