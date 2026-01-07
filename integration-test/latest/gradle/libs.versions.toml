@@ -1,5 +1,5 @@
 [versions]
-agp = "9.0.0-alpha01"
+agp = "9.1.0-alpha03"
 emulatorwtf = "+"
 kotlin = "2.3.0"
 junitVersion = "1.3.0"
@@ -7,7 +7,7 @@ espressoCore = "3.7.0"
 rules = "1.6.1"
 runner = "1.7.0"
 uiautomator = "2.3.0"
-baselineprofile = "1.4.1"
+baselineprofile = "1.5.0-alpha01"
 benchmarkMacroJunit4 = "1.4.1"
 
 [plugins]
