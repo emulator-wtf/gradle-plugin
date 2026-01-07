@@ -9,7 +9,7 @@ dependencies {
   compileOnly(libs.gradle.api.v80)
   compileOnly(libs.kotlin.stdlib)
 
-  compileOnly(libs.agp.impl.v81)
+  compileOnly(libs.agp.api.v81)
   compileOnly(libs.builder.test.api)
   compileOnly(libs.autovalue.annotations)
   compileOnly(libs.protobuf.java)
@@ -20,6 +20,7 @@ dependencies {
   annotationProcessor(libs.autovalue.gson.extension)
   annotationProcessor(libs.autovalue.gson.factory)
 
+  implementation(projects.agpCompat)
   implementation(projects.gradleCompat)
   implementation(projects.gradlePluginProtos)
   implementation(projects.develocityReporter)

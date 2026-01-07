@@ -19,11 +19,11 @@ public interface EwWorkParameters extends EwInvokeConfiguration, WorkParameters 
 
   SetProperty<File> getClasspath();
 
-  SetProperty<File> getApks();
+  Property<String> getAppApk();
 
-  RegularFileProperty getTestApk();
+  Property<String> getTestApk();
 
-  RegularFileProperty getLibraryTestApk();
+  Property<String> getLibraryTestApk();
 
   DirectoryProperty getOutputsDir();
 

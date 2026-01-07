@@ -7,5 +7,5 @@
 
 unreleased:
 - "Fixed: crash (java.lang.NullPointerException: Null gpuMode) when parsing test results for a failed test run."
+- "Fixed: The emulator.wtf Gradle plugin now supports Android Gradle Plugin 9.0 and later, in both the `android.newDsl=false` and `android.newDsl=true` modes.
 - "Fixed: Using Gradle Managed Devices with emulator.wtf devices now works on AGP 9.0, regardless of the `android.newDsl` setting."
-- "Maintenance: the plugin now supports Android Gradle Plugin 9.0 and later when using `android.newDsl=false`. Support for `newDsl=true` is in the works and coming at a later date."
