@@ -9,7 +9,7 @@ dependencies {
   compileOnly(libs.gradle.api.v80)
   compileOnly(libs.kotlin.stdlib)
 
-  compileOnly(libs.agp)
+  compileOnly(libs.agp.impl.v81)
   compileOnly(libs.builder.test.api)
   compileOnly(libs.autovalue.annotations)
   compileOnly(libs.protobuf.java)

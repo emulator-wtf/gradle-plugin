@@ -1,12 +1,11 @@
 plugins {
   id("wtf.emulator.java")
-  alias(libs.plugins.kotlin.jvm)
 }
 
 dependencies {
-  compileOnly(libs.agp.api.v81)
   compileOnly(libs.gradle.api.v80)
+  compileOnly(libs.agp.api.v85)
   compileOnly(libs.kotlin.stdlib)
 
-  implementation(projects.gradlePluginApi)
+  api(projects.agpCompatApi)
 }

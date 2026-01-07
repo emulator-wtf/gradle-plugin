@@ -22,6 +22,11 @@ plugins {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+include(":agp-compat-api")
+include(":agp-compat")
+include(":agp-compat-8-1")
+include(":agp-compat-8-5")
+
 include(":develocity-reporter")
 
 include(":gradle-compat-api")

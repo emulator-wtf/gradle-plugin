@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.13.0-alpha03" type="baseline" client="gradle" dependencies="false" name="AGP (8.13.0-alpha03)" variant="all" version="8.13.0-alpha03">
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.android.tools.build:gradle-api than 8.1.0 is available: 8.13.2"
+        errorLine1="agp-api-v81 = &quot;com.android.tools.build:gradle-api:8.1.0&quot;"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="18"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.android.tools.build:builder-test-api than 8.1.0 is available: 8.13.2"
+        errorLine1="builder-test-api = &quot;com.android.tools.build:builder-test-api:8.1.0&quot;"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="20"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of org.jetbrains.kotlin:kotlin-stdlib than 1.8.10 is available: 2.3.0"
+        errorLine1="kotlin-stdlib = &quot;org.jetbrains.kotlin:kotlin-stdlib:1.8.10&quot;"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="25"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of com.google.protobuf:protobuf-java than 3.25.5 is available: 4.33.2"
+        errorLine1="protobuf = &quot;3.25.5&quot; # agp is on protobuf 3.x"
+        errorLine2="           ~~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="5"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of com.google.protobuf:protoc than 3.25.5 is available: 4.33.2"
+        errorLine1="protobuf = &quot;3.25.5&quot; # agp is on protobuf 3.x"
+        errorLine2="           ~~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="5"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of org.jetbrains.kotlin.jvm than 1.9.20 is available: 2.3.0"
+        errorLine1="kotlin-jvm = { id = &quot;org.jetbrains.kotlin.jvm&quot;, version = &quot;1.9.20&quot; }"
+        errorLine2="                                                          ~~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="10"
+            column="59"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of com.google.protobuf than 0.9.4 is available: 0.9.6"
+        errorLine1="protobuf = { id = &quot;com.google.protobuf&quot;, version = &quot;0.9.4&quot; }"
+        errorLine2="                                                   ~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="11"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of dev.gradleplugins:gradle-api than 8.0 is available: 8.11.1"
+        errorLine1="gradle-api-v80 = &quot;dev.gradleplugins:gradle-api:8.0&quot;"
+        errorLine2="                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="29"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="SimilarGradleDependency"
+        message="There are multiple dependencies com.android.tools.build:gradle-api but with different version"
+        errorLine1="agp-api-v81 = &quot;com.android.tools.build:gradle-api:8.1.0&quot;"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="18"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="SimilarGradleDependency"
+        message="There are multiple dependencies com.android.tools.build:gradle-api but with different version"
+        errorLine1="agp-api-v90 = &quot;com.android.tools.build:gradle-api:9.0.0-rc02&quot;"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="19"
+            column="15"/>
+    </issue>
+
+</issues>
