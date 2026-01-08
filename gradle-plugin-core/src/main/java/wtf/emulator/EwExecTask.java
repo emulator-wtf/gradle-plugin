@@ -80,7 +80,6 @@ public abstract class EwExecTask extends DefaultTask {
    * Like {@link #getMergedXml()} but does not create an explicit dependency on this task,
    * for use in finalizer tasks.
    */
-  @Optional
   @Internal
   public Provider<RegularFile> getMergedXmlDetached() {
     return getOutputsDir().getLocationOnly().map(it -> it.file("results.xml"));
