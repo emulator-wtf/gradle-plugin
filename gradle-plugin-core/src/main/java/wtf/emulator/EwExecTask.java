@@ -76,6 +76,15 @@ public abstract class EwExecTask extends DefaultTask {
     return getOutputsDir().file("results.xml");
   }
 
+  /**
+   * Like {@link #getMergedXml()} but does not create an explicit dependency on this graph,
+   * for use in finalizer tasks.
+   */
+  @Optional
+  public Provider<RegularFile> getMergedXmlDetached() {
+    return getOutputsDir().getLocationOnly().map(it -> it.file("results.xml"));
+  }
+
   @OutputFile
   public abstract RegularFileProperty getOutputFile();
 
