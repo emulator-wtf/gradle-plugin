@@ -141,7 +141,7 @@ public class TaskConfigurator {
       for (TestReporter reporter : reporters) {
         switch (reporter) {
         case DEVELOCITY:
-          DevelocityReporter.configure(target, execTask, EwExecTask::getMergedXml);
+          DevelocityReporter.configure(target, execTask, EwExecTask::getMergedXmlDetached);
           break;
         case GRADLE_TEST_REPORTING_API:
           String reportTaskName = "report" + capitalize(variant.getName()) + "EmulatorWtfTestResults";
