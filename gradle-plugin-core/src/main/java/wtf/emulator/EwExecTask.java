@@ -77,7 +77,7 @@ public abstract class EwExecTask extends DefaultTask {
   }
 
   /**
-   * Like {@link #getMergedXml()} but does not create an explicit dependency on this graph,
+   * Like {@link #getMergedXml()} but does not create an explicit dependency on this task,
    * for use in finalizer tasks.
    */
   @Optional
