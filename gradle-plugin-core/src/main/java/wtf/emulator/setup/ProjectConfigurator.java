@@ -42,6 +42,11 @@ import wtf.emulator.gmd.EwManagedDeviceImpl;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
+
+import static wtf.emulator.setup.ProviderUtils.sysPropConvention;
+import static wtf.emulator.setup.ProxyUtils.nonProxyHostsConvention;
 
 public class ProjectConfigurator {
   private static final String MAVEN_URL = "https://maven.emulator.wtf/releases/";
@@ -166,8 +171,19 @@ public class ProjectConfigurator {
   }
 
   private void setupExtensionDefaults() {
+    ext.getVersion().convention(BuildConfig.EW_CLI_VERSION);
+    ext.getSideEffects().convention(false);
+    ext.getOutputs().convention(Collections.emptyList());
+
     ext.getBaseOutputDir().convention(target.getLayout().getBuildDirectory().dir("test-results"));
     ext.getRepositoryCheckEnabled().convention(true);
+
+    sysPropConvention(ext.getProxyHost(), "https.proxyHost", "http.proxyHost");
+    sysPropConvention(ext.getProxyPort(), Arrays.asList("https.proxyPort", "http.proxyPort"), Integer::parseInt);
+    sysPropConvention(ext.getProxyUser(), "https.proxyUser", "http.proxyUser");
+    sysPropConvention(ext.getProxyPassword(), "https.proxyPassword", "http.proxyPassword");
+
+    nonProxyHostsConvention(ext.getNonProxyHosts());
   }
 
   private void configureRuntimeDependency() {

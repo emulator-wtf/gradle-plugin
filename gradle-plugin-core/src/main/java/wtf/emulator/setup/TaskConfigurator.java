@@ -7,6 +7,7 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
 import wtf.emulator.DevelocityReporter;
+import wtf.emulator.EwInvokeDsl;
 import wtf.emulator.EwConnectivityCheckTask;
 import wtf.emulator.EwExecSummaryTask;
 import wtf.emulator.EwExecTask;
@@ -133,7 +134,7 @@ public class TaskConfigurator {
     Provider<Directory> outputDirectory = ext.getBaseOutputDir().dir(taskName);
 
     execTask = target.getTasks().register(taskName, EwExecTask.class, task ->
-      configureTask(variant.getName(), additionalConfigure, outputFile, outputDirectory, task)
+      configureTask(variant.getName(), additionalConfigure, outputFile, outputDirectory, task, ext)
     );
 
     if (ext.getTestReporters().isPresent() && !ext.getAsync().getOrElse(false)) {
@@ -165,17 +166,18 @@ public class TaskConfigurator {
       Consumer<EwExecTask> additionalConfigure,
       File outputFile,
       Provider<Directory> outputDirectory,
-      EwExecTask task
+      EwExecTask task,
+      EwInvokeDsl config
   ) {
     task.setDescription("Run " + variantName + " instrumentation tests with emulator.wtf");
     task.setGroup("Verification");
 
-    if (ext.getSideEffects().isPresent() && ext.getSideEffects().get()) {
+    if (config.getSideEffects().isPresent() && config.getSideEffects().get()) {
       task.getOutputs().upToDateWhen((t) -> false);
       task.getSideEffects().set(true);
     }
 
-    task.getAsync().set(ext.getAsync());
+    task.getAsync().set(config.getAsync());
 
     task.getOutputFile().set(outputFile);
 
@@ -187,29 +189,29 @@ public class TaskConfigurator {
     // don't configure outputs in async mode
     if (!task.getAsync().getOrElse(false)) {
       task.getOutputsDir().set(outputDirectory);
-      task.getOutputTypes().set(ext.getOutputs());
+      task.getOutputTypes().set(config.getOutputs());
     }
 
-    task.getRecordVideo().set(ext.getRecordVideo());
+    task.getRecordVideo().set(config.getRecordVideo());
 
-    var devices = ext.getDevices().stream().map(dev -> ProviderUtils.deviceToCliMap(target.getProviders(), dev)).toList();
+    var devices = config.getDevices().stream().map(dev -> ProviderUtils.deviceToCliMap(target.getProviders(), dev)).toList();
     task.getDevices().set(ProviderUtils.reduce(
       target.provider(Collections::emptyList),
       devices,
       (acc, device) -> Stream.concat(acc.stream(), Stream.of(device)).toList()
     ));
 
-    task.getUseOrchestrator().set(ext.getUseOrchestrator());
+    task.getUseOrchestrator().set(config.getUseOrchestrator());
 
-    task.getClearPackageData().set(ext.getClearPackageData());
+    task.getClearPackageData().set(config.getClearPackageData());
 
-    task.getWithCoverage().set(ext.getWithCoverage());
+    task.getWithCoverage().set(config.getWithCoverage());
 
-    task.getAdditionalApks().set(ext.getAdditionalApks());
+    task.getAdditionalApks().set(config.getAdditionalApks());
 
-    task.getInstrumentationRunner().set(ext.getTestRunnerClass());
+    task.getInstrumentationRunner().set(config.getTestRunnerClass());
 
-    task.getSecretEnvironmentVariables().set(ext.getSecretEnvironmentVariables()
+    task.getSecretEnvironmentVariables().set(config.getSecretEnvironmentVariables()
       .map((entries) -> {
         // toString the values
         final Map<String, String> out = new HashMap<>();
@@ -217,42 +219,42 @@ public class TaskConfigurator {
         return out;
       }));
 
-    task.getNumUniformShards().set(ext.getNumUniformShards());
-    task.getNumShards().set(ext.getNumShards());
-    task.getNumBalancedShards().set(ext.getNumBalancedShards());
-    task.getShardTargetRuntime().set(ext.getShardTargetRuntime());
+    task.getNumUniformShards().set(config.getNumUniformShards());
+    task.getNumShards().set(config.getNumShards());
+    task.getNumBalancedShards().set(config.getNumBalancedShards());
+    task.getShardTargetRuntime().set(config.getShardTargetRuntime());
 
-    task.getDirectoriesToPull().set(ext.getDirectoriesToPull());
+    task.getDirectoriesToPull().set(config.getDirectoriesToPull());
 
-    task.getTestTimeout().set(ext.getTimeout());
+    task.getTestTimeout().set(config.getTimeout());
 
-    task.getFileCacheEnabled().set(ext.getFileCacheEnabled());
-    task.getFileCacheTtl().set(ext.getFileCacheTtl());
+    task.getFileCacheEnabled().set(config.getFileCacheEnabled());
+    task.getFileCacheTtl().set(config.getFileCacheTtl());
 
-    task.getTestCacheEnabled().set(ext.getTestCacheEnabled());
-    if (ext.getTestCacheEnabled().isPresent() && !ext.getTestCacheEnabled().get()) {
+    task.getTestCacheEnabled().set(config.getTestCacheEnabled());
+    if (config.getTestCacheEnabled().isPresent() && !config.getTestCacheEnabled().get()) {
       // if test cache is disabled, always rerun the task
       task.getOutputs().upToDateWhen(it -> false);
     }
 
-    task.getNumFlakyTestAttempts().set(ext.getNumFlakyTestAttempts());
-    task.getFlakyTestRepeatMode().set(ext.getFlakyTestRepeatMode());
+    task.getNumFlakyTestAttempts().set(config.getNumFlakyTestAttempts());
+    task.getFlakyTestRepeatMode().set(config.getFlakyTestRepeatMode());
 
-    task.getScmUrl().set(ext.getScmUrl());
-    task.getScmCommitHash().set(ext.getScmCommitHash());
-    task.getScmRefName().set(ext.getScmRefName());
-    task.getScmPrUrl().set(ext.getScmPrUrl());
+    task.getScmUrl().set(config.getScmUrl());
+    task.getScmCommitHash().set(config.getScmCommitHash());
+    task.getScmRefName().set(config.getScmRefName());
+    task.getScmPrUrl().set(config.getScmPrUrl());
 
-    task.getDnsServers().set(ext.getDnsServers());
-    task.getDnsOverrides().set(ext.getDnsOverrides());
-    task.getRelays().set(ext.getRelays());
-    task.getEgressTunnel().set(ext.getEgressTunnel());
-    task.getEgressLocalhostForwardIp().set(ext.getEgressLocalhostForwardIp());
+    task.getDnsServers().set(config.getDnsServers());
+    task.getDnsOverrides().set(config.getDnsOverrides());
+    task.getRelays().set(config.getRelays());
+    task.getEgressTunnel().set(config.getEgressTunnel());
+    task.getEgressLocalhostForwardIp().set(config.getEgressLocalhostForwardIp());
 
-    task.getPrintOutput().set(ext.getPrintOutput());
+    task.getPrintOutput().set(config.getPrintOutput());
     task.getDebug().set(EwProperties.DEBUG.getFlagProvider(target, false));
 
-    task.getDisplayName().set(ext.getDisplayName().orElse(extInternals.getVariantCount().map((count) -> {
+    task.getDisplayName().set(config.getDisplayName().orElse(extInternals.getVariantCount().map((count) -> {
       String name = target.getPath();
       if (name.equals(":")) {
         // replace with rootProject name
@@ -267,15 +269,15 @@ public class TaskConfigurator {
 
     task.getWorkingDir().set(target.getRootDir());
 
-    task.getIgnoreFailures().set(ext.getIgnoreFailures());
+    task.getIgnoreFailures().set(config.getIgnoreFailures());
 
-    task.getTestTargets().set(ext.getTestTargets());
+    task.getTestTargets().set(config.getTestTargets());
 
-    task.getProxyHost().set(ext.getProxyHost());
-    task.getProxyPort().set(ext.getProxyPort());
-    task.getProxyUser().set(ext.getProxyUser());
-    task.getProxyPassword().set(ext.getProxyPassword());
-    task.getNonProxyHosts().set(ext.getNonProxyHosts());
+    task.getProxyHost().set(config.getProxyHost());
+    task.getProxyPort().set(config.getProxyPort());
+    task.getProxyUser().set(config.getProxyUser());
+    task.getProxyPassword().set(config.getProxyPassword());
+    task.getNonProxyHosts().set(config.getNonProxyHosts());
 
     additionalConfigure.accept(task);
   }
