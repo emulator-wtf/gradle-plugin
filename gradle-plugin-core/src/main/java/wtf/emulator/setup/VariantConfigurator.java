@@ -1,6 +1,7 @@
 package wtf.emulator.setup;
 
 import com.android.build.api.artifact.SingleArtifact;
+import com.android.build.api.dsl.CommonExtension;
 import com.android.build.api.variant.AndroidTest;
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension;
 import com.android.build.api.variant.ApplicationVariant;
@@ -128,7 +129,8 @@ public class VariantConfigurator {
     compat.populateAgpVariantData(holder, variant, variantData);
 
     if (!task.getUseOrchestrator().isPresent()) {
-      task.getUseOrchestrator().set(extInternals.getUseOrchestratorAndroidDsl());
+      final var commonExt = target.getExtensions().findByType(CommonExtension.class);
+      task.getUseOrchestrator().set("ANDROIDX_TEST_ORCHESTRATOR".equalsIgnoreCase(commonExt.getTestOptions().getExecution()));
     }
 
     if (!task.getWithCoverage().isPresent()) {
