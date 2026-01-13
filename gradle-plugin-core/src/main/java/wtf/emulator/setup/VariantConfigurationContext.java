@@ -73,7 +73,7 @@ import javax.annotation.Nullable;
       // look up the referenced target apks
       final var targetApkDir = compat().getTestedApkDirectory(project, variant);
       if (targetApkDir != null) {
-        testApksFolder(targetApkDir);
+        appApksFolder(targetApkDir);
       } else {
         final var targetApkCollection = compat().getTestedApks(project, variant);
         if (targetApkCollection == null) {
