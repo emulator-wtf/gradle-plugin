@@ -25,7 +25,7 @@ public abstract class EwExtension extends EwInvokeDsl {
   public EwExtension(ObjectFactory objectFactory) {
     this.variantCount = objectFactory.property(Integer.class).convention(0);
     this.configurations = objectFactory.domainObjectContainer(EwConfiguration.class);
-    configurations.whenObjectAdded(config -> config.extendFrom(this));
+    configurations.configureEach(config -> config.extendFrom(this));
   }
 
   public NamedDomainObjectContainer<EwConfiguration> getConfigurations() {
