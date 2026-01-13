@@ -101,6 +101,7 @@ public class VariantConfigurator {
     return Unit.INSTANCE;
   }
 
+  @SuppressWarnings("EagerGradleConfiguration") // configs have to be loaded eagerly to register the tasks
   private void createEwTasks(VariantConfigurationContext defaultConfigCtx, EwExtension ext) {
     createEwTask(defaultConfigCtx);
     ext.getConfigurations().all(config -> {
