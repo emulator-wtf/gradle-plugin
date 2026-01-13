@@ -44,7 +44,15 @@ public abstract class EwInvokeDsl implements EwInvokeConfiguration {
     getTestTargets().set(obj);
   }
 
+  protected DomainObjectSet<EwDeviceSpec> getDevicesOrDefault() {
+    return getDevices();
+  }
+
   protected Action<EwVariantFilter> getFilter() {
+    return this.filter;
+  }
+
+  protected Action<EwVariantFilter> getFilterOrDefault() {
     return this.filter;
   }
 }
