@@ -24,8 +24,6 @@ import static java.util.function.Function.identity;
 public abstract class EwExtension implements EwInvokeConfiguration {
   private final Property<Integer> variantCount;
 
-  private final Property<Boolean> useOrchestratorAndroidDsl;
-
   public abstract Property<Boolean> getRepositoryCheckEnabled();
 
   public abstract Property<String> getVersion();
@@ -63,7 +61,6 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
     this.objectFactory = objectFactory;
     this.variantCount = objectFactory.property(Integer.class).convention(0);
-    this.useOrchestratorAndroidDsl = objectFactory.property(Boolean.class).convention(false);
     this.devices = objectFactory.domainObjectSet(EwDeviceSpec.class);
   }
 
@@ -96,10 +93,6 @@ public abstract class EwExtension implements EwInvokeConfiguration {
 
   protected Property<Integer> getVariantCount() {
     return this.variantCount;
-  }
-
-  protected Property<Boolean> getUseOrchestratorAndroidDsl() {
-    return this.useOrchestratorAndroidDsl;
   }
 
   private static void nonProxyHostsConvention(ListProperty<String> property) {

@@ -68,8 +68,6 @@ public class ProjectConfigurator {
     configureRepository();
     configureRuntimeDependency();
 
-    peekOrchestratorSetting(target);
-
     Provider<Configuration> toolConfig = createToolConfiguration();
     Configuration resultsExportConfig = createResultsExportConfiguration();
     Provider<Configuration> resultsImportConfig = createResultsImportConfiguration(resultsExportConfig);
@@ -297,26 +295,5 @@ public class ProjectConfigurator {
     // TODO(madis) yuck
     // https://github.com/gradle/gradle/issues/17295
     return ((GradleInternal) target.getGradle()).getSettings();
-  }
-
-  // TODO(madis) fix once there's a better API? https://issuetracker.google.com/issues/471349547
-  private void peekOrchestratorSetting(Project target) {
-    final var dslFinalizer = (Function1<CommonExtension<?, ?, ?, ?, ?>, Unit>) (it) -> {
-      extInternals.getUseOrchestratorAndroidDsl().set("ANDROIDX_TEST_ORCHESTRATOR".equalsIgnoreCase(it.getTestOptions().getExecution()));
-      return Unit.INSTANCE;
-    };
-
-    target.getPluginManager().withPlugin("com.android.application", plugin -> {
-      ApplicationAndroidComponentsExtension android = target.getExtensions().getByType(ApplicationAndroidComponentsExtension.class);
-      android.finalizeDsl(dslFinalizer);
-    });
-    target.getPluginManager().withPlugin("com.android.library", plugin -> {
-      LibraryAndroidComponentsExtension android = target.getExtensions().getByType(LibraryAndroidComponentsExtension.class);
-      android.finalizeDsl(dslFinalizer);
-    });
-    target.getPluginManager().withPlugin("com.android.test", plugin -> {
-      TestAndroidComponentsExtension android = target.getExtensions().getByType(TestAndroidComponentsExtension.class);
-      android.finalizeDsl(dslFinalizer);
-    });
   }
 }

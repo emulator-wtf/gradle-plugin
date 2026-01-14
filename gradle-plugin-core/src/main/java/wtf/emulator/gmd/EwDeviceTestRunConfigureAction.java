@@ -1,5 +1,6 @@
 package wtf.emulator.gmd;
 
+import com.android.build.api.dsl.CommonExtension;
 import com.android.build.api.instrumentation.manageddevice.DeviceTestRunConfigureAction;
 import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;
@@ -63,7 +64,7 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getRecordVideo().set(ext.getRecordVideo());
     deviceTestRunInput.getRecordVideo().disallowChanges();
 
-    deviceTestRunInput.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(extInternal.getUseOrchestratorAndroidDsl()));
+    deviceTestRunInput.getUseOrchestrator().set(ext.getUseOrchestrator().orElse(getDslOrchestratorSetting(getProject())));
     deviceTestRunInput.getUseOrchestrator().disallowChanges();
 
     deviceTestRunInput.getClearPackageData().set(ext.getClearPackageData());
@@ -176,5 +177,10 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getIntermediatesOutputs().disallowChanges();
 
     return deviceTestRunInput;
+  }
+
+  private boolean getDslOrchestratorSetting(Project project) {
+    final var commonExt = project.getExtensions().findByType(CommonExtension.class);
+    return commonExt != null && "ANDROIDX_TEST_ORCHESTRATOR".equalsIgnoreCase(commonExt.getTestOptions().getExecution());
   }
 }
