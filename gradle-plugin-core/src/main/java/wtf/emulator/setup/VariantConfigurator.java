@@ -19,9 +19,11 @@ import wtf.emulator.AgpCompat;
 import wtf.emulator.AgpCompatFactory;
 import wtf.emulator.AgpVariantData;
 import wtf.emulator.AgpVariantDataHolder;
+import wtf.emulator.DslInternals;
 import wtf.emulator.EwExecTask;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
+import wtf.emulator.EwInvokeDsl;
 import wtf.emulator.EwVariantFilter;
 
 import java.util.HashMap;
@@ -47,21 +49,21 @@ public class VariantConfigurator {
       ApplicationAndroidComponentsExtension android = target.getExtensions().getByType(ApplicationAndroidComponentsExtension.class);
       final var compat = AgpCompatFactory.getAgpCompat(android.getPluginVersion());
       final var holder = compat.collectAgpVariantData(target);
-      android.onVariants(android.selector().all(), (Function1<? super ApplicationVariant, Unit>) it -> filter(compat, holder, it, this::configureAppVariant));
+      android.onVariants(android.selector().all(), (Function1<? super ApplicationVariant, Unit>) it -> filter(compat, holder, it, ext, this::configureAppVariant));
     });
 
     target.getPluginManager().withPlugin("com.android.library", plugin -> {
       LibraryAndroidComponentsExtension android = target.getExtensions().getByType(LibraryAndroidComponentsExtension.class);
       final var compat = AgpCompatFactory.getAgpCompat(android.getPluginVersion());
       final var holder = compat.collectAgpVariantData(target);
-      android.onVariants(android.selector().all(), (Function1<? super LibraryVariant, Unit>) it -> filter(compat, holder, it, this::configureLibraryVariant));
+      android.onVariants(android.selector().all(), (Function1<? super LibraryVariant, Unit>) it -> filter(compat, holder, it, ext, this::configureLibraryVariant));
     });
 
     target.getPluginManager().withPlugin("com.android.test", plugin -> {
       TestAndroidComponentsExtension android = target.getExtensions().getByType(TestAndroidComponentsExtension.class);
       final var compat = AgpCompatFactory.getAgpCompat(android.getPluginVersion());
       final var holder = compat.collectAgpVariantData(target);
-      android.onVariants(android.selector().all(), (Function1<? super TestVariant, Unit>) it -> filter(compat, holder, it, this::configureTestVariant));
+      android.onVariants(android.selector().all(), (Function1<? super TestVariant, Unit>) it -> filter(compat, holder, it, ext, this::configureTestVariant));
     });
 
     //TODO(madis) configure feature builds
@@ -149,15 +151,15 @@ public class VariantConfigurator {
     );
   }
 
-  private <VariantType extends Variant> Unit filter(AgpCompat agpCompat, AgpVariantDataHolder holder, VariantType variant, Function3<AgpCompat, AgpVariantDataHolder, VariantType, Unit> configure) {
-    if (isEnabled(variant)) {
+  private <VariantType extends Variant> Unit filter(AgpCompat agpCompat, AgpVariantDataHolder holder, VariantType variant, EwInvokeDsl dsl, Function3<AgpCompat, AgpVariantDataHolder, VariantType, Unit> configure) {
+    if (isEnabled(variant, dsl)) {
       configure.invoke(agpCompat, holder, variant);
     }
     return Unit.INSTANCE;
   }
 
-  private boolean isEnabled(Variant variant) {
-    Action<EwVariantFilter> filter = extInternals.getFilter();
+  private boolean isEnabled(Variant variant, EwInvokeDsl dsl) {
+    Action<EwVariantFilter> filter = DslInternals.getFilter(dsl);
     if (filter != null) {
       EwVariantFilter filterSpec = new EwVariantFilter(variant);
       filter.execute(filterSpec);
