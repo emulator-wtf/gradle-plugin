@@ -1,5 +1,7 @@
 package wtf.emulator;
 
+import org.gradle.api.Action;
+import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
@@ -17,9 +19,21 @@ public abstract class EwExtension extends EwInvokeDsl {
 
   public abstract DirectoryProperty getBaseOutputDir();
 
+  private final NamedDomainObjectContainer<EwConfiguration> configurations;
+
   @Inject
   public EwExtension(ObjectFactory objectFactory) {
     this.variantCount = objectFactory.property(Integer.class).convention(0);
+    this.configurations = objectFactory.domainObjectContainer(EwConfiguration.class);
+    configurations.configureEach(config -> config.extendFrom(this));
+  }
+
+  public NamedDomainObjectContainer<EwConfiguration> getConfigurations() {
+    return configurations;
+  }
+
+  public void configurations(Action<NamedDomainObjectContainer<EwConfiguration>> configure) {
+    configure.execute(configurations);
   }
 
   protected Property<Integer> getVariantCount() {

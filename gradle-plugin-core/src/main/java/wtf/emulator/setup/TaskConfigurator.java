@@ -1,12 +1,12 @@
 package wtf.emulator.setup;
 
-import com.android.build.api.variant.Variant;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
 import wtf.emulator.DevelocityReporter;
+import wtf.emulator.DslInternals;
 import wtf.emulator.EwInvokeDsl;
 import wtf.emulator.EwConnectivityCheckTask;
 import wtf.emulator.EwExecSummaryTask;
@@ -24,12 +24,13 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import static wtf.emulator.setup.StringUtils.capitalize;
 
 public class TaskConfigurator {
   private final Project target;
@@ -117,35 +118,36 @@ public class TaskConfigurator {
     });
   }
 
-  public <VariantType extends Variant> void configureEwTask(
-    VariantType variant,
-    Consumer<EwExecTask> additionalConfigure
+  public void configureEwTask(
+    String ewInvokeName,
+    EwInvokeDsl config,
+    Consumer<EwExecTask> additionalTaskConfigure
   ) {
     // bump the variant count
     extInternals.getVariantCount().set(extInternals.getVariantCount().get() + 1);
 
     // create output file property for each variant
     Path intermediateFolder = target.getBuildDir().toPath().resolve("intermediates").resolve("emulatorwtf");
-    File outputFile = intermediateFolder.resolve(variant.getName() + ".json").toFile();
+    File outputFile = intermediateFolder.resolve(ewInvokeName + ".json").toFile();
 
     // register the work task
-    String taskName = "test" + capitalize(variant.getName()) + "WithEmulatorWtf";
+    String taskName = "test" + capitalize(ewInvokeName) + "WithEmulatorWtf";
     final TaskProvider<? extends EwExecTask> execTask;
     Provider<Directory> outputDirectory = ext.getBaseOutputDir().dir(taskName);
 
     execTask = target.getTasks().register(taskName, EwExecTask.class, task ->
-      configureTask(variant.getName(), additionalConfigure, outputFile, outputDirectory, task, ext)
+      configureTask(ewInvokeName, additionalTaskConfigure, outputFile, outputDirectory, task, config)
     );
 
-    if (ext.getTestReporters().isPresent() && !ext.getAsync().getOrElse(false)) {
-      Set<TestReporter> reporters = new HashSet<>(ext.getTestReporters().get());
+    if (config.getTestReporters().isPresent() && !config.getAsync().getOrElse(false)) {
+      Set<TestReporter> reporters = new HashSet<>(config.getTestReporters().get());
       for (TestReporter reporter : reporters) {
         switch (reporter) {
         case DEVELOCITY:
           DevelocityReporter.configure(target, execTask, EwExecTask::getMergedXmlDetached);
           break;
         case GRADLE_TEST_REPORTING_API:
-          String reportTaskName = "report" + capitalize(variant.getName()) + "EmulatorWtfTestResults";
+          String reportTaskName = "report" + capitalize(ewInvokeName) + "EmulatorWtfTestResults";
           TaskProvider<? extends EwReportTask> reportTask = target.getTasks().register(reportTaskName, EwReportTask.class, task -> {
             task.getCliOutputFile().set(outputFile);
             task.getOutputDir().set(outputDirectory);
@@ -194,7 +196,7 @@ public class TaskConfigurator {
 
     task.getRecordVideo().set(config.getRecordVideo());
 
-    var devices = config.getDevices().stream().map(dev -> ProviderUtils.deviceToCliMap(target.getProviders(), dev)).toList();
+    var devices = DslInternals.getDevices(config).stream().map(dev -> ProviderUtils.deviceToCliMap(target.getProviders(), dev)).toList();
     task.getDevices().set(ProviderUtils.reduce(
       target.provider(Collections::emptyList),
       devices,
@@ -280,12 +282,5 @@ public class TaskConfigurator {
     task.getNonProxyHosts().set(config.getNonProxyHosts());
 
     additionalConfigure.accept(task);
-  }
-
-  private static String capitalize(String str) {
-    if (str.isEmpty()) {
-      return str;
-    }
-    return str.substring(0, 1).toUpperCase(Locale.US) + str.substring(1);
   }
 }

@@ -1,6 +1,5 @@
 package wtf.emulator.setup;
 
-import com.android.build.api.artifact.SingleArtifact;
 import com.android.build.api.dsl.CommonExtension;
 import com.android.build.api.variant.AndroidTest;
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension;
@@ -12,7 +11,6 @@ import com.android.build.api.variant.TestVariant;
 import com.android.build.api.variant.Variant;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-import kotlin.jvm.functions.Function3;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import wtf.emulator.AgpCompat;
@@ -22,7 +20,6 @@ import wtf.emulator.AgpVariantDataHolder;
 import wtf.emulator.DslInternals;
 import wtf.emulator.EwExecTask;
 import wtf.emulator.EwExtension;
-import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.EwInvokeDsl;
 import wtf.emulator.EwVariantFilter;
 
@@ -30,16 +27,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static wtf.emulator.setup.StringUtils.capitalize;
+
 public class VariantConfigurator {
   private final Project target;
   private final EwExtension ext;
-  private final EwExtensionInternal extInternals;
   private final TaskConfigurator taskConfigurator;
 
-  public VariantConfigurator(Project target, EwExtension ext, EwExtensionInternal extInternals, TaskConfigurator taskConfigurator) {
+  public VariantConfigurator(Project target, EwExtension ext, TaskConfigurator taskConfigurator) {
     this.target = target;
     this.ext = ext;
-    this.extInternals = extInternals;
     this.taskConfigurator = taskConfigurator;
   }
 
@@ -49,21 +46,21 @@ public class VariantConfigurator {
       ApplicationAndroidComponentsExtension android = target.getExtensions().getByType(ApplicationAndroidComponentsExtension.class);
       final var compat = AgpCompatFactory.getAgpCompat(android.getPluginVersion());
       final var holder = compat.collectAgpVariantData(target);
-      android.onVariants(android.selector().all(), (Function1<? super ApplicationVariant, Unit>) it -> filter(compat, holder, it, ext, this::configureAppVariant));
+      android.onVariants(android.selector().all(), (Function1<? super ApplicationVariant, Unit>) it -> configureAppVariant(compat, holder, it));
     });
 
     target.getPluginManager().withPlugin("com.android.library", plugin -> {
       LibraryAndroidComponentsExtension android = target.getExtensions().getByType(LibraryAndroidComponentsExtension.class);
       final var compat = AgpCompatFactory.getAgpCompat(android.getPluginVersion());
       final var holder = compat.collectAgpVariantData(target);
-      android.onVariants(android.selector().all(), (Function1<? super LibraryVariant, Unit>) it -> filter(compat, holder, it, ext, this::configureLibraryVariant));
+      android.onVariants(android.selector().all(), (Function1<? super LibraryVariant, Unit>) it -> configureLibraryVariant(compat, holder, it));
     });
 
     target.getPluginManager().withPlugin("com.android.test", plugin -> {
       TestAndroidComponentsExtension android = target.getExtensions().getByType(TestAndroidComponentsExtension.class);
       final var compat = AgpCompatFactory.getAgpCompat(android.getPluginVersion());
       final var holder = compat.collectAgpVariantData(target);
-      android.onVariants(android.selector().all(), (Function1<? super TestVariant, Unit>) it -> filter(compat, holder, it, ext, this::configureTestVariant));
+      android.onVariants(android.selector().all(), (Function1<? super TestVariant, Unit>) it -> configureTestVariant(compat, holder, it));
     });
 
     //TODO(madis) configure feature builds
@@ -74,16 +71,10 @@ public class VariantConfigurator {
   private Unit configureAppVariant(AgpCompat compat, AgpVariantDataHolder holder, ApplicationVariant variant) {
     AndroidTest testVariant = variant.getAndroidTest();
     if (testVariant != null) {
-      taskConfigurator.configureEwTask(variant, task -> {
-        // realize variant data
-        configureAgpDslDefaults(compat, holder, variant, task);
-
-        // TODO(madis) we could do better than main here, technically we do know the list of
-        //             devices we're going to run against..
-        task.getBuiltArtifactsLoader().set(variant.getArtifacts().getBuiltArtifactsLoader());
-        task.getAppApksFolder().set(variant.getArtifacts().get(SingleArtifact.APK.INSTANCE));
-        task.getTestApksFolder().set(testVariant.getArtifacts().get(SingleArtifact.APK.INSTANCE));
-      });
+      final var defaultConfigCtx = VariantConfigurationContext.builder(compat, holder, variant.getName(), ext)
+        .app(variant, testVariant)
+        .build();
+      createEwTasks(defaultConfigCtx);
     }
     return Unit.INSTANCE;
   }
@@ -91,42 +82,59 @@ public class VariantConfigurator {
   private Unit configureLibraryVariant(AgpCompat compat, AgpVariantDataHolder holder, LibraryVariant variant) {
     AndroidTest testVariant = variant.getAndroidTest();
     if (testVariant != null) {
-      taskConfigurator.configureEwTask(variant, task -> {
-        // realize variant data
-        configureAgpDslDefaults(compat, holder, variant, task);
-        // library projects only have the test apk
-        task.getBuiltArtifactsLoader().set(variant.getArtifacts().getBuiltArtifactsLoader());
-        task.getLibraryTestApksFolder().set(testVariant.getArtifacts().get(SingleArtifact.APK.INSTANCE));
-      });
+      final var defaultConfigCtx = VariantConfigurationContext.builder(compat, holder, variant.getName(), ext)
+        .library(variant, testVariant)
+        .build();
+      createEwTasks(defaultConfigCtx);
     }
     return Unit.INSTANCE;
   }
 
   private Unit configureTestVariant(AgpCompat compat, AgpVariantDataHolder holder, TestVariant variant) {
-    taskConfigurator.configureEwTask(variant, task -> {
-      // realize variant data
-      configureAgpDslDefaults(compat, holder, variant, task);
-
-      // connect apk
-      task.getBuiltArtifactsLoader().set(variant.getArtifacts().getBuiltArtifactsLoader());
-      task.getTestApksFolder().set(variant.getArtifacts().get(SingleArtifact.APK.INSTANCE));
-
-      // look up the referenced target apks
-      final var targetApkDir = compat.getTestedApkDirectory(target, variant);
-      if (targetApkDir != null) {
-        task.getAppApksFolder().set(targetApkDir);
-      } else {
-        final var targetApkCollection = compat.getTestedApks(target, variant);
-        if (targetApkCollection == null) {
-          throw new IllegalStateException("Could not configure target app apk for test module " + target.getPath());
-        }
-        task.getAppApks().set(targetApkCollection);
-      }
-    });
+    final var defaultConfigCtx = VariantConfigurationContext.builder(compat, holder, variant.getName(), ext)
+      .test(target, variant)
+      .build();
+    createEwTasks(defaultConfigCtx);
     return Unit.INSTANCE;
   }
 
-  private void configureAgpDslDefaults(AgpCompat compat, AgpVariantDataHolder holder, Variant variant, EwExecTask task) {
+  @SuppressWarnings("EagerGradleConfiguration") // configs have to be loaded eagerly to register the tasks
+  private void createEwTasks(VariantConfigurationContext defaultConfigCtx) {
+    createEwTask(defaultConfigCtx);
+    ext.getConfigurations().all(config -> {
+      final var configCtx = defaultConfigCtx.toBuilder()
+        .invokeName(config.getName() + capitalize(defaultConfigCtx.invokeName()))
+        .dsl(config)
+        .build();
+      createEwTask(configCtx);
+    });
+  }
+
+  private void createEwTask(VariantConfigurationContext ctx) {
+    if (isEnabled(ctx.variant(), ctx.dsl())) {
+      taskConfigurator.configureEwTask(ctx.invokeName(), ctx.dsl(), task -> {
+        // realize variant data
+        configureAgpDslDefaults(ctx.compat(), ctx.dsl(), ctx.holder(), ctx.variant(), task);
+
+        task.getBuiltArtifactsLoader().set(ctx.variant().getArtifacts().getBuiltArtifactsLoader());
+
+        if (ctx.appApksFolder() != null) {
+          task.getAppApksFolder().set(ctx.appApksFolder());
+        }
+        if (ctx.appApkFiles() != null) {
+          task.getAppApks().set(ctx.appApkFiles());
+        }
+        if (ctx.testApksFolder() != null) {
+          task.getTestApksFolder().set(ctx.testApksFolder());
+        }
+        if (ctx.libraryTestApksFolder() != null) {
+          task.getLibraryTestApksFolder().set(ctx.libraryTestApksFolder());
+        }
+      });
+    }
+  }
+
+  private void configureAgpDslDefaults(AgpCompat compat, EwInvokeDsl dsl, AgpVariantDataHolder holder, Variant variant, EwExecTask task) {
     final var variantData = target.getObjects().newInstance(AgpVariantData.class);
     compat.populateAgpVariantData(holder, variant, variantData);
 
@@ -142,20 +150,13 @@ public class VariantConfigurator {
     }
 
     task.getEnvironmentVariables().set(
-      ext.getEnvironmentVariables().zip(variantData.getInstrumentationRunnerArguments(), (entries, defaults) -> {
+      dsl.getEnvironmentVariables().zip(variantData.getInstrumentationRunnerArguments(), (entries, defaults) -> {
         // pick defaults from agp dsl instrumentation runner args, then fill with overrides
         final Map<String, String> out = new HashMap<>(defaults);
         entries.forEach((key, value) -> out.put(key, Objects.toString(value)));
         return out;
       })
     );
-  }
-
-  private <VariantType extends Variant> Unit filter(AgpCompat agpCompat, AgpVariantDataHolder holder, VariantType variant, EwInvokeDsl dsl, Function3<AgpCompat, AgpVariantDataHolder, VariantType, Unit> configure) {
-    if (isEnabled(variant, dsl)) {
-      configure.invoke(agpCompat, holder, variant);
-    }
-    return Unit.INSTANCE;
   }
 
   private boolean isEnabled(Variant variant, EwInvokeDsl dsl) {

@@ -415,6 +415,63 @@ baselineProfile {
 }
 ```
 
+### Create multiple test run configurations
+
+You can create multiple test run configurations with different device and test target settings.
+This allows you to run different subsets of tests on different devices, optimizing your test execution based on your needs.
+
+The configurations derive from the base default configuration specified in the `emulatorwtf {}` block.
+
+Here's a snippet that defines multiple test run configurations, a default one, a smoke test suite for quick
+validation and a longer end-to-end test suite:
+
+```kotlin
+emulatorwtf {
+  // default to two devices
+  device {
+    model.set(DeviceModel.PIXEL_7)
+    version.set(35)
+  }
+  device {
+    model.set(DeviceModel.PIXEL_7)
+    version.set(24)
+  }
+
+  // don't run any tests annotated by E2eTest by default
+  targets {
+    excludeAnnotation("com.example.E2eTest")
+  }
+
+  configurations {
+    // smoke test suite
+    create("smoke") {
+      // only run the SmokeTest target
+      targets {
+        annotation("com.example.SmokeTest")
+      }
+      // run smoke tests only on 35
+      device {
+        model.set(DeviceModel.PIXEL_7)
+        version.set(35)
+      }
+    }
+    // end-to-end test suite, runs on both devices configured above
+    create("e2e") {
+      // only run E2E tests
+      targets {
+        annotation("com.example.E2eTest")
+      }
+    }
+  }
+}
+```
+
+This will create 3 separate `test*WithEmulatorWtf` tasks:
+
+- `:app:testDebugWithEmulatorWtf` - runs on 2 api versions and ignores anything with the `@E2eTest` annotation
+- `:app:testSmokeDebugWithEmulatorWtf` - runs on a single api version and only includes tests with the `@SmokeTest` annotation
+- `:app:testE2eDebugWithEmulatorWtf` - runs on 2 api versions and only includes tests with the `@E2eTest` annotation
+
 </details>
 
 ## Compatibility
