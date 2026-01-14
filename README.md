@@ -417,10 +417,12 @@ baselineProfile {
 
 ### Create multiple test run configurations
 
-You can create multiple test run configurations with different device and test target configurations.
+You can create multiple test run configurations with different device and test target settings.
 This allows you to run different subsets of tests on different devices, optimizing your test execution based on your needs.
 
-Here's a configuration that defines multiple test run configurations, a default one, a smoke test suite for quick
+The configurations derive from the base default configuration specified in the `emulatorwtf {}` block.
+
+Here's a snippet that defines multiple test run configurations, a default one, a smoke test suite for quick
 validation and a longer end-to-end test suite:
 
 ```kotlin
