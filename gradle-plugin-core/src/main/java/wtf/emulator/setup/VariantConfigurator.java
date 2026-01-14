@@ -20,7 +20,6 @@ import wtf.emulator.AgpVariantDataHolder;
 import wtf.emulator.DslInternals;
 import wtf.emulator.EwExecTask;
 import wtf.emulator.EwExtension;
-import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.EwInvokeDsl;
 import wtf.emulator.EwVariantFilter;
 
@@ -33,13 +32,11 @@ import static wtf.emulator.setup.StringUtils.capitalize;
 public class VariantConfigurator {
   private final Project target;
   private final EwExtension ext;
-  private final EwExtensionInternal extInternals;
   private final TaskConfigurator taskConfigurator;
 
-  public VariantConfigurator(Project target, EwExtension ext, EwExtensionInternal extInternals, TaskConfigurator taskConfigurator) {
+  public VariantConfigurator(Project target, EwExtension ext, TaskConfigurator taskConfigurator) {
     this.target = target;
     this.ext = ext;
-    this.extInternals = extInternals;
     this.taskConfigurator = taskConfigurator;
   }
 
@@ -117,7 +114,7 @@ public class VariantConfigurator {
     if (isEnabled(ctx.variant(), ctx.dsl())) {
       taskConfigurator.configureEwTask(ctx.invokeName(), ctx.dsl(), task -> {
         // realize variant data
-        configureAgpDslDefaults(ctx.compat(), ctx.holder(), ctx.variant(), task);
+        configureAgpDslDefaults(ctx.compat(), ctx.dsl(), ctx.holder(), ctx.variant(), task);
 
         task.getBuiltArtifactsLoader().set(ctx.variant().getArtifacts().getBuiltArtifactsLoader());
 
@@ -137,7 +134,7 @@ public class VariantConfigurator {
     }
   }
 
-  private void configureAgpDslDefaults(AgpCompat compat, AgpVariantDataHolder holder, Variant variant, EwExecTask task) {
+  private void configureAgpDslDefaults(AgpCompat compat, EwInvokeDsl dsl, AgpVariantDataHolder holder, Variant variant, EwExecTask task) {
     final var variantData = target.getObjects().newInstance(AgpVariantData.class);
     compat.populateAgpVariantData(holder, variant, variantData);
 
@@ -153,7 +150,7 @@ public class VariantConfigurator {
     }
 
     task.getEnvironmentVariables().set(
-      ext.getEnvironmentVariables().zip(variantData.getInstrumentationRunnerArguments(), (entries, defaults) -> {
+      dsl.getEnvironmentVariables().zip(variantData.getInstrumentationRunnerArguments(), (entries, defaults) -> {
         // pick defaults from agp dsl instrumentation runner args, then fill with overrides
         final Map<String, String> out = new HashMap<>(defaults);
         entries.forEach((key, value) -> out.put(key, Objects.toString(value)));
