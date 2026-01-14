@@ -4,7 +4,6 @@ import com.android.build.api.dsl.CommonExtension;
 import com.android.build.api.instrumentation.manageddevice.DeviceTestRunConfigureAction;
 import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.provider.Provider;
 import org.jetbrains.annotations.NotNull;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
@@ -182,6 +181,6 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
 
   private boolean getDslOrchestratorSetting(Project project) {
     final var commonExt = project.getExtensions().findByType(CommonExtension.class);
-    return "ANDROIDX_TEST_ORCHESTRATOR".equalsIgnoreCase(commonExt.getTestOptions().getExecution());
+    return commonExt != null && "ANDROIDX_TEST_ORCHESTRATOR".equalsIgnoreCase(commonExt.getTestOptions().getExecution());
   }
 }

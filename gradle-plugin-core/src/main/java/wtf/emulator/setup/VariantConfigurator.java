@@ -130,7 +130,9 @@ public class VariantConfigurator {
 
     if (!task.getUseOrchestrator().isPresent()) {
       final var commonExt = target.getExtensions().findByType(CommonExtension.class);
-      task.getUseOrchestrator().set("ANDROIDX_TEST_ORCHESTRATOR".equalsIgnoreCase(commonExt.getTestOptions().getExecution()));
+      if (commonExt != null) {
+        task.getUseOrchestrator().set("ANDROIDX_TEST_ORCHESTRATOR".equalsIgnoreCase(commonExt.getTestOptions().getExecution()));
+      }
     }
 
     if (!task.getWithCoverage().isPresent()) {
