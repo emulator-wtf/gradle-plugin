@@ -15,12 +15,14 @@ import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.EwProperties;
 import wtf.emulator.EwReportTask;
+import wtf.emulator.OutputType;
 import wtf.emulator.PrintMode;
 import wtf.emulator.TestReporter;
 import wtf.emulator.attributes.EwArtifactType;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -191,7 +193,20 @@ public class TaskConfigurator {
     // don't configure outputs in async mode
     if (!task.getAsync().getOrElse(false)) {
       task.getOutputsDir().set(outputDirectory);
-      task.getOutputTypes().set(config.getOutputs());
+      // ensure MERGED_RESULTS_XML is added to outputs when DEVELOCITY testreporter is present
+      final var develocityEnabled = config.getTestReporters().getOrElse(Collections.emptyList()).contains(TestReporter.DEVELOCITY);
+      if (develocityEnabled) {
+        task.getOutputTypes().set(config.getOutputs().map(list -> {
+          if (list.contains(OutputType.MERGED_RESULTS_XML)) {
+            return list;
+          }
+          final var outList = new ArrayList<>(list);
+          outList.add(OutputType.MERGED_RESULTS_XML);
+          return outList;
+        }));
+      } else {
+        task.getOutputTypes().set(config.getOutputs());
+      }
     }
 
     task.getRecordVideo().set(config.getRecordVideo());
