@@ -191,7 +191,7 @@ public class TaskConfigurator {
     // don't configure outputs in async mode
     if (!task.getAsync().getOrElse(false)) {
       task.getOutputsDir().set(outputDirectory);
-      // ensure MERGED_RESULT_XML is added to outputs when DEVELOCITY testreporter is present
+      // ensure MERGED_RESULTS_XML is added to outputs when DEVELOCITY testreporter is present
       final var develocityEnabled = config.getTestReporters().getOrElse(Collections.emptyList()).contains(TestReporter.DEVELOCITY);
       if (develocityEnabled) {
         task.getOutputTypes().set(config.getOutputs().map(list -> {
