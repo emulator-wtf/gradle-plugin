@@ -17,7 +17,7 @@ public abstract class EwConfiguration extends EwInvokeDsl implements Named {
     getEnvironmentVariables().convention(defaults.getEnvironmentVariables());
     getSecretEnvironmentVariables().convention(defaults.getSecretEnvironmentVariables());
     getTestReporters().convention(defaults.getTestReporters());
-    
+
     // init invoke props
     getOutputs().convention(defaults.getOutputs());
     getRecordVideo().convention(defaults.getRecordVideo());
@@ -51,7 +51,6 @@ public abstract class EwConfiguration extends EwInvokeDsl implements Named {
     getAsync().convention(defaults.getAsync());
     getPrintOutput().convention(defaults.getPrintOutput());
     getTestTargets().convention(defaults.getTestTargets());
-    
 
     // init proxy props
     getProxyHost().convention(defaults.getProxyHost());
