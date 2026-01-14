@@ -74,7 +74,7 @@ public class VariantConfigurator {
       final var defaultConfigCtx = VariantConfigurationContext.builder(compat, holder, variant.getName(), ext)
         .app(variant, testVariant)
         .build();
-      createEwTasks(defaultConfigCtx, ext);
+      createEwTasks(defaultConfigCtx);
     }
     return Unit.INSTANCE;
   }
@@ -85,7 +85,7 @@ public class VariantConfigurator {
       final var defaultConfigCtx = VariantConfigurationContext.builder(compat, holder, variant.getName(), ext)
         .library(variant, testVariant)
         .build();
-      createEwTasks(defaultConfigCtx, ext);
+      createEwTasks(defaultConfigCtx);
     }
     return Unit.INSTANCE;
   }
@@ -94,12 +94,12 @@ public class VariantConfigurator {
     final var defaultConfigCtx = VariantConfigurationContext.builder(compat, holder, variant.getName(), ext)
       .test(target, variant)
       .build();
-    createEwTasks(defaultConfigCtx, ext);
+    createEwTasks(defaultConfigCtx);
     return Unit.INSTANCE;
   }
 
   @SuppressWarnings("EagerGradleConfiguration") // configs have to be loaded eagerly to register the tasks
-  private void createEwTasks(VariantConfigurationContext defaultConfigCtx, EwExtension ext) {
+  private void createEwTasks(VariantConfigurationContext defaultConfigCtx) {
     createEwTask(defaultConfigCtx);
     ext.getConfigurations().all(config -> {
       final var configCtx = defaultConfigCtx.toBuilder()

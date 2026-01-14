@@ -78,7 +78,7 @@ public class ProjectConfigurator {
     Provider<Configuration> resultsImportConfig = createResultsImportConfiguration(resultsExportConfig);
 
     TaskConfigurator taskConfigurator = new TaskConfigurator(target, ext, extInternals, toolConfig, resultsExportConfig, resultsImportConfig);
-    VariantConfigurator variantConfigurator = new VariantConfigurator(target, ext, extInternals, taskConfigurator);
+    VariantConfigurator variantConfigurator = new VariantConfigurator(target, ext, taskConfigurator);
 
     taskConfigurator.configureRootTask();
     variantConfigurator.configureVariants();

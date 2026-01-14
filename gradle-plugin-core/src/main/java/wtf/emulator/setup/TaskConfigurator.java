@@ -24,7 +24,6 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -45,8 +44,8 @@ public class TaskConfigurator {
   private static final String CONNECTIVITY_CHECK_TASK_NAME = "emulatorWtfConnectivityCheck";
 
   public TaskConfigurator(Project target, EwExtension ext, EwExtensionInternal extInternals, Provider<Configuration> toolConfig, Configuration resultsExportConfig, Provider<Configuration> resultsImportConfig) {
-    this.ext = ext;
     this.target = target;
+    this.ext = ext;
     this.extInternals = extInternals;
     this.toolConfig = toolConfig;
     this.resultsExportConfig = resultsExportConfig;

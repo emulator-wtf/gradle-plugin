@@ -455,7 +455,7 @@ emulatorwtf {
         version.set(35)
       }
     }
-    // end-to-end test suite
+    // end-to-end test suite, runs on both devices configured above
     create("e2e") {
       // only run E2E tests
       targets {
