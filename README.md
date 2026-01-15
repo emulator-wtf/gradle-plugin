@@ -44,7 +44,7 @@ app project (usually under `app/build.gradle`):
 
 ```groovy
 plugins {
-  id "wtf.emulator.gradle" version "1.0.4"
+  id "wtf.emulator.gradle" version "1.1.0"
 }
 ```
 
@@ -62,7 +62,7 @@ buildscript {
   
   dependencies {
     // ... other deps here, like com.android.tools.build:gradle
-    classpath "wtf.emulator:gradle-plugin:1.0.4"
+    classpath "wtf.emulator:gradle-plugin:1.1.0"
   }
 }
 ```
@@ -482,6 +482,6 @@ The plugin is compatible with any working combination of these ranges:
 |-----------------------|--------|---------------|
 | JDK                   | 17     | 24            |
 | Gradle                | 8.0    | 9.2.1         |
-| Android Gradle Plugin | 8.1.0  | 9.1.0-alpha03 |
+| Android Gradle Plugin | 8.1.0  | 9.1.0-alpha04 |
 
 NOTE: only the latest of any prerelease versions (`alpha`, `beta`, `rc`) is supported.
