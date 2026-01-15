@@ -5,6 +5,4 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased:
-- "New: Added `configurations {}` block to the `emulatorwtf {}` dsl to enable multiple test run configurations within the same module."
-- "Fixed: Develocity reporting tasks should now correctly trigger when the test task fails."
+unreleased: []
