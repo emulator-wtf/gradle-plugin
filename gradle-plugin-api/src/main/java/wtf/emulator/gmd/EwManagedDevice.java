@@ -19,6 +19,10 @@ public interface EwManagedDevice extends Device {
 
   @Optional
   @Input
+  Property<String> getLocale();
+
+  @Optional
+  @Input
   Property<GpuMode> getGpu();
 
 }

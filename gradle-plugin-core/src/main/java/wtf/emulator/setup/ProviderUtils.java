@@ -18,11 +18,15 @@ import static java.util.function.Function.identity;
 
 public class ProviderUtils {
   public static Provider<Map<String, String>> deviceToCliMap(ProviderFactory providers, EwDeviceSpec device) {
-    var entryProviders = List.of(
-      device.getModel().orElse(EwDeviceSpec.DEFAULT_MODEL).map(val -> Map.entry("model", val.getCliValue())),
-      device.getVersion().orElse(EwDeviceSpec.DEFAULT_VERSION).map(val -> Map.entry("version", Integer.toString(val))),
-      device.getGpu().orElse(EwDeviceSpec.DEFAULT_GPU).map(val -> Map.entry("gpu", val.getCliValue()))
-    );
+    var entryProviders = new ArrayList<Provider<Map.Entry<String, String>>>();
+    entryProviders.add(device.getModel().orElse(EwDeviceSpec.DEFAULT_MODEL).map(val -> Map.entry("model", val.getCliValue())));
+    entryProviders.add(device.getVersion().orElse(EwDeviceSpec.DEFAULT_VERSION).map(val -> Map.entry("version", Integer.toString(val))));
+
+    if (device.getLocale().isPresent()) {
+      entryProviders.add(device.getLocale().map(val -> Map.entry("locale", val)));
+    }
+
+    entryProviders.add(device.getGpu().orElse(EwDeviceSpec.DEFAULT_GPU).map(val -> Map.entry("gpu", val.getCliValue())));
 
     var entriesProvider = ProviderUtils.reduce(
       providers.provider(() -> new ArrayList<Map.Entry<String, String>>()),

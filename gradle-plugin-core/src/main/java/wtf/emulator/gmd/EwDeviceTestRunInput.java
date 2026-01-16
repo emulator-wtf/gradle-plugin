@@ -20,7 +20,6 @@ import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
 import wtf.emulator.DeviceModel;
 import wtf.emulator.DnsOverride;
-import wtf.emulator.EwDeviceSpec;
 import wtf.emulator.FlakyRepeatMode;
 import wtf.emulator.GpuMode;
 import wtf.emulator.OutputType;
@@ -39,6 +38,10 @@ public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
   @Optional
   @Input
   public abstract Property<Integer> getApiLevel();
+
+  @Optional
+  @Input
+  public abstract Property<String> getLocale();
 
   @Optional
   @Input

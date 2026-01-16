@@ -101,10 +101,12 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     // These defaults should come from the cli, but defaults are not exposed at the moment
     final var model = testRunInput.getDevice().orElse(EwDeviceSpec.DEFAULT_MODEL);
     final var version = testRunInput.getApiLevel().orElse(EwDeviceSpec.DEFAULT_VERSION);
+    final var locale = testRunInput.getLocale();
     final var gpu = testRunInput.getGpu().orElse(EwDeviceSpec.DEFAULT_GPU);
     final var device = getObjectFactory().newInstance(EwDeviceSpec.class);
     device.getModel().set(model);
     device.getVersion().set(version);
+    device.getLocale().set(locale);
     device.getGpu().set(gpu);
 
     if (testData.isLibrary()) {

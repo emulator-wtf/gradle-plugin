@@ -7,3 +7,5 @@
 
 unreleased:
 - "Fixed: setting `ignoreFailures` to `true` now only ignores test failures as promised in the Javadoc."
+- "Added: support for configuring device locale."
+- "Maintenance: bumped default `ew-cli` version to 1.0.5."

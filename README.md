@@ -97,8 +97,8 @@ The `emulatorwtf` plugin DSL supports the following configuration options:
 
 ```groovy
 emulatorwtf {
-  // CLI version to use, defaults to 1.0.4
-  version = '1.0.4'
+  // CLI version to use, defaults to 1.0.5
+  version = '1.0.5'
 
   // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
   // instead of this or passing this value in via a project property
@@ -134,6 +134,7 @@ emulatorwtf {
   device {
     model = DeviceModel.NEXUS_LOW_RES
     version = 21
+    locale = "fr_CA"
     gpu = GpuMode.SOFTWARE
   }
 

@@ -35,6 +35,9 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getApiLevel().set(ewManagedDevice.getApiLevel());
     deviceTestRunInput.getApiLevel().disallowChanges();
 
+    deviceTestRunInput.getLocale().set(ewManagedDevice.getLocale());
+    deviceTestRunInput.getLocale().disallowChanges();
+
     deviceTestRunInput.getGpu().set(ewManagedDevice.getGpu());
     deviceTestRunInput.getGpu().disallowChanges();
 

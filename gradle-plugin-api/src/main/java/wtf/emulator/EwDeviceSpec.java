@@ -14,5 +14,6 @@ public abstract class EwDeviceSpec implements Serializable {
 
   public abstract Property<DeviceModel> getModel();
   public abstract Property<Integer> getVersion();
+  public abstract Property<String> getLocale();
   public abstract Property<GpuMode> getGpu();
 }
