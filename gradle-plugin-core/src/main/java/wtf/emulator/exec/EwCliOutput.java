@@ -39,6 +39,21 @@ import java.util.EnumSet;
     return !isSuccess();
   }
 
+  /**
+   * @return true if the output represents a test failure (only sync), false otherwise (including non-test errors, async outputs, and successes)
+   */
+  public boolean isTestFailure() {
+    if (sync() == null) {
+      return false;
+    }
+
+    if (sync().runResultsSummary() == null) {
+      return false;
+    }
+
+    return sync().runResultsSummary().runResult() == RunResult.FAIL;
+  }
+
   // Used for JSON deserialization only, code callers should be using the specific builders below
   static Builder builder() {
     return new AutoValue_EwCliOutput.Builder();

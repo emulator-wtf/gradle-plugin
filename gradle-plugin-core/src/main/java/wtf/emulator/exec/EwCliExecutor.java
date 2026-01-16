@@ -169,7 +169,7 @@ public class EwCliExecutor {
       if (result.getExitValue() != 0) {
         final String message = new CliOutputPrinter().getSummaryLines(output);
 
-        if (parameters.getIgnoreFailures().getOrElse(false)) {
+        if (parameters.getIgnoreFailures().getOrElse(false) && output.isTestFailure()) {
           log.warn(message);
         } else {
           throw new EmulatorWtfException(message);
