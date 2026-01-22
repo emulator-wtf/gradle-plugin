@@ -46,7 +46,7 @@ public class EwWorkParameterUtils {
   private static BuiltArtifact selectArtifact(BuiltArtifactsLoader loader, ListProperty<Map<String, String>> devices, FileCollection files) {
     final var artifacts = loader.load(files);
     if (artifacts == null) {
-      throw new IllegalStateException("Failed to load artifactsdoes not exist");
+      throw new IllegalStateException("Failed to load artifacts does not exist");
     }
 
     return selectArtifact(devices, artifacts);
