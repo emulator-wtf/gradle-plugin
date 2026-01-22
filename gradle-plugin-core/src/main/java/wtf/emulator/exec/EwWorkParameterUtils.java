@@ -107,8 +107,8 @@ public class EwWorkParameterUtils {
 
   private static String versionToArchitecture(int version) {
     // TODO(madis) hardcoding this mapping is not very nice
-    // these versions are stuck on x86
-    if (version >= 23 && version <= 24 || version >= 27 && version <= 30) {
+    // 23..24 and 27..30 are stuck on x86
+    if ((version >= 23 && version <= 24) || (version >= 27 && version <= 30)) {
       return "x86";
     }
     return "x86_64";
