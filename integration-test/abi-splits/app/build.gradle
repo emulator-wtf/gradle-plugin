@@ -33,8 +33,8 @@ android {
     abi {
       it.enable = true
       it.reset()
-      it.include("x86_64", "armeabi-v7a", "arm64-v8a")
-      it.universalApk = true
+      it.include("x86", "armeabi-v7a", "arm64-v8a")
+      it.universalApk = false
     }
   }
 

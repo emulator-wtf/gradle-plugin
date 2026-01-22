@@ -276,12 +276,12 @@ public abstract class EwExecTask extends DefaultTask {
     p.getToken().set(getToken());
 
     if (getAppApks().isPresent()) {
-      configureApkFromFileCollection(loader, getAppApks(), p.getAppApk());
+      configureApkFromFileCollection(loader, getDevices(), getAppApks(), p.getAppApk());
     } else {
-      configureApk(loader, getAppApksFolder(), p.getAppApk());
+      configureApk(loader, getDevices(), getAppApksFolder(), p.getAppApk());
     }
-    configureApk(loader, getTestApksFolder(), p.getTestApk());
-    configureApk(loader, getLibraryTestApksFolder(), p.getLibraryTestApk());
+    configureApk(loader, getDevices(), getTestApksFolder(), p.getTestApk());
+    configureApk(loader, getDevices(), getLibraryTestApksFolder(), p.getLibraryTestApk());
 
     p.getOutputsDir().set(getOutputsDir());
     p.getOutputs().set(getOutputTypes());
