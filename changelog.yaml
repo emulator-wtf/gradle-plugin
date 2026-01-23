@@ -5,5 +5,4 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased:
-- "Fixed: apk selection when there were abi splits without a universal split apk."
+unreleased: []
