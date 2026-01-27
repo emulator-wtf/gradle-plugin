@@ -56,8 +56,11 @@ public class DslInternals {
     config.getIgnoreFailures().convention(defaults.getIgnoreFailures());
     config.getAsync().convention(defaults.getAsync());
     config.getPrintOutput().convention(defaults.getPrintOutput());
-    config.getTestTargets().convention(defaults.getTestTargets());
-    config.getTestTargetsString().convention(defaults.getTestTargetsString().orElse(config.getTestTargets().map(TargetUtils::toCliString)));
+    config.getTestTargetsString().convention(
+      // first targets from this config
+      config.getTestTargets().map(TargetUtils::toCliString)
+        // then fall back to defaults string
+        .orElse(defaults.getTestTargetsString()));
 
     // init proxy props
     config.getProxyHost().convention(defaults.getProxyHost());
