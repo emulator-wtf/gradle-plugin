@@ -440,7 +440,7 @@ public class EwCliExecutor {
     if (parameters.getTestTargetsString().isPresent()) {
       final var targets = parameters.getTestTargetsString().get();
       if (!targets.isEmpty()) {
-        spec.args("--test-targets", parameters.getTestTargetsString().get());
+        spec.args("--test-targets", targets);
       }
     }
 
