@@ -154,8 +154,8 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getPrintOutput().set(ext.getPrintOutput());
     deviceTestRunInput.getPrintOutput().disallowChanges();
 
-    deviceTestRunInput.getTestTargets().set(ext.getTestTargets());
-    deviceTestRunInput.getTestTargets().disallowChanges();
+    deviceTestRunInput.getTestTargetsString().set(ext.getTestTargetsString());
+    deviceTestRunInput.getTestTargetsString().disallowChanges();
 
     deviceTestRunInput.getProxyHost().set(ext.getProxyHost());
     deviceTestRunInput.getProxyHost().disallowChanges();

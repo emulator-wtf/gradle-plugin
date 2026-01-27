@@ -20,6 +20,8 @@ public abstract class EwInvokeDsl implements EwInvokeConfiguration {
 
   public abstract DomainObjectSet<EwDeviceSpec> getDevices();
 
+  public abstract Property<TestTargetsSpec> getTestTargets();
+
   @Inject
   protected abstract ObjectFactory getObjectFactory();
 

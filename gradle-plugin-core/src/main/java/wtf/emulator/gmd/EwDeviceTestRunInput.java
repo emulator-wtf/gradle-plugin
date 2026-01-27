@@ -204,7 +204,7 @@ public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
 
   @Optional
   @Input
-  public abstract Property<TestTargetsSpec> getTestTargets();
+  public abstract Property<String> getTestTargetsString();
 
   @Optional
   @Input

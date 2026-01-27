@@ -288,7 +288,7 @@ public class TaskConfigurator {
 
     task.getIgnoreFailures().set(config.getIgnoreFailures());
 
-    task.getTestTargets().set(config.getTestTargets());
+    task.getTestTargetsString().set(config.getTestTargetsString());
 
     task.getProxyHost().set(config.getProxyHost());
     task.getProxyPort().set(config.getProxyPort());

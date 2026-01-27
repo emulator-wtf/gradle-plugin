@@ -209,5 +209,5 @@ public interface EwInvokeConfiguration extends EwProxyConfiguration {
    * See the full list of configuration options
    * <a href="https://developer.android.com/reference/androidx/test/runner/AndroidJUnitRunner#typical-usage">here</a>.
    */
-  Property<TestTargetsSpec> getTestTargets();
+  Property<String> getTestTargetsString();
 }
