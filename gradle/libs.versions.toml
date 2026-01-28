@@ -26,7 +26,7 @@ protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
 
 kotlin-stdlib = "org.jetbrains.kotlin:kotlin-stdlib:1.8.10"
 
-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.3.1"
+develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.3.2"
 
 gradle-api-v80 = "dev.gradleplugins:gradle-api:8.0"
 
