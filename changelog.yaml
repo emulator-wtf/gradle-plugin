@@ -5,4 +5,6 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased: []
+unreleased:
+- "Fixed: the gradle plugin no longer checks for WRITE_EXTERNAL_STORAGE permission when both coverage and test storage service are enabled."
+- "Maintenance: bumped default ew-cli version to 1.0.6"
