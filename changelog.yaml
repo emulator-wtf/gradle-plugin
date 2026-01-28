@@ -5,9 +5,4 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased:
-- |
-  New: The test targets string can now be configured directly using the `testTargetsString` property on the `emulatorwtf {}` dsl.
-  Note that this will override any test targets specified via the `testTargets` property or the `targets {}` dsl.
-- "Fixed: the gradle plugin no longer checks for WRITE_EXTERNAL_STORAGE permission when both coverage and test storage service are enabled."
-- "Maintenance: bumped default ew-cli version to 1.0.6"
+unreleased: []
