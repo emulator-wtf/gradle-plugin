@@ -180,7 +180,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     workParams.getIgnoreFailures().set(testRunInput.getIgnoreFailures());
     workParams.getAsync().set(testRunInput.getAsync());
     workParams.getPrintOutput().set(testRunInput.getPrintOutput());
-    workParams.getTestTargets().set(testRunInput.getTestTargets());
+    workParams.getTestTargetsString().set(testRunInput.getTestTargetsString());
     workParams.getProxyHost().set(testRunInput.getProxyHost());
     workParams.getProxyPort().set(testRunInput.getProxyPort());
     workParams.getProxyUser().set(testRunInput.getProxyUser());

@@ -5,9 +5,6 @@ import com.android.build.api.dsl.Device;
 import com.android.build.api.dsl.ManagedDevices;
 import com.android.build.api.instrumentation.manageddevice.DeviceDslRegistration;
 import com.android.build.api.variant.AndroidComponentsExtension;
-import com.android.build.api.variant.ApplicationAndroidComponentsExtension;
-import com.android.build.api.variant.LibraryAndroidComponentsExtension;
-import com.android.build.api.variant.TestAndroidComponentsExtension;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import org.gradle.api.GradleException;
@@ -26,6 +23,7 @@ import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.gradle.api.provider.Provider;
 import wtf.emulator.BuildConfig;
+import wtf.emulator.DslInternals;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.EwProperties;
@@ -69,6 +67,10 @@ public class ProjectConfigurator {
   }
 
   public void configure() {
+    ext.getConfigurations().configureEach(config -> {
+      DslInternals.extendConfiguration(config, ext);
+    });
+
     setupExtensionDefaults();
     configureRepository();
     configureRuntimeDependency();
@@ -174,6 +176,8 @@ public class ProjectConfigurator {
     ext.getVersion().convention(BuildConfig.EW_CLI_VERSION);
     ext.getSideEffects().convention(false);
     ext.getOutputs().convention(Collections.emptyList());
+
+    ext.getTestTargetsString().convention(ext.getTestTargets().map(TargetUtils::toCliString));
 
     ext.getBaseOutputDir().convention(target.getLayout().getBuildDirectory().dir("test-results"));
     ext.getRepositoryCheckEnabled().convention(true);

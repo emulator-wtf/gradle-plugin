@@ -20,6 +20,15 @@ public abstract class EwInvokeDsl implements EwInvokeConfiguration {
 
   public abstract DomainObjectSet<EwDeviceSpec> getDevices();
 
+  /**
+   * Run only a subset of matching test targets, these will be forwarded to {@code AndroidJUnitRunner}.
+   * See the full list of configuration options
+   * <a href="https://developer.android.com/reference/androidx/test/runner/AndroidJUnitRunner#typical-usage">here</a>.
+   * NOTE: prefer using the {@link #targets(Action)} method instead unless you specifically need the laziness
+   * of a {@link org.gradle.api.provider.Property}.
+   */
+  public abstract Property<TestTargetsSpec> getTestTargets();
+
   @Inject
   protected abstract ObjectFactory getObjectFactory();
 
