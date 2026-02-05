@@ -24,7 +24,7 @@ builder-test-api = "com.android.tools.build:builder-test-api:8.1.0"
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
 protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
 
-kotlin-stdlib = "org.jetbrains.kotlin:kotlin-stdlib:1.8.10"
+kotlin-stdlib = "org.jetbrains.kotlin:kotlin-stdlib:2.3.10"
 
 develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.3.2"
 
