@@ -1,7 +1,7 @@
 [versions]
 autovalue = "1.11.1"
 autovalue-gson = "1.3.1"
-lint = "9.1.0-alpha07"
+lint = "9.1.0-alpha08"
 protobuf = "3.25.5" # agp is on protobuf 3.x
 
 [plugins]
