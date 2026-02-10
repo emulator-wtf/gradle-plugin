@@ -486,3 +486,4 @@ The plugin is compatible with any working combination of these ranges:
 | Android Gradle Plugin | 8.1.0  | 9.1.0-alpha08 |
 
 NOTE: only the latest of any prerelease versions (`alpha`, `beta`, `rc`) is supported.
+<!-- asd -->
