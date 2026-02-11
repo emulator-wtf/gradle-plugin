@@ -191,6 +191,11 @@ emulatorwtf {
   // based on historic test time to be executed in parallel
   numBalancedShards = 3
 
+  // Hint the average runtime for a test case in the test suite. This will be used
+  // by the sharding algorithm when no historical data is available and shardTargetRuntime
+  // or numBalancedShards is used. Defaults to 10 seconds.
+  testcaseDurationHint = Duration.ofSeconds(10)
+
   // Set to a non-zero value to repeat device/shards that failed, the repeat
   // attempts will be executed in parallel
   numFlakyTestAttempts = 3
