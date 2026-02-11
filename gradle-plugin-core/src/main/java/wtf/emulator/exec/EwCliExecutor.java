@@ -394,6 +394,10 @@ public class EwCliExecutor {
       spec.args("--num-shards", String.valueOf(parameters.getNumShards().get()));
     }
 
+    if (parameters.getTestcaseDurationHint().isPresent()) {
+      spec.args("--testcase-duration-hint", toCliString(parameters.getTestcaseDurationHint().get()));
+    }
+
     if (parameters.getDirectoriesToPull().isPresent()) {
       List<String> dirsToPull = parameters.getDirectoriesToPull().get();
       if (!dirsToPull.isEmpty()) {
@@ -495,6 +499,6 @@ public class EwCliExecutor {
   }
 
   private static String toCliString(Duration duration) {
-    return duration.getSeconds() + "s";
+    return duration.toMillis() < 1000 ? duration.toMillis() + "ms" : duration.getSeconds() + "s";
   }
 }

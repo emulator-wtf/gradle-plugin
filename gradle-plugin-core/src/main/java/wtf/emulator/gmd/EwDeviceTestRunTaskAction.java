@@ -151,6 +151,7 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     workParams.getNumBalancedShards().set(testRunInput.getNumBalancedShards());
     workParams.getNumShards().set(testRunInput.getNumShards());
     workParams.getShardTargetRuntime().set(testRunInput.getShardTargetRuntime());
+    workParams.getTestcaseDurationHint().set(testRunInput.getTestcaseDurationHint());
     workParams.getDirectoriesToPull().set(testRunInput.getDirectoriesToPull().map(list -> {
       // If baseline profiles / macrobenchmark is enabled, then let's pull the directories where the results are stored.
       List<String> mutableList = new ArrayList<>(list);
