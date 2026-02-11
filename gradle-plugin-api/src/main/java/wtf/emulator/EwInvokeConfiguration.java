@@ -71,6 +71,13 @@ public interface EwInvokeConfiguration extends EwProxyConfiguration {
   Property<Integer> getShardTargetRuntime();
 
   /**
+   * Set a hint for an average run time for a single test-case. It helps balanced sharding and targeted runtime sharding
+   * balance the tests more evenly across the shards. Defaults to 10 seconds.
+   * Read more about targeted runtime sharding <a href="https://docs.emulator.wtf/concepts/sharding/#targeted-runtime-sharding">here</a>.
+   */
+  Property<Duration> getTestcaseDurationHint();
+
+  /**
    * Set the list of directories to pull from the emulator after the test run has finished.
    * NOTE: make sure to include {@link OutputType#PULLED_DIRS} in {@link #getOutputs()} to download the pulled directories
    * if needed.

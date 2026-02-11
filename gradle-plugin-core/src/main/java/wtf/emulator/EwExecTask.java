@@ -147,6 +147,10 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract Property<Duration> getTestcaseDurationHint();
+
+  @Optional
+  @Input
   public abstract ListProperty<String> getDirectoriesToPull();
 
   @Optional
@@ -298,6 +302,7 @@ public abstract class EwExecTask extends DefaultTask {
     p.getNumBalancedShards().set(getNumBalancedShards());
     p.getNumShards().set(getNumShards());
     p.getShardTargetRuntime().set(getShardTargetRuntime());
+    p.getTestcaseDurationHint().set(getTestcaseDurationHint());
     p.getDirectoriesToPull().set(getDirectoriesToPull());
     p.getSideEffects().set(getSideEffects());
     p.getTimeout().set(getTestTimeout());

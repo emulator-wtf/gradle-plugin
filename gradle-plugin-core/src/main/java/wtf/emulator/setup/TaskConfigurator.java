@@ -240,6 +240,7 @@ public class TaskConfigurator {
     task.getNumShards().set(config.getNumShards());
     task.getNumBalancedShards().set(config.getNumBalancedShards());
     task.getShardTargetRuntime().set(config.getShardTargetRuntime());
+    task.getTestcaseDurationHint().set(config.getTestcaseDurationHint());
 
     task.getDirectoriesToPull().set(config.getDirectoriesToPull());
 

@@ -117,6 +117,10 @@ public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
 
   @Optional
   @Input
+  public abstract Property<Duration> getTestcaseDurationHint();
+
+  @Optional
+  @Input
   public abstract ListProperty<String> getDirectoriesToPull();
 
   @Optional
