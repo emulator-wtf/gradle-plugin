@@ -5,4 +5,5 @@
 #
 # (Markdown is supported and encouraged)
 
-unreleased: []
+unreleased:
+  - "New: Added `testcaseDurationHint` option to allow specifying a custom testcase duration hint."
