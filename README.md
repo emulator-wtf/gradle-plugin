@@ -196,6 +196,11 @@ emulatorwtf {
   // or numBalancedShards is used. Defaults to 10 seconds.
   testcaseDurationHint = Duration.ofSeconds(10)
 
+  // Set the granularity level for sharding. Can be ShardUnit.TEST_CLASSES to shard 
+  // at the test class level, or ShardUnit.TEST_METHODS (default) to shard at the 
+  // test method level.
+  shardUnit = ShardUnit.TEST_CLASSES
+
   // Set to a non-zero value to repeat device/shards that failed, the repeat
   // attempts will be executed in parallel
   numFlakyTestAttempts = 3

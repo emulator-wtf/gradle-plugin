@@ -94,6 +94,9 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getTestcaseDurationHint().set(ext.getTestcaseDurationHint());
     deviceTestRunInput.getTestcaseDurationHint().disallowChanges();
 
+    deviceTestRunInput.getShardUnit().set(ext.getShardUnit());
+    deviceTestRunInput.getShardUnit().disallowChanges();
+
     deviceTestRunInput.getDirectoriesToPull().set(ext.getDirectoriesToPull());
     deviceTestRunInput.getDirectoriesToPull().disallowChanges();
 

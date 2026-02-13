@@ -23,6 +23,7 @@ import wtf.emulator.DnsOverride;
 import wtf.emulator.FlakyRepeatMode;
 import wtf.emulator.GpuMode;
 import wtf.emulator.OutputType;
+import wtf.emulator.ShardUnit;
 import wtf.emulator.TestTargetsSpec;
 
 import java.io.File;
@@ -118,6 +119,10 @@ public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
   @Optional
   @Input
   public abstract Property<Duration> getTestcaseDurationHint();
+
+  @Optional
+  @Input
+  public abstract Property<ShardUnit> getShardUnit();
 
   @Optional
   @Input

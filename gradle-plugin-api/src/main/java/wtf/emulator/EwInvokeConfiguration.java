@@ -78,6 +78,12 @@ public interface EwInvokeConfiguration extends EwProxyConfiguration {
   Property<Duration> getTestcaseDurationHint();
 
   /**
+   * Set the granularity level for sharding. Can be {@link ShardUnit#TEST_CLASSES} to shard at the test class level,
+   * or {@link ShardUnit#TEST_METHODS} to shard at the test method level. Defaults to {@link ShardUnit#TEST_METHODS}.
+   */
+  Property<ShardUnit> getShardUnit();
+
+  /**
    * Set the list of directories to pull from the emulator after the test run has finished.
    * NOTE: make sure to include {@link OutputType#PULLED_DIRS} in {@link #getOutputs()} to download the pulled directories
    * if needed.
