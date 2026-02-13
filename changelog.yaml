@@ -4,5 +4,5 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-
-unreleased: []
+unreleased:
+- "New: added `shardUnit` configuration option to control sharding granularity. Can be set to `ShardUnit.TEST_CLASSES` to shard at the test class level, or `ShardUnit.TEST_METHODS` (default) to shard at the test method level."

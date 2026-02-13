@@ -398,6 +398,10 @@ public class EwCliExecutor {
       spec.args("--testcase-duration-hint", toCliString(parameters.getTestcaseDurationHint().get()));
     }
 
+    if (parameters.getShardUnit().isPresent()) {
+      spec.args("--shard-unit", parameters.getShardUnit().get().getCliValue());
+    }
+
     if (parameters.getDirectoriesToPull().isPresent()) {
       List<String> dirsToPull = parameters.getDirectoriesToPull().get();
       if (!dirsToPull.isEmpty()) {
