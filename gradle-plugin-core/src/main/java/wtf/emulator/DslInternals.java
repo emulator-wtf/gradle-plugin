@@ -36,6 +36,7 @@ public class DslInternals {
     config.getNumBalancedShards().convention(defaults.getNumBalancedShards());
     config.getShardTargetRuntime().convention(defaults.getShardTargetRuntime());
     config.getTestcaseDurationHint().convention(defaults.getTestcaseDurationHint());
+    config.getShardUnit().convention(defaults.getShardUnit());
     config.getDirectoriesToPull().convention(defaults.getDirectoriesToPull());
     config.getSideEffects().convention(defaults.getSideEffects());
     config.getTimeout().convention(defaults.getTimeout());
