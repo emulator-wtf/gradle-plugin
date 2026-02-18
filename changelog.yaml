@@ -6,3 +6,5 @@
 # (Markdown is supported and encouraged)
 unreleased:
 - "New: added `shardUnit` configuration option to control sharding granularity. Can be set to `ShardUnit.TEST_CLASSES` to shard at the test class level, or `ShardUnit.TEST_METHODS` (default) to shard at the test method level."
+- "Fixed: increased client-side test run timeout to account for repeat attempts of flaky tests."
+- "Maintenance: bumped default `ew-cli` version to 1.2.0."
