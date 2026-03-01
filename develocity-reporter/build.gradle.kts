@@ -4,9 +4,9 @@ plugins {
 }
 
 dependencies {
-  compileOnly(libs.agp.api.v81)
+  compileOnly(pinned.agp.api.v81)
+  compileOnly(pinned.gradle.api.v80)
   compileOnly(libs.develocity)
-  compileOnly(libs.gradle.api.v80)
 
   api(libs.jsr305)
 

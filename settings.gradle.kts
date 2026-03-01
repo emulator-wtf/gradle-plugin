@@ -14,6 +14,11 @@ dependencyResolutionManagement {
     google()
     gradlePluginPortal()
   }
+  versionCatalogs {
+    create("pinned") {
+      from(files("gradle/pinned.versions.toml"))
+    }
+  }
 }
 
 plugins {

@@ -5,8 +5,8 @@ plugins {
 }
 
 dependencies {
-  compileOnly(libs.gradle.api.v80)
-  compileOnly(libs.protobuf.java)
+  compileOnly(pinned.gradle.api.v80)
+  compileOnly(pinned.protobuf.java)
 
   testImplementation(libs.bundles.test)
 
@@ -15,7 +15,7 @@ dependencies {
 
 protobuf {
   protoc {
-    artifact = libs.protoc.get().toString()
+    artifact = pinned.protoc.get().toString()
   }
 
   generateProtoTasks {

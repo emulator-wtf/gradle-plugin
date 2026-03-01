@@ -6,13 +6,13 @@ plugins {
 dependencies {
   api(projects.gradlePluginApi)
 
-  compileOnly(libs.gradle.api.v80)
-  compileOnly(libs.kotlin.stdlib)
+  compileOnly(pinned.gradle.api.v80)
+  compileOnly(pinned.kotlin.stdlib)
+  compileOnly(pinned.agp.api.v81)
+  compileOnly(pinned.builder.test.api)
+  compileOnly(pinned.protobuf.java)
 
-  compileOnly(libs.agp.api.v81)
-  compileOnly(libs.builder.test.api)
   compileOnly(libs.autovalue.annotations)
-  compileOnly(libs.protobuf.java)
 
   api(libs.jsr305)
 

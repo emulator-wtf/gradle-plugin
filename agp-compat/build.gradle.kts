@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  compileOnly(libs.agp.api.v81)
+  compileOnly(pinned.agp.api.v81)
 
   api(projects.agpCompatApi)
 
