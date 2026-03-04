@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-  compileOnly(libs.gradle.api.v80)
-  compileOnly(libs.agp.impl.v81)
+  compileOnly(pinned.gradle.api.v80)
+  compileOnly(pinned.agp.impl.v81)
 
   api(projects.agpCompatApi)
 }

@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-  compileOnly(libs.gradle.api.v80)
-  compileOnly(libs.agp.api.v85)
-  compileOnly(libs.kotlin.stdlib)
+  compileOnly(pinned.gradle.api.v80)
+  compileOnly(pinned.agp.api.v85)
+  compileOnly(pinned.kotlin.stdlib)
 
   api(projects.agpCompatApi)
 }
