@@ -217,7 +217,7 @@ public class EwCliExecutor {
     }
 
     if (parameters.getEgressLocalhostForwardIp().isPresent()) {
-      spec.args("--egress-localhost-forward-ip", parameters.getEgressLocalhostForwardIp().get());
+      spec.args("--egress-localhost-fwd-ip", parameters.getEgressLocalhostForwardIp().get());
     }
 
     configureProxyParameters(spec, parameters);
@@ -472,7 +472,7 @@ public class EwCliExecutor {
     }
 
     if (parameters.getEgressLocalhostForwardIp().isPresent()) {
-      spec.args("--egress-localhost-forward-ip", parameters.getEgressLocalhostForwardIp().get());
+      spec.args("--egress-localhost-fwd-ip", parameters.getEgressLocalhostForwardIp().get());
     }
 
     configureProxyParameters(spec, parameters);
