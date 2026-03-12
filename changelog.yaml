@@ -4,5 +4,4 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-unreleased:
-- "Fixed bug where `--egress-localhost-forward-ip` was being used as a CLI option instead of the expected `--egress-localhost-fwd-ip`"
+unreleased: []
