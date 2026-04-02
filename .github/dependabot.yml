@@ -6,6 +6,8 @@ updates:
   schedule:
     interval: "daily"
     time: "16:00"
+  cooldown:
+    default-days: 7
   ignore:
   # never bump gradle-api, we depend on specific versions for backwards-compat
   - dependency-name: "dev.gradleplugins:gradle-api"
@@ -15,3 +17,5 @@ updates:
   schedule:
     interval: "daily"
     time: "16:00"
+  cooldown:
+    default-days: 7
