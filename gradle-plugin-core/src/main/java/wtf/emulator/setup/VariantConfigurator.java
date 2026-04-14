@@ -1,6 +1,7 @@
 package wtf.emulator.setup;
 
 import com.android.build.api.dsl.CommonExtension;
+import com.android.build.api.variant.AndroidComponentsExtension;
 import com.android.build.api.variant.AndroidTest;
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension;
 import com.android.build.api.variant.ApplicationVariant;
@@ -56,6 +57,25 @@ public class VariantConfigurator {
       android.onVariants(android.selector().all(), (Function1<? super LibraryVariant, Unit>) it -> configureLibraryVariant(compat, holder, it));
     });
 
+    // KMP Android library (AGP 9+): KotlinMultiplatformAndroidComponentsExtension extends
+    // AndroidComponentsExtension and its variant type extends LibraryVariant, so we can reuse
+    // the library path. Use the raw AndroidComponentsExtension type to avoid a compile dependency
+    // on AGP 9+ KMP classes that aren't available in our minimum-supported AGP version.
+    target.getPluginManager().withPlugin("com.android.kotlin.multiplatform.library", plugin -> {
+      @SuppressWarnings("rawtypes")
+      AndroidComponentsExtension android = target.getExtensions().findByType(AndroidComponentsExtension.class);
+      if (android != null) {
+        final var compat = AgpCompatFactory.getAgpCompat(android.getPluginVersion());
+        final var holder = compat.collectAgpVariantData(target);
+        //noinspection unchecked
+        android.onVariants(android.selector().all(), variant -> {
+          if (variant instanceof LibraryVariant) {
+            configureLibraryVariant(compat, holder, (LibraryVariant) variant);
+          }
+        });
+      }
+    });
+
     target.getPluginManager().withPlugin("com.android.test", plugin -> {
       TestAndroidComponentsExtension android = target.getExtensions().getByType(TestAndroidComponentsExtension.class);
       final var compat = AgpCompatFactory.getAgpCompat(android.getPluginVersion());
@@ -64,8 +84,6 @@ public class VariantConfigurator {
     });
 
     //TODO(madis) configure feature builds
-
-    //TODO(madis) KMP?
   }
 
   private Unit configureAppVariant(AgpCompat compat, AgpVariantDataHolder holder, ApplicationVariant variant) {

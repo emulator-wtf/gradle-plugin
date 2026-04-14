@@ -100,6 +100,24 @@ public class ProjectConfigurator {
       target.getLogger().debug("Android components extension not found. Skipping GMD setup for project {}", target.getPath());
       return;
     }
+    try {
+      doRegisterGmdDeviceType(androidComponents);
+    } catch (Exception e) {
+      // Device tests may not be enabled yet (e.g. KMP projects where withDeviceTest {} is called
+      // later in the build script after the plugins {} block). Defer to afterEvaluate so the
+      // registration is retried once the full build script has been evaluated.
+      target.getLogger().debug("Deferring GMD device type registration for project {} to afterEvaluate: {}", target.getPath(), e.getMessage());
+      target.afterEvaluate(p -> {
+        try {
+          doRegisterGmdDeviceType(androidComponents);
+        } catch (Exception e2) {
+          p.getLogger().debug("Skipping GMD device type registration for project {}: {}", p.getPath(), e2.getMessage());
+        }
+      });
+    }
+  }
+
+  private void doRegisterGmdDeviceType(AndroidComponentsExtension<?,?,?> androidComponents) {
     androidComponents.getManagedDeviceRegistry()
       .registerDeviceType(EwManagedDevice.class,
         (Function1<? super DeviceDslRegistration<EwManagedDevice>, Unit>) registration -> {
@@ -119,7 +137,29 @@ public class ProjectConfigurator {
       return;
     }
 
-    ManagedDevices managedDevices = androidCommonExtension.getTestOptions().getManagedDevices();
+    ManagedDevices managedDevices;
+    try {
+      managedDevices = androidCommonExtension.getTestOptions().getManagedDevices();
+    } catch (Exception e) {
+      // Device tests may not be enabled yet (e.g. KMP projects where withDeviceTest {} is called
+      // later in the build script after the plugins {} block). Defer to afterEvaluate so the
+      // registration is retried once the full build script has been evaluated.
+      target.getLogger().debug("Deferring ewDevices setup for project {} to afterEvaluate: {}", target.getPath(), e.getMessage());
+      target.afterEvaluate(p -> {
+        try {
+          ManagedDevices md = androidCommonExtension.getTestOptions().getManagedDevices();
+          doSetupManagedDeviceExtension(md);
+        } catch (Exception e2) {
+          p.getLogger().debug("Skipping ewDevices setup for project {}: {}", p.getPath(), e2.getMessage());
+        }
+      });
+      return;
+    }
+    doSetupManagedDeviceExtension(managedDevices);
+  }
+
+  @SuppressWarnings("EagerGradleConfiguration")
+  private void doSetupManagedDeviceExtension(ManagedDevices managedDevices) {
     ObjectFactory objects = target.getObjects();
 
     ExtensionAware extensionAwareManagedDevices = (ExtensionAware) managedDevices;
@@ -197,12 +237,25 @@ public class ProjectConfigurator {
 
     target.getPluginManager().withPlugin("com.android.application", plugin -> addRuntimeDependency("androidTestImplementation"));
     target.getPluginManager().withPlugin("com.android.library", plugin -> addRuntimeDependency("androidTestImplementation"));
+    // For KMP libraries the androidDeviceTestImplementation configuration is created lazily
+    // (only after withDeviceTest {} runs in the build script), so we use matching().configureEach()
+    // rather than named() to avoid a "configuration not found" error.
+    target.getPluginManager().withPlugin("com.android.kotlin.multiplatform.library", plugin ->
+      addRuntimeDependencyLazy("androidDeviceTestImplementation"));
     target.getPluginManager().withPlugin("com.android.test", plugin -> addRuntimeDependency("implementation"));
   }
 
   private void addRuntimeDependency(String configurationName) {
     target.getConfigurations().named(configurationName, config ->
       config.getDependencies().add(target.getDependencies().create(BuildConfig.EW_RUNTIME_COORDS)));
+  }
+
+  /** Like {@link #addRuntimeDependency} but tolerates the configuration being created after plugin application. */
+  private void addRuntimeDependencyLazy(String configurationName) {
+    target.getConfigurations()
+      .matching(config -> config.getName().equals(configurationName))
+      .configureEach(config ->
+        config.getDependencies().add(target.getDependencies().create(BuildConfig.EW_RUNTIME_COORDS)));
   }
 
   private void configureRepository() {
