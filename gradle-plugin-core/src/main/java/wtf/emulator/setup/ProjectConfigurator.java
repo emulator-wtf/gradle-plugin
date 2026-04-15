@@ -100,21 +100,13 @@ public class ProjectConfigurator {
       target.getLogger().debug("Android components extension not found. Skipping GMD setup for project {}", target.getPath());
       return;
     }
-    try {
-      doRegisterGmdDeviceType(androidComponents);
-    } catch (Exception e) {
-      // Device tests may not be enabled yet (e.g. KMP projects where withDeviceTest {} is called
-      // later in the build script after the plugins {} block). Defer to afterEvaluate so the
-      // registration is retried once the full build script has been evaluated.
-      target.getLogger().debug("Deferring GMD device type registration for project {} to afterEvaluate: {}", target.getPath(), e.getMessage());
-      target.afterEvaluate(p -> {
-        try {
-          doRegisterGmdDeviceType(androidComponents);
-        } catch (Exception e2) {
-          p.getLogger().debug("Skipping GMD device type registration for project {}: {}", p.getPath(), e2.getMessage());
-        }
-      });
+    if (target.getPluginManager().hasPlugin("com.android.kotlin.multiplatform.library")) {
+      // For KMP projects, withDeviceTest {} is called later in the build script after the
+      // plugins {} block, so defer registration until the full build script has been evaluated.
+      target.afterEvaluate(p -> doRegisterGmdDeviceType(androidComponents));
+      return;
     }
+    doRegisterGmdDeviceType(androidComponents);
   }
 
   private void doRegisterGmdDeviceType(AndroidComponentsExtension<?,?,?> androidComponents) {
@@ -137,24 +129,17 @@ public class ProjectConfigurator {
       return;
     }
 
-    ManagedDevices managedDevices;
-    try {
-      managedDevices = androidCommonExtension.getTestOptions().getManagedDevices();
-    } catch (Exception e) {
-      // Device tests may not be enabled yet (e.g. KMP projects where withDeviceTest {} is called
-      // later in the build script after the plugins {} block). Defer to afterEvaluate so the
-      // registration is retried once the full build script has been evaluated.
-      target.getLogger().debug("Deferring ewDevices setup for project {} to afterEvaluate: {}", target.getPath(), e.getMessage());
+    if (target.getPluginManager().hasPlugin("com.android.kotlin.multiplatform.library")) {
+      // For KMP projects, withDeviceTest {} is called later in the build script after the
+      // plugins {} block, so defer registration until the full build script has been evaluated.
       target.afterEvaluate(p -> {
-        try {
-          ManagedDevices md = androidCommonExtension.getTestOptions().getManagedDevices();
-          doSetupManagedDeviceExtension(md);
-        } catch (Exception e2) {
-          p.getLogger().debug("Skipping ewDevices setup for project {}: {}", p.getPath(), e2.getMessage());
-        }
+        ManagedDevices md = androidCommonExtension.getTestOptions().getManagedDevices();
+        doSetupManagedDeviceExtension(md);
       });
       return;
     }
+
+    ManagedDevices managedDevices = androidCommonExtension.getTestOptions().getManagedDevices();
     doSetupManagedDeviceExtension(managedDevices);
   }
 

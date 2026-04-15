@@ -43,7 +43,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test-project: [ 'latest', 'project-isolation', 'oldest', 'abi-splits', 'agp9-olddsl', 'agp9-newdsl' ]
+        test-project: [ 'latest', 'project-isolation', 'oldest', 'abi-splits', 'agp9-olddsl', 'agp9-newdsl', 'agp9-newdsl-kmp' ]
         config-cache: [ 'true', 'false' ]
         include:
           - test-project: 'project-isolation'
