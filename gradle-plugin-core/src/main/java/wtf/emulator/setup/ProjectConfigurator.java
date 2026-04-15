@@ -42,6 +42,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static wtf.emulator.setup.ProviderUtils.sysPropConvention;
 import static wtf.emulator.setup.ProxyUtils.nonProxyHostsConvention;
@@ -95,18 +96,33 @@ public class ProjectConfigurator {
   }
 
   private void registerGmdDeviceType() {
-    AndroidComponentsExtension<?,?,?> androidComponents = target.getExtensions().findByType(AndroidComponentsExtension.class);
-    if (androidComponents == null) {
-      target.getLogger().debug("Android components extension not found. Skipping GMD setup for project {}", target.getPath());
-      return;
-    }
-    if (target.getPluginManager().hasPlugin("com.android.kotlin.multiplatform.library")) {
-      // For KMP projects, withDeviceTest {} is called later in the build script after the
-      // plugins {} block, so defer registration until the full build script has been evaluated.
-      target.afterEvaluate(p -> doRegisterGmdDeviceType(androidComponents));
-      return;
-    }
-    doRegisterGmdDeviceType(androidComponents);
+    AtomicBoolean registered = new AtomicBoolean(false);
+
+    target.getPluginManager().withPlugin("com.android.kotlin.multiplatform.library", appliedPlugin ->
+      target.afterEvaluate(p -> {
+        if (!registered.compareAndSet(false, true)) {
+          return;
+        }
+        AndroidComponentsExtension<?, ?, ?> androidComponents = target.getExtensions().findByType(AndroidComponentsExtension.class);
+        if (androidComponents == null) {
+          target.getLogger().debug("Android components extension not found. Skipping GMD setup for project {}", target.getPath());
+          return;
+        }
+        doRegisterGmdDeviceType(androidComponents);
+      })
+    );
+
+    withAnyNonKmpAndroidPlugin(() -> {
+      if (!registered.compareAndSet(false, true)) {
+        return;
+      }
+      AndroidComponentsExtension<?, ?, ?> androidComponents = target.getExtensions().findByType(AndroidComponentsExtension.class);
+      if (androidComponents == null) {
+        target.getLogger().debug("Android components extension not found. Skipping GMD setup for project {}", target.getPath());
+        return;
+      }
+      doRegisterGmdDeviceType(androidComponents);
+    });
   }
 
   private void doRegisterGmdDeviceType(AndroidComponentsExtension<?,?,?> androidComponents) {
@@ -120,27 +136,44 @@ public class ProjectConfigurator {
         });
   }
 
+  private void withAnyNonKmpAndroidPlugin(Runnable action) {
+    target.getPluginManager().withPlugin("com.android.application", appliedPlugin -> action.run());
+    target.getPluginManager().withPlugin("com.android.library", appliedPlugin -> action.run());
+    target.getPluginManager().withPlugin("com.android.dynamic-feature", appliedPlugin -> action.run());
+    target.getPluginManager().withPlugin("com.android.test", appliedPlugin -> action.run());
+  }
+
   @SuppressWarnings("EagerGradleConfiguration") // we want to eagerly configure added devices
   private void registerManagedDeviceExtension() {
-    CommonExtension<?, ?, ?, ?, ?> androidCommonExtension = target.getExtensions().findByType(CommonExtension.class);
+    AtomicBoolean registered = new AtomicBoolean(false);
 
-    if (androidCommonExtension == null) {
-      target.getLogger().debug("Android common extension not found. Skipping ewDevices setup for project {}", target.getPath());
-      return;
-    }
-
-    if (target.getPluginManager().hasPlugin("com.android.kotlin.multiplatform.library")) {
-      // For KMP projects, withDeviceTest {} is called later in the build script after the
-      // plugins {} block, so defer registration until the full build script has been evaluated.
+    target.getPluginManager().withPlugin("com.android.kotlin.multiplatform.library", appliedPlugin ->
       target.afterEvaluate(p -> {
+        if (!registered.compareAndSet(false, true)) {
+          return;
+        }
+        CommonExtension<?, ?, ?, ?, ?> androidCommonExtension = target.getExtensions().findByType(CommonExtension.class);
+        if (androidCommonExtension == null) {
+          target.getLogger().debug("Android common extension not found. Skipping ewDevices setup for project {}", target.getPath());
+          return;
+        }
         ManagedDevices md = androidCommonExtension.getTestOptions().getManagedDevices();
         doSetupManagedDeviceExtension(md);
-      });
-      return;
-    }
+      })
+    );
 
-    ManagedDevices managedDevices = androidCommonExtension.getTestOptions().getManagedDevices();
-    doSetupManagedDeviceExtension(managedDevices);
+    withAnyNonKmpAndroidPlugin(() -> {
+      if (!registered.compareAndSet(false, true)) {
+        return;
+      }
+      CommonExtension<?, ?, ?, ?, ?> androidCommonExtension = target.getExtensions().findByType(CommonExtension.class);
+      if (androidCommonExtension == null) {
+        target.getLogger().debug("Android common extension not found. Skipping ewDevices setup for project {}", target.getPath());
+        return;
+      }
+      ManagedDevices managedDevices = androidCommonExtension.getTestOptions().getManagedDevices();
+      doSetupManagedDeviceExtension(managedDevices);
+    });
   }
 
   @SuppressWarnings("EagerGradleConfiguration")
