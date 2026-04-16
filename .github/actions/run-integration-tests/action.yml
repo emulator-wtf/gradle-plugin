@@ -43,4 +43,8 @@ runs:
       if [ "${{ inputs.config-cache }}" == "true" ]; then
         CONFIG_CACHE_ARG="--configuration-cache"
       fi
-      ./gradlew :testWithEmulatorWtf ewPixel7api33DebugAndroidTest :app:validateBaselineProfile $CONFIG_CACHE_ARG
+      if [ "${{ inputs.test-project }}" == "agp9-newdsl-kmp" ]; then
+        ./gradlew :testWithEmulatorWtf $CONFIG_CACHE_ARG
+      else
+        ./gradlew :testWithEmulatorWtf ewPixel7api33DebugAndroidTest :app:validateBaselineProfile $CONFIG_CACHE_ARG
+      fi

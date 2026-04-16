@@ -101,9 +101,8 @@ public class ProjectConfigurator {
       return;
     }
     if (target.getPluginManager().hasPlugin("com.android.kotlin.multiplatform.library")) {
-      // For KMP projects, withDeviceTest {} is called later in the build script after the
-      // plugins {} block, so defer registration until the full build script has been evaluated.
-      target.afterEvaluate(p -> doRegisterGmdDeviceType(androidComponents));
+      // This fixes error on KMP project: Caused by: java.lang.RuntimeException: Android tests on device are not enabled. (use `kotlin.android.withDeviceTest {}` to enable)
+      // TODO(kaarelk): add proper support for registering ewDevices in KMP project
       return;
     }
     doRegisterGmdDeviceType(androidComponents);
@@ -130,12 +129,8 @@ public class ProjectConfigurator {
     }
 
     if (target.getPluginManager().hasPlugin("com.android.kotlin.multiplatform.library")) {
-      // For KMP projects, withDeviceTest {} is called later in the build script after the
-      // plugins {} block, so defer registration until the full build script has been evaluated.
-      target.afterEvaluate(p -> {
-        ManagedDevices md = androidCommonExtension.getTestOptions().getManagedDevices();
-        doSetupManagedDeviceExtension(md);
-      });
+      // This fixes error on KMP project: Caused by: java.lang.RuntimeException: Android tests on device are not enabled. (use `kotlin.android.withDeviceTest {}` to enable)
+      // TODO(kaarelk): add proper support for registering ewDevices in KMP project
       return;
     }
 
