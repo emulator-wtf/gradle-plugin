@@ -4,4 +4,6 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-unreleased: []
+unreleased:
+- "Fixed: plugin no longer fails to apply on Kotlin Multiplatform projects with AGP 9 where `withDeviceTest {}` is declared after the `plugins {}` block."
+- "New: added support for `com.android.kotlin.multiplatform.library` plugin (AGP 9 KMP Android library), automatically creating `testAndroidMainWithEmulatorWtf` and related tasks."

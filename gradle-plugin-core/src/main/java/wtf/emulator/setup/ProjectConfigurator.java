@@ -100,6 +100,15 @@ public class ProjectConfigurator {
       target.getLogger().debug("Android components extension not found. Skipping GMD setup for project {}", target.getPath());
       return;
     }
+    if (target.getPluginManager().hasPlugin("com.android.kotlin.multiplatform.library")) {
+      // This fixes error on KMP project: Caused by: java.lang.RuntimeException: Android tests on device are not enabled. (use `kotlin.android.withDeviceTest {}` to enable)
+      // TODO(kaarelk): add proper support for registering ewDevices in KMP project
+      return;
+    }
+    doRegisterGmdDeviceType(androidComponents);
+  }
+
+  private void doRegisterGmdDeviceType(AndroidComponentsExtension<?,?,?> androidComponents) {
     androidComponents.getManagedDeviceRegistry()
       .registerDeviceType(EwManagedDevice.class,
         (Function1<? super DeviceDslRegistration<EwManagedDevice>, Unit>) registration -> {
@@ -119,7 +128,18 @@ public class ProjectConfigurator {
       return;
     }
 
+    if (target.getPluginManager().hasPlugin("com.android.kotlin.multiplatform.library")) {
+      // This fixes error on KMP project: Caused by: java.lang.RuntimeException: Android tests on device are not enabled. (use `kotlin.android.withDeviceTest {}` to enable)
+      // TODO(kaarelk): add proper support for registering ewDevices in KMP project
+      return;
+    }
+
     ManagedDevices managedDevices = androidCommonExtension.getTestOptions().getManagedDevices();
+    doSetupManagedDeviceExtension(managedDevices);
+  }
+
+  @SuppressWarnings("EagerGradleConfiguration")
+  private void doSetupManagedDeviceExtension(ManagedDevices managedDevices) {
     ObjectFactory objects = target.getObjects();
 
     ExtensionAware extensionAwareManagedDevices = (ExtensionAware) managedDevices;
@@ -197,12 +217,25 @@ public class ProjectConfigurator {
 
     target.getPluginManager().withPlugin("com.android.application", plugin -> addRuntimeDependency("androidTestImplementation"));
     target.getPluginManager().withPlugin("com.android.library", plugin -> addRuntimeDependency("androidTestImplementation"));
+    // For KMP libraries the androidDeviceTestImplementation configuration is created lazily
+    // (only after withDeviceTest {} runs in the build script), so we use matching().configureEach()
+    // rather than named() to avoid a "configuration not found" error.
+    target.getPluginManager().withPlugin("com.android.kotlin.multiplatform.library", plugin ->
+      addRuntimeDependencyLazy("androidDeviceTestImplementation"));
     target.getPluginManager().withPlugin("com.android.test", plugin -> addRuntimeDependency("implementation"));
   }
 
   private void addRuntimeDependency(String configurationName) {
     target.getConfigurations().named(configurationName, config ->
       config.getDependencies().add(target.getDependencies().create(BuildConfig.EW_RUNTIME_COORDS)));
+  }
+
+  /** Like {@link #addRuntimeDependency} but tolerates the configuration being created after plugin application. */
+  private void addRuntimeDependencyLazy(String configurationName) {
+    target.getConfigurations()
+      .matching(config -> config.getName().equals(configurationName))
+      .configureEach(config ->
+        config.getDependencies().add(target.getDependencies().create(BuildConfig.EW_RUNTIME_COORDS)));
   }
 
   private void configureRepository() {
