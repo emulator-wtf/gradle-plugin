@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
   `java-gradle-plugin`
   kotlin("jvm") version "2.3.20"
@@ -16,3 +18,13 @@ gradlePlugin {
 
 group = "wtf.emulator.test.convention"
 version = "1.0"
+
+java {
+  targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+  compilerOptions {
+    jvmTarget.set(JvmTarget.JVM_17)
+  }
+}
