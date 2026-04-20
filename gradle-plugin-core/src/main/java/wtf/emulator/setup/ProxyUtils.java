@@ -1,5 +1,6 @@
 package wtf.emulator.setup;
 
+import org.gradle.api.Project;
 import org.gradle.api.provider.ListProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,24 +11,24 @@ import java.util.List;
 import java.util.Set;
 
 public class ProxyUtils {
+  // drop the localhost and loopback entries as they are not relevant for no_proxy
+  private static final Set<String> IGNORED_HOSTS = new HashSet<>(Arrays.asList("localhost", "127.*", "[::1]"));
+
   /**
    * Initializes the given {@param property} with a list of domains in the `no_proxy` format as a convention,
    * based on the `http.nonProxyHosts` system property.
    */
-  public static void nonProxyHostsConvention(ListProperty<String> property) {
-    String sysPropValue = System.getProperty("http.nonProxyHosts");
-    if (sysPropValue != null && !sysPropValue.isBlank()) {
-      // drop the localhost and loopback entries as they are not relevant for no_proxy
-      Set<String> ignoredHosts = new HashSet<>(Arrays.asList("localhost", "127.*", "[::1]"));
+  public static void nonProxyHostsConvention(Project project, ListProperty<String> property) {
+    final var sysPropProvider = project.getProviders().systemProperty("http.nonProxyHosts");
+    property.convention(sysPropProvider.map(sysPropValue -> {
+      if (sysPropValue.isBlank()) {
+        return List.of();
+      }
 
       // Java's http.nonProxyHosts uses '|' as a separator and allows '*' wildcards
       String[] parts = sysPropValue.split("\\|");
-      List<String> values = mapNonProxyHosts(parts, ignoredHosts);
-
-      if (!values.isEmpty()) {
-        property.convention(values);
-      }
-    }
+      return mapNonProxyHosts(parts);
+    }));
   }
 
   /**
@@ -35,14 +36,14 @@ public class ProxyUtils {
    * NOTE: This does not cover all edge cases, just the common ones. For instance, wildcards
    * in the middle of a hostname are not supported in no_proxy and thus ignored.
    */
-  private static @NotNull List<String> mapNonProxyHosts(String[] parts, Set<String> ignoredHosts) {
+  private static @NotNull List<String> mapNonProxyHosts(String[] parts) {
     List<String> values = new ArrayList<>(parts.length);
     for (String part : parts) {
       String t = part.trim();
       if (t.isEmpty()) continue;
 
       // ignore the default loopback entries
-      if (ignoredHosts.contains(t)) {
+      if (ProxyUtils.IGNORED_HOSTS.contains(t)) {
         continue;
       }
 

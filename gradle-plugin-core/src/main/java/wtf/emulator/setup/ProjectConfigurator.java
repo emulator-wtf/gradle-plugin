@@ -202,12 +202,12 @@ public class ProjectConfigurator {
     ext.getBaseOutputDir().convention(target.getLayout().getBuildDirectory().dir("test-results"));
     ext.getRepositoryCheckEnabled().convention(true);
 
-    sysPropConvention(ext.getProxyHost(), "https.proxyHost", "http.proxyHost");
-    sysPropConvention(ext.getProxyPort(), Arrays.asList("https.proxyPort", "http.proxyPort"), Integer::parseInt);
-    sysPropConvention(ext.getProxyUser(), "https.proxyUser", "http.proxyUser");
-    sysPropConvention(ext.getProxyPassword(), "https.proxyPassword", "http.proxyPassword");
+    sysPropConvention(target, ext.getProxyHost(), "https.proxyHost", "http.proxyHost");
+    sysPropConvention(target, ext.getProxyPort(), Arrays.asList("https.proxyPort", "http.proxyPort"), Integer::parseInt);
+    sysPropConvention(target, ext.getProxyUser(), "https.proxyUser", "http.proxyUser");
+    sysPropConvention(target, ext.getProxyPassword(), "https.proxyPassword", "http.proxyPassword");
 
-    nonProxyHostsConvention(ext.getNonProxyHosts());
+    nonProxyHostsConvention(target, ext.getNonProxyHosts());
   }
 
   private void configureRuntimeDependency() {
