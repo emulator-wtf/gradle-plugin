@@ -1,6 +1,7 @@
 package wtf.emulator.setup;
 
 import org.gradle.api.Project;
+import org.gradle.api.Transformer;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
@@ -57,16 +58,16 @@ public class ProviderUtils {
    * step.
    */
   public static void sysPropConvention(Project project, Property<String> extProp, String... keys) {
-    sysPropConvention(project, extProp, Arrays.asList(keys), identity());
+    sysPropConvention(project, extProp, Arrays.asList(keys), (s) -> s);
   }
 
   /**
    * Initializes the given {@param extProp} with one of the System properties defined by {@param keys},
    * with decreasing priority, i.e. the first non-blank System property value is used.
    */
-  public static <T> void sysPropConvention(Project project, Property<T> extProp, List<String> keys, Function<String, T> transform) {
+  public static <T> void sysPropConvention(Project project, Property<T> extProp, List<String> keys, Transformer<T, String> transform) {
     final var providers = keys.stream().map(key -> project.getProviders().systemProperty(key));
     final var conventionProvider = providers.reduce(Provider::orElse);
-    conventionProvider.ifPresent(stringProvider -> extProp.convention(stringProvider.map(transform::apply)));
+    conventionProvider.ifPresent(stringProvider -> extProp.convention(stringProvider.map(transform)));
   }
 }
