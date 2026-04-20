@@ -96,8 +96,7 @@ public class TaskConfigurator {
 
       task.getClasspath().set(toolConfig);
 
-      task.getToken().set(ext.getToken().orElse(target.provider(() ->
-          System.getenv("EW_API_TOKEN"))));
+      task.getToken().set(ext.getToken().orElse(target.getProviders().environmentVariable("EW_API_TOKEN")));
 
       task.getProxyHost().set(ext.getProxyHost());
       task.getProxyPort().set(ext.getProxyPort());
@@ -187,8 +186,7 @@ public class TaskConfigurator {
 
     task.getClasspath().set(toolConfig);
 
-    task.getToken().set(ext.getToken().orElse(target.provider(() ->
-        System.getenv("EW_API_TOKEN"))));
+    task.getToken().set(ext.getToken().orElse(target.getProviders().environmentVariable("EW_API_TOKEN")));
 
     // don't configure outputs in async mode
     if (!task.getAsync().getOrElse(false)) {
