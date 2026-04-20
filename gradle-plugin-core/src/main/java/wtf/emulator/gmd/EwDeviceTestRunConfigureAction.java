@@ -45,8 +45,7 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     EwExtension ext = getProject().getExtensions().getByType(EwExtension.class);
     EwExtensionInternal extInternal = new EwExtensionInternal(ext);
 
-    deviceTestRunInput.getToken().set(ext.getToken().orElse(getProject().provider(() ->
-      System.getenv("EW_API_TOKEN"))));
+    deviceTestRunInput.getToken().set(ext.getToken().orElse(getProject().getProviders().environmentVariable("EW_API_TOKEN")));
     deviceTestRunInput.getToken().disallowChanges();
 
     deviceTestRunInput.getWorkingDir().set(getProject().getRootDir());
