@@ -20,7 +20,7 @@ public class ProxyUtils {
    */
   public static void nonProxyHostsConvention(Project project, ListProperty<String> property) {
     final var sysPropProvider = project.getProviders().systemProperty("http.nonProxyHosts");
-    property.convention(sysPropProvider.map(sysPropValue -> {))
+    property.convention(sysPropProvider.map(sysPropValue -> {
       if (sysPropValue.isBlank()) {
         return List.of();
       }
