@@ -888,11 +888,11 @@ This will create 3 separate `test*WithEmulatorWtf` tasks:
 
 The plugin is compatible with any working combination of these ranges:
 
-| Component             | Oldest | Newest            |
-|-----------------------|--------|-------------------|
-| JDK                   | 17     | 26                |
-| Gradle                | 8.0    | 9.5.0-milestone-7 |
-| Android Gradle Plugin | 8.1.0  | 9.3.0-alpha01     |
+| Component             | Oldest | Newest        |
+|-----------------------|--------|---------------|
+| JDK                   | 17     | 26            |
+| Gradle                | 8.0    | 9.5.0-rc-3    |
+| Android Gradle Plugin | 8.1.0  | 9.3.0-alpha01 |
 
 > [!NOTE]
 > Only the latest of any prerelease versions (`alpha`, `beta`, `rc`) is supported.
