@@ -1,5 +1,6 @@
 package wtf.emulator.setup;
 
+import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
@@ -55,29 +56,17 @@ public class ProviderUtils {
    * Variant of {@code sysPropConvention} that directly operates with Strings without an intermediate transform
    * step.
    */
-  public static void sysPropConvention(Property<String> extProp, String... keys) {
-    sysPropConvention(extProp, Arrays.asList(keys), identity());
+  public static void sysPropConvention(Project project, Property<String> extProp, String... keys) {
+    sysPropConvention(project, extProp, Arrays.asList(keys), identity());
   }
 
   /**
    * Initializes the given {@param extProp} with one of the System properties defined by {@param keys},
    * with decreasing priority, i.e. the first non-blank System property value is used.
    */
-  public static <T> void sysPropConvention(Property<T> extProp, List<String> keys, Function<String, T> transform) {
-    for (String key : keys) {
-      String sysPropValue = System.getProperty(key);
-      if (sysPropValue != null && !sysPropValue.isBlank()) {
-        try {
-          T transformed = transform.apply(sysPropValue);
-          if (transformed != null) {
-            extProp.convention(transformed);
-            return;
-          }
-        }
-        catch (Exception e) {
-          // ignore transform failures, e.g. failing to parse an int
-        }
-      }
-    }
+  public static <T> void sysPropConvention(Project project, Property<T> extProp, List<String> keys, Function<String, T> transform) {
+    final var providers = keys.stream().map(key -> project.getProviders().systemProperty(key));
+    final var conventionProvider = providers.reduce(Provider::orElse);
+    conventionProvider.ifPresent(stringProvider -> extProp.convention(stringProvider.map(transform::apply)));
   }
 }
