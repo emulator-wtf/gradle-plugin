@@ -62,8 +62,15 @@ public class ProviderUtils {
   }
 
   /**
-   * Initializes the given {@param extProp} with one of the System properties defined by {@param keys},
-   * with decreasing priority, i.e. the first non-blank System property value is used.
+   * Initializes the given property from one of the System properties identified by {@code keys}, in
+   * decreasing priority order. The first present System property provider is used; if that property is
+   * present with a blank value, fallback to later keys does not occur.
+   *
+   * @param project the project used to access Gradle providers
+   * @param extProp the property to initialize
+   * @param keys the System property keys to check, in priority order
+   * @param transform transforms the selected System property value before assigning it
+   * @param <T> the target property type
    */
   public static <T> void sysPropConvention(Project project, Property<T> extProp, List<String> keys, Transformer<T, String> transform) {
     final var providers = keys.stream().map(key -> project.getProviders().systemProperty(key));
