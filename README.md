@@ -219,7 +219,7 @@ emulatorwtf {
     // default: [OutputType.MERGED_RESULTS_XML, OutputType.COVERAGE, OutputType.PULLED_DIRS]
     outputs.set(listOf(OutputType.SUMMARY, OutputType.CAPTURED_VIDEO, OutputType.LOGCAT))
 
-    // Always print the ew-cli output the console when running. Useful for debugging.
+    // Always print the ew-cli output to the console when running. Useful for debugging.
     printOutput.set(true)
 
     // record a video of the test run
@@ -327,7 +327,7 @@ emulatorwtf {
 
     // Disable caching test results in the backend
     // NOTE! This will not disable caching at the Gradle task or Gradle build cache level,
-    // use sideEffects.set(true to disable all caching
+    // use sideEffects.set(true) to disable all caching
     testCacheEnabled.set(false)
 
     // Continue after triggering the tests. No outputs will be saved.
@@ -420,7 +420,7 @@ emulatorwtf {
     // default: [OutputType.MERGED_RESULTS_XML, OutputType.COVERAGE, OutputType.PULLED_DIRS]
     outputs = [OutputType.SUMMARY, OutputType.CAPTURED_VIDEO, OutputType.LOGCAT]
 
-    // Always print the ew-cli output the console when running. Useful for debugging.
+    // Always print the ew-cli output to the console when running. Useful for debugging.
     printOutput = true
 
     // record a video of the test run
@@ -479,7 +479,7 @@ emulatorwtf {
     // Use this for passing any sort of secrets - tokens, passwords, credentials, etc.
     secretEnvironmentVariables = [token: 'hunter2']
 
-    // Set to the a minutes value to split your tests into multiple shards
+    // Set to a minutes value to split your tests into multiple shards
     // dynamically, the number of shards will be figured out based on historical
     // test times. This is a good way to ensure a consistent runtime as your
     // testsuite grows or shrinks - we will adjust the number of shards as
@@ -518,7 +518,7 @@ emulatorwtf {
 
     // Directories to pull from device after test is over, will be stored in
     // baseOutputDir/${variant}:
-    diretoriesToPull = ['/sdcard/screenshots']
+    directoriesToPull = ['/sdcard/screenshots']
 
     // Enable-disable the test input file cache (APKs etc)
     fileCacheEnabled = false
@@ -722,9 +722,9 @@ To use these devices to run your tests, run the following Gradle task: `{deviceN
 ./gradlew ewPixel7api33DebugAndroidTest
 ```
 
-#### Creating baseling profiles with Gradle-managed devices
+#### Creating baseline profiles with Gradle-managed devices
 
-You can set up baselines profiles in the [same way you would do with local emulators](https://developer.android.com/topic/performance/baselineprofiles/create-baselineprofile) and configure the device(s) that you want to run on via GMD definitions shown in the example above.
+You can set up baseline profiles in the [same way you would do with local emulators](https://developer.android.com/topic/performance/baselineprofiles/create-baselineprofile) and configure the device(s) that you want to run on via GMD definitions shown in the example above.
 
 Your final configuration could look like this:
 
@@ -738,8 +738,8 @@ import wtf.emulator.DeviceModel
 android {
     testOptions.managedDevices.ewDevices {
         register("ewPixel7api33") {
-            device = DeviceModel.PIXEL_7
-            apiLevel = 33
+            device.set(DeviceModel.PIXEL_7)
+            apiLevel.set(33)
         }
     }
 }
