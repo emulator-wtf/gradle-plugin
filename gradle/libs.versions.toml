@@ -12,7 +12,7 @@ protobuf = { id = "com.google.protobuf", version = "0.9.6" }
 [libraries]
 gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.36.0"
 gradle-plugins-lint = { module = "com.android.lint:com.android.lint.gradle.plugin ", version.ref = "lint" }
-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.4.0"
+develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.4.1"
 lint-gradle = "androidx.lint:lint-gradle:1.0.0-alpha06"
 semver4j = "com.vdurmont:semver4j:3.1.0"
 gson = "com.google.code.gson:gson:2.13.2"
