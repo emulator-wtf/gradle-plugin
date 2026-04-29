@@ -6,7 +6,7 @@ lint = "9.1.0"
 [plugins]
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.9" }
 lint = { id = "com.android.lint", version.ref = "lint" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.20" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "2.3.21" }
 protobuf = { id = "com.google.protobuf", version = "0.10.0" }
 
 [libraries]
