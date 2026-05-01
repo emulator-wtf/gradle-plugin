@@ -15,7 +15,7 @@ gradle-plugins-lint = { module = "com.android.lint:com.android.lint.gradle.plugi
 develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.4.1"
 lint-gradle = "androidx.lint:lint-gradle:1.0.0-alpha06"
 semver4j = "com.vdurmont:semver4j:3.1.0"
-gson = "com.google.code.gson:gson:2.13.2"
+gson = "com.google.code.gson:gson:2.14.0"
 jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
 commons-io = "commons-io:commons-io:2.21.0"
 junit = "junit:junit:4.13.2"
