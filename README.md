@@ -203,8 +203,8 @@ import wtf.emulator.TestReporter
 import java.time.Duration
 
 emulatorwtf {
-    // CLI version to use, defaults to 1.2.2
-    version.set("1.2.2")
+    // CLI version to use, defaults to 1.3.0
+    version.set("1.3.0")
 
     // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
     // instead of this or passing this value in via a project property
@@ -404,8 +404,8 @@ import wtf.emulator.TestReporter
 import java.time.Duration
 
 emulatorwtf {
-    // CLI version to use, defaults to 1.2.2
-    version = '1.2.2'
+    // CLI version to use, defaults to 1.3.0
+    version = '1.3.0'
 
     // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
     // instead of this or passing this value in via a project property
