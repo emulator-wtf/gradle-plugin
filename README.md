@@ -47,7 +47,7 @@ app project (usually under `app/build.gradle(.kts)`):
 
 ```kotlin
 plugins {
-    id("wtf.emulator.gradle") version "1.5.4"
+    id("wtf.emulator.gradle") version "1.6.0"
 }
 ```
 
@@ -58,7 +58,7 @@ plugins {
 
 ```groovy
 plugins {
-    id "wtf.emulator.gradle" version "1.5.4"
+    id "wtf.emulator.gradle" version "1.6.0"
 }
 ```
 
@@ -81,7 +81,7 @@ buildscript {
 
     dependencies {
         // ... other deps here, like com.android.tools.build:gradle
-        classpath("wtf.emulator:gradle-plugin:1.5.4")
+        classpath("wtf.emulator:gradle-plugin:1.6.0")
     }
 }
 ```
@@ -100,7 +100,7 @@ buildscript {
 
     dependencies {
         // ... other deps here, like com.android.tools.build:gradle
-        classpath "wtf.emulator:gradle-plugin:1.5.4"
+        classpath "wtf.emulator:gradle-plugin:1.6.0"
     }
 }
 ```
@@ -203,8 +203,8 @@ import wtf.emulator.TestReporter
 import java.time.Duration
 
 emulatorwtf {
-    // CLI version to use, defaults to 1.2.2
-    version.set("1.2.2")
+    // CLI version to use, defaults to 1.3.0
+    version.set("1.3.0")
 
     // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
     // instead of this or passing this value in via a project property
@@ -404,8 +404,8 @@ import wtf.emulator.TestReporter
 import java.time.Duration
 
 emulatorwtf {
-    // CLI version to use, defaults to 1.2.2
-    version = '1.2.2'
+    // CLI version to use, defaults to 1.3.0
+    version = '1.3.0'
 
     // emulator.wtf API token, we recommend either using the EW_API_TOKEN env var
     // instead of this or passing this value in via a project property

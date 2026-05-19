@@ -23,7 +23,7 @@ runs:
     working-directory: integration-test/${{ inputs.test-project }}
     shell: bash
     run: echo "JAVA_HOME=$(mise hook-env -f | grep 'export JAVA_HOME' | cut -d'=' -f2)" >> $GITHUB_ENV
-  - uses: emulator-wtf/configure-credentials@v1
+  - uses: emulator-wtf/actions/configure-credentials@v1.0.0
     with:
       oidc-configuration-id: ${{ inputs.oidc-configuration-id }}
   - name: Fetch maven repo
