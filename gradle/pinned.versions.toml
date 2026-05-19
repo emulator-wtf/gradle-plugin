@@ -9,6 +9,8 @@ agp-impl-v81 = "com.android.tools.build:gradle:8.1.0"
 agp-api-v85 = "com.android.tools.build:gradle-api:8.5.0"
 builder-test-api = "com.android.tools.build:builder-test-api:8.1.0"
 gradle-api-v80 = "dev.gradleplugins:gradle-api:8.0"
+gradle-api-v813 = "org.gradle.experimental:gradle-public-api:8.13"
+gradle-api-v94 = "org.gradle.experimental:gradle-public-api:9.4.0"
 kotlin-stdlib = "org.jetbrains.kotlin:kotlin-stdlib:1.8.10"
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
 protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }

@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  compileOnly(gradleApi())
+  compileOnly(pinned.gradle.api.v813)
 
   api(projects.gradleCompatApi)
 }
