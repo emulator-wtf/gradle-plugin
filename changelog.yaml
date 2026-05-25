@@ -6,3 +6,6 @@
 # (Markdown is supported and encouraged)
 unreleased:
 - "Fixed: the emulator.wtf Gradle plugin crashed when using the Gradle Test Reporting API on Gradle 9.4.0 and later."
+- "Fixed: slow or stalled file uploads would not time out correctly, causing test runs to hang."
+- "Fixed: corner-case connectivity issue where test runs could stall for minutes before running any tests."
+- "Maintenance: bumped default `ew-cli` version to 1.3.2."
