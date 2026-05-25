@@ -10,6 +10,14 @@ pluginManagement {
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
+    exclusiveContent {
+      forRepository {
+        maven("https://repo.gradle.org/artifactory/libs-releases/")
+      }
+      filter {
+        includeModule("org.gradle.experimental", "gradle-public-api")
+      }
+    }
     mavenCentral()
     google()
     gradlePluginPortal()
@@ -38,6 +46,7 @@ include(":gradle-compat-api")
 include(":gradle-compat")
 include(":gradle-compat-8-0")
 include(":gradle-compat-8-13")
+include(":gradle-compat-9-4")
 
 include(":gradle-plugin")
 include(":gradle-plugin-api")

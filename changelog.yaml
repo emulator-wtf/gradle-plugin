@@ -4,4 +4,5 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-unreleased: []
+unreleased:
+- "Fixed: the emulator.wtf Gradle plugin crashed when using the Gradle Test Reporting API on Gradle 9.4.0 and later."
