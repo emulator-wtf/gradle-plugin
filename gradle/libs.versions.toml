@@ -10,7 +10,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.20" }
 protobuf = { id = "com.google.protobuf", version = "0.10.0" }
 
 [libraries]
-gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.36.0"
+gradle-plugins-publish = "com.vanniktech:gradle-maven-publish-plugin:0.37.0"
 gradle-plugins-lint = { module = "com.android.lint:com.android.lint.gradle.plugin ", version.ref = "lint" }
 develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.4.3"
 lint-gradle = "androidx.lint:lint-gradle:1.0.0"
