@@ -5,4 +5,5 @@
 #
 # (Markdown is supported and encouraged)
 unreleased:
-- Bumped default `ew-cli` version to 1.3.3.
+- "Improved: large APK file uploads are now using multiple connections in parallel, making uploads substantially faster."
+- "Maintenance: bumped default `ew-cli` version to 1.4.0."

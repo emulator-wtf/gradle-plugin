@@ -217,6 +217,18 @@ public abstract class EwDeviceTestRunInput implements DeviceTestRunInput {
 
   @Optional
   @Input
+  public abstract Property<Long> getUploadChunkSize();
+
+  @Optional
+  @Input
+  public abstract Property<Integer> getUploadThreadCount();
+
+  @Optional
+  @Input
+  public abstract Property<Integer> getUploadTimeoutBaseSeconds();
+
+  @Optional
+  @Input
   public abstract Property<String> getProxyHost();
 
   @Optional

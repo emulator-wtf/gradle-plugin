@@ -183,6 +183,9 @@ public abstract class EwDeviceTestRunTaskAction implements DeviceTestRunTaskActi
     workParams.getAsync().set(testRunInput.getAsync());
     workParams.getPrintOutput().set(testRunInput.getPrintOutput());
     workParams.getTestTargetsString().set(testRunInput.getTestTargetsString());
+    workParams.getUploadChunkSize().set(testRunInput.getUploadChunkSize());
+    workParams.getUploadThreadCount().set(testRunInput.getUploadThreadCount());
+    workParams.getUploadTimeoutBaseSeconds().set(testRunInput.getUploadTimeoutBaseSeconds());
     workParams.getProxyHost().set(testRunInput.getProxyHost());
     workParams.getProxyPort().set(testRunInput.getProxyPort());
     workParams.getProxyUser().set(testRunInput.getProxyUser());

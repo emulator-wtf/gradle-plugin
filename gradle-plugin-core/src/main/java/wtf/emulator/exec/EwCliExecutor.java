@@ -425,6 +425,18 @@ public class EwCliExecutor {
       spec.args("--file-cache-ttl", toCliString(parameters.getFileCacheTtl().get()));
     }
 
+    if (parameters.getUploadChunkSize().isPresent()) {
+      spec.args("--upload-chunk-size", parameters.getUploadChunkSize().get().toString());
+    }
+
+    if (parameters.getUploadThreadCount().isPresent()) {
+      spec.args("--upload-thread-count", parameters.getUploadThreadCount().get().toString());
+    }
+
+    if (parameters.getUploadTimeoutBaseSeconds().isPresent()) {
+      spec.args("--upload-timeout-base-seconds", parameters.getUploadTimeoutBaseSeconds().get().toString());
+    }
+
     if (parameters.getTestCacheEnabled().isPresent()) {
       if (parameters.getTestCacheEnabled().get()) {
         spec.args("--test-cache");
