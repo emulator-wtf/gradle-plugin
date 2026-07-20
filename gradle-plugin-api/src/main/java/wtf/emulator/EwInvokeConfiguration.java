@@ -223,4 +223,23 @@ public interface EwInvokeConfiguration extends EwProxyConfiguration {
    * <a href="https://developer.android.com/reference/androidx/test/runner/AndroidJUnitRunner#typical-usage">here</a>.
    */
   Property<String> getTestTargetsString();
+
+  /**
+   * Override the multipart upload chunk size in bytes. Left unset the server-provided (or default)
+   * value is used; useful for debugging / tuning.
+   */
+  Property<Long> getUploadChunkSize();
+
+  /**
+   * Override the number of multipart chunks uploaded concurrently. Left unset the server-provided
+   * (or default) value is used; useful for debugging / tuning.
+   */
+  Property<Integer> getUploadThreadCount();
+
+  /**
+   * Override the base per-chunk upload call timeout in seconds; the effective timeout is this
+   * multiplied by the thread count. Left unset the server-provided (or default) value is used;
+   * useful for debugging / tuning.
+   */
+  Property<Integer> getUploadTimeoutBaseSeconds();
 }

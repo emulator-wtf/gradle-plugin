@@ -162,6 +162,15 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getTestTargetsString().set(ext.getTestTargetsString());
     deviceTestRunInput.getTestTargetsString().disallowChanges();
 
+    deviceTestRunInput.getUploadChunkSize().set(ext.getUploadChunkSize());
+    deviceTestRunInput.getUploadChunkSize().disallowChanges();
+
+    deviceTestRunInput.getUploadThreadCount().set(ext.getUploadThreadCount());
+    deviceTestRunInput.getUploadThreadCount().disallowChanges();
+
+    deviceTestRunInput.getUploadTimeoutBaseSeconds().set(ext.getUploadTimeoutBaseSeconds());
+    deviceTestRunInput.getUploadTimeoutBaseSeconds().disallowChanges();
+
     deviceTestRunInput.getProxyHost().set(ext.getProxyHost());
     deviceTestRunInput.getProxyHost().disallowChanges();
 

@@ -290,6 +290,10 @@ public class TaskConfigurator {
 
     task.getTestTargetsString().set(config.getTestTargetsString());
 
+    task.getUploadChunkSize().set(config.getUploadChunkSize());
+    task.getUploadThreadCount().set(config.getUploadThreadCount());
+    task.getUploadTimeoutBaseSeconds().set(config.getUploadTimeoutBaseSeconds());
+
     task.getProxyHost().set(config.getProxyHost());
     task.getProxyPort().set(config.getProxyPort());
     task.getProxyUser().set(config.getProxyUser());

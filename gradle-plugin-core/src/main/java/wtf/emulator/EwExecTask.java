@@ -253,6 +253,18 @@ public abstract class EwExecTask extends DefaultTask {
 
   @Optional
   @Input
+  public abstract Property<Long> getUploadChunkSize();
+
+  @Optional
+  @Input
+  public abstract Property<Integer> getUploadThreadCount();
+
+  @Optional
+  @Input
+  public abstract Property<Integer> getUploadTimeoutBaseSeconds();
+
+  @Optional
+  @Input
   public abstract Property<String> getProxyHost();
 
   @Optional
@@ -332,6 +344,9 @@ public abstract class EwExecTask extends DefaultTask {
     p.getPrintOutput().set(getPrintOutput());
     p.getDebug().set(getDebug());
     p.getTestTargetsString().set(getTestTargetsString());
+    p.getUploadChunkSize().set(getUploadChunkSize());
+    p.getUploadThreadCount().set(getUploadThreadCount());
+    p.getUploadTimeoutBaseSeconds().set(getUploadTimeoutBaseSeconds());
     p.getProxyHost().set(getProxyHost());
     p.getProxyPort().set(getProxyPort());
     p.getProxyUser().set(getProxyUser());

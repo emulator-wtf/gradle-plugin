@@ -58,6 +58,9 @@ public class DslInternals {
     config.getIgnoreFailures().convention(defaults.getIgnoreFailures());
     config.getAsync().convention(defaults.getAsync());
     config.getPrintOutput().convention(defaults.getPrintOutput());
+    config.getUploadChunkSize().convention(defaults.getUploadChunkSize());
+    config.getUploadThreadCount().convention(defaults.getUploadThreadCount());
+    config.getUploadTimeoutBaseSeconds().convention(defaults.getUploadTimeoutBaseSeconds());
     config.getTestTargetsString().convention(
       // first targets from this config
       config.getTestTargets().map(TargetUtils::toCliString)
