@@ -47,7 +47,7 @@ app project (usually under `app/build.gradle(.kts)`):
 
 ```kotlin
 plugins {
-    id("wtf.emulator.gradle") version "1.6.1"
+    id("wtf.emulator.gradle") version "1.7.0"
 }
 ```
 
@@ -58,7 +58,7 @@ plugins {
 
 ```groovy
 plugins {
-    id "wtf.emulator.gradle" version "1.6.1"
+    id "wtf.emulator.gradle" version "1.7.0"
 }
 ```
 
@@ -81,7 +81,7 @@ buildscript {
 
     dependencies {
         // ... other deps here, like com.android.tools.build:gradle
-        classpath("wtf.emulator:gradle-plugin:1.6.1")
+        classpath("wtf.emulator:gradle-plugin:1.7.0")
     }
 }
 ```
@@ -100,7 +100,7 @@ buildscript {
 
     dependencies {
         // ... other deps here, like com.android.tools.build:gradle
-        classpath "wtf.emulator:gradle-plugin:1.6.1"
+        classpath "wtf.emulator:gradle-plugin:1.7.0"
     }
 }
 ```
