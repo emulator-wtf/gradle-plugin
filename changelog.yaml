@@ -4,6 +4,4 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-unreleased:
-- "Improved: we increased the maximum APK size to 1GiB."
-- "Maintenance: bumped default `ew-cli` version to 1.4.2."
+unreleased: []
