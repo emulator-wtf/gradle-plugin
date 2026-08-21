@@ -5,10 +5,5 @@
 #
 # (Markdown is supported and encouraged)
 unreleased:
-- |
-  New **(enterprise customers only)**: the emulator binary and system images are now loosely pinned to the emulator.wtf Gradle Plugin version.
-  CI pipelines that randomly start to fail because we've made an emulator binary update is a bad day for everyone - you can
-  now control when you get the updates by updating the emulator.wtf Gradle Plugin in a timely manner.
-  NOTE: we won't be keeping old combinations available forever, if you stay on a relatively old version of the Gradle plugin you
-  will get a silent update.
-- "Maintenance: bumped default `ew-cli` version to 1.4.1."
+- "Improved: we increased the maximum APK size to 1GiB."
+- "Maintenance: bumped default `ew-cli` version to 1.4.2."
