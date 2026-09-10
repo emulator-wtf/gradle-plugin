@@ -4,5 +4,4 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-unreleased:
-- "New (enterprise customers only): ATD emulators now have 4GiB of RAM instead of 2GiB. Customers on the Startup and Scaleup plans get this change immediately without having to upgrade the plugin."
+unreleased: []
