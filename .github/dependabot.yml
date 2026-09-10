@@ -18,4 +18,4 @@ updates:
     interval: "daily"
     time: "16:00"
   cooldown:
-    default-days: 7
+    default-days: 1
