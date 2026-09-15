@@ -4,4 +4,5 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-unreleased: []
+unreleased:
+- "New (enterprise customers only): All emulators on API versions 23, 24, 28, 29, and 30 now use the x86_64 architecture instead of x86. Customers on the Startup and Scaleup plans get this change immediately without having to upgrade the plugin."
