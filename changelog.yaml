@@ -4,4 +4,6 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-unreleased: []
+unreleased:
+- "New: the `--scm-*` family of options can now be passed in via environment variables:\n  - `EW_SCM_URL` for `--scm-url`\n  - `EW_SCM_COMMIT` for `--scm-commit`\n  - `EW_SCM_PR_URL` for `--scm-pr-url`\n  - `EW_SCM_REF_NAME` for `--scm-ref-name`"
+- "Maintenance: bumped `ew-cli` version to 1.5.1"
