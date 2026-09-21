@@ -4,4 +4,11 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-unreleased: []
+unreleased:
+- "Maintenance: bumped default `ew-cli` version to 1.5.1."
+- |
+  New: the Gradle plugin now supports the `--scm-*` family of options via environment variables:
+  - `EW_SCM_URL` for `--scm-url`.
+  - `EW_SCM_COMMIT` for `--scm-commit`.
+  - `EW_SCM_PR_URL` for `--scm-pr-url`.
+  - `EW_SCM_REF_NAME` for `--scm-ref-name`.
