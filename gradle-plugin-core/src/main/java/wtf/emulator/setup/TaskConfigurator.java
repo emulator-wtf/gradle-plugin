@@ -7,6 +7,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
 import wtf.emulator.DevelocityReporter;
 import wtf.emulator.DslInternals;
+import wtf.emulator.EwEnv;
 import wtf.emulator.EwInvokeDsl;
 import wtf.emulator.EwConnectivityCheckTask;
 import wtf.emulator.EwExecSummaryTask;
@@ -96,7 +97,7 @@ public class TaskConfigurator {
 
       task.getClasspath().set(toolConfig);
 
-      task.getToken().set(ext.getToken().orElse(target.getProviders().environmentVariable("EW_API_TOKEN")));
+      task.getToken().set(ext.getToken().orElse(EwEnv.API_TOKEN.getStringProvider(target)));
 
       task.getProxyHost().set(ext.getProxyHost());
       task.getProxyPort().set(ext.getProxyPort());
@@ -186,7 +187,7 @@ public class TaskConfigurator {
 
     task.getClasspath().set(toolConfig);
 
-    task.getToken().set(ext.getToken().orElse(target.getProviders().environmentVariable("EW_API_TOKEN")));
+    task.getToken().set(ext.getToken().orElse(EwEnv.API_TOKEN.getStringProvider(target)));
 
     // don't configure outputs in async mode
     if (!task.getAsync().getOrElse(false)) {
@@ -257,10 +258,10 @@ public class TaskConfigurator {
     task.getNumFlakyTestAttempts().set(config.getNumFlakyTestAttempts());
     task.getFlakyTestRepeatMode().set(config.getFlakyTestRepeatMode());
 
-    task.getScmUrl().set(config.getScmUrl());
-    task.getScmCommitHash().set(config.getScmCommitHash());
-    task.getScmRefName().set(config.getScmRefName());
-    task.getScmPrUrl().set(config.getScmPrUrl());
+    task.getScmUrl().set(config.getScmUrl().orElse(EwEnv.SCM_URL.getStringProvider(target)));
+    task.getScmCommitHash().set(config.getScmCommitHash().orElse(EwEnv.SCM_COMMIT.getStringProvider(target)));
+    task.getScmRefName().set(config.getScmRefName().orElse(EwEnv.SCM_REF_NAME.getStringProvider(target)));
+    task.getScmPrUrl().set(config.getScmPrUrl().orElse(EwEnv.SCM_PR_URL.getStringProvider(target)));
 
     task.getDnsServers().set(config.getDnsServers());
     task.getDnsOverrides().set(config.getDnsOverrides());
