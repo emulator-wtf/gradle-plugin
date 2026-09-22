@@ -5,6 +5,7 @@ import com.android.build.api.instrumentation.manageddevice.DeviceTestRunConfigur
 import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;
 import org.jetbrains.annotations.NotNull;
+import wtf.emulator.EwEnv;
 import wtf.emulator.EwExtension;
 import wtf.emulator.EwExtensionInternal;
 import wtf.emulator.setup.ProjectConfigurator;
@@ -45,7 +46,7 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     EwExtension ext = getProject().getExtensions().getByType(EwExtension.class);
     EwExtensionInternal extInternal = new EwExtensionInternal(ext);
 
-    deviceTestRunInput.getToken().set(ext.getToken().orElse(getProject().getProviders().environmentVariable("EW_API_TOKEN")));
+    deviceTestRunInput.getToken().set(ext.getToken().orElse(EwEnv.API_TOKEN.getStringProvider(getProject())));
     deviceTestRunInput.getToken().disallowChanges();
 
     deviceTestRunInput.getWorkingDir().set(getProject().getRootDir());
@@ -138,16 +139,16 @@ public abstract class EwDeviceTestRunConfigureAction implements DeviceTestRunCon
     deviceTestRunInput.getRelays().set(ext.getRelays());
     deviceTestRunInput.getRelays().disallowChanges();
 
-    deviceTestRunInput.getScmUrl().set(ext.getScmUrl());
+    deviceTestRunInput.getScmUrl().set(ext.getScmUrl().orElse(EwEnv.SCM_URL.getStringProvider(getProject())));
     deviceTestRunInput.getScmUrl().disallowChanges();
 
-    deviceTestRunInput.getScmCommitHash().set(ext.getScmCommitHash());
+    deviceTestRunInput.getScmCommitHash().set(ext.getScmCommitHash().orElse(EwEnv.SCM_COMMIT.getStringProvider(getProject())));
     deviceTestRunInput.getScmCommitHash().disallowChanges();
 
-    deviceTestRunInput.getScmRefName().set(ext.getScmRefName());
+    deviceTestRunInput.getScmRefName().set(ext.getScmRefName().orElse(EwEnv.SCM_REF_NAME.getStringProvider(getProject())));
     deviceTestRunInput.getScmRefName().disallowChanges();
 
-    deviceTestRunInput.getScmPrUrl().set(ext.getScmPrUrl());
+    deviceTestRunInput.getScmPrUrl().set(ext.getScmPrUrl().orElse(EwEnv.SCM_PR_URL.getStringProvider(getProject())));
     deviceTestRunInput.getScmPrUrl().disallowChanges();
 
     deviceTestRunInput.getIgnoreFailures().set(ext.getIgnoreFailures());
