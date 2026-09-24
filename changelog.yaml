@@ -5,10 +5,3 @@
 #
 # (Markdown is supported and encouraged)
 unreleased:
-- |
-  New: the `scm*` family of dsl settings can now be passed in via environment variables:
-  - `EW_SCM_URL` for `scmUrl`
-  - `EW_SCM_COMMIT` for `scmCommitHash`
-  - `EW_SCM_PR_URL` for `scmPrUrl`
-  - `EW_SCM_REF_NAME` for `scmRefName`
-- "Maintenance: bumped default `ew-cli` version to 1.5.1."
