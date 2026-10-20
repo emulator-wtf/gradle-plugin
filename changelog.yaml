@@ -4,4 +4,8 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-unreleased: []
+unreleased:
+- |
+  Maintenance: bumped default `ew-cli` version to 1.5.2.
+- |
+  Fixed: uploading large APKs no longer fails on Windows.
