@@ -1,5 +1,5 @@
 [versions]
-agp = "9.5.0-rc01"
+agp = "9.5.0-rc02"
 emulatorwtf = "+"
 kotlin = "2.4.21"
 junitVersion = "1.3.0"
