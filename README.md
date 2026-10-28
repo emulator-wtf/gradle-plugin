@@ -892,7 +892,7 @@ The plugin is compatible with any working combination of these ranges:
 |-----------------------|--------|---------------|
 | JDK                   | 17     | 27            |
 | Gradle                | 8.0    | 9.8.2         |
-| Android Gradle Plugin | 8.1.0  | 9.5.0-rc01    |
+| Android Gradle Plugin | 8.1.0  | 9.6.0-alpha01 |
 
 > [!NOTE]
 > Only the latest of any prerelease versions (`alpha`, `beta`, `rc`) is supported.
