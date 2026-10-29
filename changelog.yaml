@@ -4,4 +4,10 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-unreleased: []
+unreleased:
+- |
+  Maintenance: bumped default `ew-cli` version to 1.6.0.
+- |
+  New: the Gradle plugin now prints warnings about the test run, e.g. when a captured video was too large and was dropped.
+- |
+  New (private beta): the Gradle plugin now supports running Maestro tests with `ew-cli maestro run`. This feature is currently in private beta, reach out to us at support@emulator.wtf if you are interested in trying it out.
