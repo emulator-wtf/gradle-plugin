@@ -4,4 +4,10 @@
 # - "Made `thingamajig` faster, read more [here](https://example.com)."
 #
 # (Markdown is supported and encouraged)
-unreleased: []
+unreleased:
+  - "Fixed: cached test results are no longer reused when the fingerprint of secret environment variables differs (`secretEnvironmentVariables`)."
+  - |
+    Fixed: tests can now be run on apk files with non-x86 native libraries as long as the emulator version supports them.
+    See the list of supported ABIs by emulator versions [here](https://docs.emulator.wtf/emulators#supported-abis).
+  - "Maintenance: bumped default `ew-cli` version to 1.6.1."
+
